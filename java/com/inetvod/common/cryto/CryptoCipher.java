@@ -4,23 +4,23 @@
  */
 package com.inetvod.common.cryto;
 
-import java.security.NoSuchAlgorithmException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.io.UnsupportedEncodingException;
 
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.SecretKey;
 import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.DecoderException;
+
+import com.inetvod.common.core.StrUtil;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 public class CryptoCipher
 {
@@ -29,8 +29,7 @@ public class CryptoCipher
 	private static final String ALGORITHM = "PBEWithMD5AndDES";
 	private static final String CHAR_ENCODING = "UTF-8";
 	@SuppressWarnings({"MagicNumber"})
-	private static final byte[] DEFAULT_SALT = { 0x2a, (byte)0x9c, (byte)0xd9, (byte)0xf6, (byte)0x85,
-		(byte)0xe3, (byte)0xdd, (byte)0x29 };
+	private static final String DEFAULT_SALT = "2a9cd9f685e3dd29";
 	private static final int DEFAULT_ITERATIONCOUNT = 1000;
 
 	private byte[] fSalt;
@@ -42,21 +41,19 @@ public class CryptoCipher
 	private Cipher fEncryptCipher;
 	private Cipher fDecryptCipher;
 
-	private CryptoCipher(String encryptionPassword)
+	private CryptoCipher(String encryptionPassword) throws Exception
 	{
-		fSalt = DEFAULT_SALT;
-		fIterationCount = DEFAULT_ITERATIONCOUNT;
-		fEncryptionPassword = encryptionPassword.toCharArray();
+		this(DEFAULT_SALT, DEFAULT_ITERATIONCOUNT, encryptionPassword);
 	}
 
-	private CryptoCipher(String salt, int iterationCount, String encryptionPassword) throws DecoderException
+	private CryptoCipher(String salt, int iterationCount, String encryptionPassword) throws Exception
 	{
 		fSalt = Hex.decodeHex(salt.toCharArray());
 		fIterationCount = iterationCount;
 		fEncryptionPassword = encryptionPassword.toCharArray();
 	}
 
-	public CryptoCipher newInstance(String encryptionPassword)
+	public static CryptoCipher newInstance(String encryptionPassword) throws Exception
 	{
 		return new CryptoCipher(encryptionPassword);
 	}
@@ -112,22 +109,27 @@ public class CryptoCipher
 		return fDecryptCipher;
 	}
 
-	public String encrypt(String textToEncrypt) throws NoSuchAlgorithmException, InvalidKeySpecException,
-		NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException,
-		IllegalBlockSizeException, UnsupportedEncodingException
+	public String encrypt(String textToEncrypt) throws Exception
 	{
+		if(!StrUtil.hasLen(textToEncrypt))
+			return null;
+
 		byte[] cleartext = textToEncrypt.getBytes(CHAR_ENCODING);
 		byte[] ciphertext = getEncryptCipher().doFinal(cleartext);
-		char[] hexText = Hex.encodeHex(ciphertext);
 
-		return new String(hexText);
+		return (new BASE64Encoder()).encode(ciphertext);
+		// to return as Hex bytes in String format use:
+		//return new String(Hex.encodeHex(ciphertext));
 	}
 
-	public String decrypt(String encryptedText) throws DecoderException, NoSuchAlgorithmException,
-		InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, InvalidKeySpecException,
-		BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException
+	public String decrypt(String encryptedText) throws Exception
 	{
-		byte[] ciphertext = Hex.decodeHex(encryptedText.toCharArray());
+		if(!StrUtil.hasLen(encryptedText))
+			return null;
+
+		// if stored Hex bytes in String format use:
+		//byte[] ciphertext = Hex.decodeHex(encryptedText.toCharArray());
+		byte[] ciphertext = (new BASE64Decoder()).decodeBuffer(encryptedText);
 		byte[] cleartext = getDecryptCipher().doFinal(ciphertext);
 
 		return new String(cleartext, CHAR_ENCODING);
