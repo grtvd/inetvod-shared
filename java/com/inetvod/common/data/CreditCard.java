@@ -12,6 +12,7 @@ import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.StrUtil;
 import com.inetvod.common.core.Writeable;
 import com.inetvod.common.cryto.CryptoCipher;
+import com.inetvod.common.cryto.CryptoKeyStore;
 
 public class CreditCard implements Readable, Writeable
 {
@@ -45,7 +46,7 @@ public class CreditCard implements Readable, Writeable
 	private CryptoCipher getCryptoCipher() throws Exception
 	{
 		if(fCryptoCipher == null)
-			fCryptoCipher = CryptoCipher.newInstance(KeyPassword);	//TODO: get KeyPassword from CryptoKeyStore
+			fCryptoCipher = CryptoCipher.newInstance(CryptoKeyStore.getThe().getKeyPassword(KeyPassword));
 		return fCryptoCipher;
 	}
 
