@@ -44,4 +44,15 @@ public class StrUtil
 
 		return sb.toString().trim();
 	}
+
+	/**
+	 * Does the string only contain numbers?
+	 */
+	public static boolean isNumeric(String str)
+	{
+		if(!hasLen(str))
+			return false;
+
+		return str.matches("\\d*");
+	}
 }
