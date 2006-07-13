@@ -11,8 +11,8 @@ import com.inetvod.common.core.DataWriter;
 import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.StrUtil;
 import com.inetvod.common.core.Writeable;
-import com.inetvod.common.cryto.CryptoCipher;
-import com.inetvod.common.cryto.CryptoKeyStore;
+import com.inetvod.common.crypto.CryptoCipher;
+import com.inetvod.common.crypto.CryptoKeyStore;
 
 public class CreditCard implements Readable, Writeable
 {

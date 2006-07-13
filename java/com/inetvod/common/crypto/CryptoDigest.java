@@ -2,7 +2,7 @@
  * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
-package com.inetvod.common.cryto;
+package com.inetvod.common.crypto;
 
 
 import java.security.MessageDigest;
