@@ -1670,6 +1670,7 @@ AS
 		AvailableUntil
 	from RentedShow
 	where MemberID = @MemberID
+	order by RentedOn
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
