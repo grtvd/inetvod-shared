@@ -16,6 +16,7 @@ public class CategoryIDList extends ArrayList<CategoryID>
 	public void copy(CategoryIDList categoryIDList)
 	{
 		clear();
-		addAll(categoryIDList);
+		if(categoryIDList != null)
+			addAll(categoryIDList);
 	}
 }
