@@ -10,12 +10,13 @@ import java.util.Iterator;
 
 import com.inetvod.common.data.CategoryID;
 import com.inetvod.common.data.CategoryIDList;
+import com.inetvod.common.data.MemberID;
+import com.inetvod.common.data.ProviderConnectionID;
 import com.inetvod.common.data.ProviderID;
 import com.inetvod.common.data.ProviderIDList;
+import com.inetvod.common.data.ShowAvail;
 import com.inetvod.common.data.ShowID;
 import com.inetvod.common.data.ShowProviderID;
-import com.inetvod.common.data.ProviderConnectionID;
-import com.inetvod.common.data.ShowAvail;
 
 public class ShowProviderList extends ArrayList<ShowProvider>
 {
@@ -76,6 +77,15 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 		}
 
 		return showProviderList;
+	}
+
+	public static ShowProviderList findByRentedShowMemberID(MemberID memberID) throws Exception
+	{
+		DatabaseProcParam params[] = new DatabaseProcParam[1];
+
+		params[0] = new DatabaseProcParam(Types.VARCHAR, memberID.toString());
+
+		return ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByRentedShowMemberID", params);
 	}
 
 	public static void markUnavailByProviderConnectionID(ProviderConnectionID providerConnectionID) throws Exception
@@ -146,6 +156,29 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 	}
 
 	/**
+	 * Returns a sub-set of items from this list that have the specified ShowID and ProviderID
+	 * @param showID
+	 * @param providerID
+	 * @return sub-set of ShowProviderList
+	 */
+	public ShowProviderList findItemsByShowIDProviderID(ShowID showID, ProviderID providerID)
+	{
+		ShowProviderList showProviderList = new ShowProviderList();
+		ShowProvider showProvider;
+		Iterator iter = iterator();
+
+		while(iter.hasNext())
+		{
+			showProvider = (ShowProvider)iter.next();
+			if(showProvider.getShowID().equals(showID)
+					&& showProvider.getProviderID().equals(providerID))
+				showProviderList.add(showProvider);
+		}
+
+		return showProviderList;
+	}
+
+	/**
 	 * Returns a sub-set of items from this list that have the specified ProviderID
 	 * @param providerIDList
 	 * @return sub-set of ShowProviderList
@@ -199,6 +232,24 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 				if(mimeType.equals(showProvider.getShowFormatMime()))
 					showProviderList.add(showProvider);
 			}
+		}
+
+		return showProviderList;
+	}
+
+	/**
+	 * Returns a sub-set of items from this list whose ShowFormatMime is supported by the Player
+	 * @param player
+	 * @return sub-set of ShowProviderList
+	 */
+	public ShowProviderList findItemsByPlayerMimeType(Player player)
+	{
+		ShowProviderList showProviderList = new ShowProviderList();
+
+		for(ShowProvider showProvider : this)
+		{
+			if(player.supportsMimeType(showProvider.getShowFormatMime()))
+				showProviderList.add(showProvider);
 		}
 
 		return showProviderList;

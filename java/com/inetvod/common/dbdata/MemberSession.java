@@ -32,6 +32,7 @@ public class MemberSession extends DatabaseObject
 	public MemberSessionID getMemberSessionID() { return fMemberSessionID; }
 
 	public MemberID getMemberID() { return fMemberID; }
+	public PlayerID getPlayerID() { return fPlayerID; }
 
 	public Date getStartedOn() { return fStartedOn; }
 	public Date getExpiresAt() { return fExpiresAt; }

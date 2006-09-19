@@ -236,6 +236,10 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvid
 drop procedure [dbo].[ShowProvider_GetByCategoryID]
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByRentedShowMemberID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowProvider_GetByRentedShowMemberID]
+GO
+
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_MarkUnavailByProviderConnectionID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowProvider_MarkUnavailByProviderConnectionID]
 GO
@@ -1447,6 +1451,21 @@ GO
 
 --//////////////////////////////////////////////////////////////////////////////
 
+CREATE PROCEDURE dbo.ShowProvider_GetByRentedShowMemberID
+	@MemberID uniqueidentifier
+AS
+	select ShowProviderID, sp.ShowID, sp.ProviderID, sp.ProviderConnectionID,
+		ProviderShowID, sp.ShowURL, ShowFormatMime, sp.ShowCost_ShowCostType,
+		sp.ShowCost_Cost_CurrencyID, sp.ShowCost_Cost_Amount, sp.ShowCost_CostDisplay,
+		sp.ShowCost_RentalWindowDays, sp.ShowCost_RentalPeriodHours, ShowAvail
+	from ShowProvider sp
+	join RentedShow rs on (rs.ShowID = sp.ShowID) and (rs.ProviderID = sp.ProviderID)
+		and (rs.ProviderConnectionID = sp.ProviderConnectionID)
+	where rs.MemberID = @MemberID
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
 CREATE PROCEDURE dbo.ShowProvider_MarkUnavailByProviderConnectionID
 	@ProviderConnectionID uniqueidentifier
 AS
@@ -1743,6 +1762,7 @@ GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderIDProviderShowID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_Search] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByCategoryID] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ShowProvider_GetByRentedShowMemberID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_MarkUnavailByProviderConnectionID] TO [inetvod]
 
 GRANT EXECUTE ON [dbo].[ShowCategory_Insert] TO [inetvod]
