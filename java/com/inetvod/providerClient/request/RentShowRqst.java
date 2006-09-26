@@ -9,7 +9,6 @@ import com.inetvod.common.core.Writeable;
 import com.inetvod.common.data.ProviderShowID;
 import com.inetvod.common.data.ShowCost;
 import com.inetvod.common.data.ShowFormat;
-import com.inetvod.common.data.ShowID;
 import com.inetvod.providerClient.rqdata.Payment;
 
 public class RentShowRqst implements Writeable

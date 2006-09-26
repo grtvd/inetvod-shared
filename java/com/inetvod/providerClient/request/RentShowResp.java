@@ -8,7 +8,7 @@ import java.util.Date;
 
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.Readable;
-import com.inetvod.common.data.License;
+import com.inetvod.providerClient.rqdata.License;
 
 public class RentShowResp implements Readable
 {

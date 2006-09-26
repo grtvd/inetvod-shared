@@ -2,7 +2,7 @@
  * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
-package com.inetvod.common.data;
+package com.inetvod.providerClient.rqdata;
 
 import java.lang.reflect.Constructor;
 
@@ -10,6 +10,7 @@ import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DataWriter;
 import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.Writeable;
+import com.inetvod.common.data.LicenseMethod;
 
 public class License implements Readable, Writeable
 {

@@ -61,17 +61,24 @@ public class ProviderRequestor
 	}
 
 	public static ProviderRequestor newInstance(ProviderConnection providerConnection,
-		MemberID memberID) throws Exception
+		MemberProvider memberProvider) throws Exception
 	{
 		ProviderRequestor providerRequestor = newInstance(providerConnection);
 
-		MemberProvider memberProvider = MemberProvider.findByMemberIDProviderID(memberID,
-			providerConnection.getProviderID());
 		//TODO: need to decrypt Member's Provider credentials
 		if(memberProvider != null)
 			providerRequestor.setMemberUser(memberProvider.getEncryptedUserName(), memberProvider.getEncryptedPassword());
 
 		return providerRequestor;
+	}
+
+	public static ProviderRequestor newInstance(ProviderConnection providerConnection,
+		MemberID memberID) throws Exception
+	{
+		MemberProvider memberProvider = MemberProvider.findByMemberIDProviderID(memberID,
+			providerConnection.getProviderID());
+
+		return newInstance(providerConnection, memberProvider);
 	}
 
 	/* Implementation */
