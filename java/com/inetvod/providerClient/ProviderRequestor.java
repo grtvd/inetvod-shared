@@ -67,7 +67,7 @@ public class ProviderRequestor
 
 		//TODO: need to decrypt Member's Provider credentials
 		if(memberProvider != null)
-			providerRequestor.setMemberUser(memberProvider.getEncryptedUserName(), memberProvider.getEncryptedPassword());
+			providerRequestor.setMemberUser(memberProvider.getUserID(), memberProvider.getPassword());
 
 		return providerRequestor;
 	}

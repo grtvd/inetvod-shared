@@ -392,8 +392,8 @@ CREATE TABLE [dbo].[MemberProvider] (
 	[MemberProviderID] uniqueidentifier NOT NULL ROWGUIDCOL ,
 	[MemberID] uniqueidentifier NOT NULL ,
 	[ProviderID] [varchar] (64) NOT NULL ,
-	[EncryptedUserName] [varchar] (128) NULL ,
-	[EncryptedPassword] [varchar] (32) NULL
+	[UserID] [varchar] (128) NULL ,
+	[Password] [varchar] (32) NULL
 ) ON [PRIMARY]
 
 GO

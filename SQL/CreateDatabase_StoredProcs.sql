@@ -1024,7 +1024,7 @@ GO
 CREATE PROCEDURE dbo.MemberProvider_Get
 	@MemberProviderID uniqueidentifier
 AS
-	select MemberProviderID, MemberID, ProviderID, EncryptedUserName, EncryptedPassword
+	select MemberProviderID, MemberID, ProviderID, UserID, Password
 	from MemberProvider
 	where (MemberProviderID = @MemberProviderID)
 GO
@@ -1035,24 +1035,24 @@ CREATE PROCEDURE dbo.MemberProvider_Insert
 	@MemberProviderID uniqueidentifier,
 	@MemberID uniqueidentifier,
 	@ProviderID varchar(64),
-	@EncryptedUserName varchar(128),
-	@EncryptedPassword varchar(32)
+	@UserID varchar(128),
+	@Password varchar(32)
 AS
 	insert into MemberProvider
 	(
 		MemberProviderID,
 		MemberID,
 		ProviderID,
-		EncryptedUserName,
-		EncryptedPassword
+		UserID,
+		Password
 	)
 	values
 	(
 		@MemberProviderID,
 		@MemberID,
 		@ProviderID,
-		@EncryptedUserName,
-		@EncryptedPassword
+		@UserID,
+		@Password
 	)
 GO
 
@@ -1062,14 +1062,14 @@ CREATE PROCEDURE dbo.MemberProvider_Update
 	@MemberProviderID uniqueidentifier,
 	@MemberID uniqueidentifier,
 	@ProviderID varchar(64),
-	@EncryptedUserName varchar(128),
-	@EncryptedPassword varchar(32)
+	@UserID varchar(128),
+	@Password varchar(32)
 AS
 	update MemberProvider set
 		MemberID = @MemberID,
 		ProviderID = @ProviderID,
-		EncryptedUserName = @EncryptedUserName,
-		EncryptedPassword = @EncryptedPassword
+		UserID = @UserID,
+		Password = @Password
 	where MemberProviderID = @MemberProviderID
 GO
 
@@ -1079,7 +1079,7 @@ CREATE PROCEDURE dbo.MemberProvider_GetByMemberIDProviderID
 	@MemberID uniqueidentifier,
 	@ProviderID varchar(64)
 AS
-	select MemberProviderID, MemberID, ProviderID, EncryptedUserName, EncryptedPassword
+	select MemberProviderID, MemberID, ProviderID, UserID, Password
 	from MemberProvider
 	where (MemberID = @MemberID)
 	and (ProviderID = @ProviderID)
@@ -1090,7 +1090,7 @@ GO
 CREATE PROCEDURE dbo.MemberProvider_GetByMemberID
 	@MemberID uniqueidentifier
 AS
-	select MemberProviderID, MemberID, ProviderID, EncryptedUserName, EncryptedPassword
+	select MemberProviderID, MemberID, ProviderID, UserID, Password
 	from MemberProvider
 	where (MemberID = @MemberID)
 GO

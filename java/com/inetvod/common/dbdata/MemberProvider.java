@@ -9,6 +9,9 @@ import java.sql.Types;
 import com.inetvod.common.core.DataExists;
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DataWriter;
+import com.inetvod.common.core.StrUtil;
+import com.inetvod.common.crypto.CryptoCipher;
+import com.inetvod.common.crypto.CryptoKeyStore;
 import com.inetvod.common.data.MemberID;
 import com.inetvod.common.data.MemberProviderID;
 import com.inetvod.common.data.ProviderID;
@@ -16,31 +19,65 @@ import com.inetvod.common.data.ProviderID;
 public class MemberProvider extends DatabaseObject
 {
 	/* Constants */
-	public static final int EncryptedUserIDMaxLength = 128;
-	public static final int EncryptedPasswordMaxLength = 32;
+	public static final String KeyPassword = "com.inetvod.common.dbdata.MemberProvider";
+
+	public static final int UserIDMaxLength = 128;		// max encrypted length
+	public static final int PasswordMaxLength = 32;	// max encrypted length
 
 	/* Fields */
+	private CryptoCipher fCryptoCipher;		// don't access directory, use getCryptoCipher()
+
 	private MemberProviderID fMemberProviderID;
 	private MemberID fMemberID;
 	private ProviderID fProviderID;
-	private String fEncryptedUserName;	//TODO: rename to UserID
-	private String fEncryptedPassword;
+
+	private String fUserIDEncrypted;
+	private String fUserIDPlainText;
+	private String fPasswordEncrypted;
+	private String fPasswordPlainText;
 
 	private static DatabaseAdaptor<MemberProvider, MemberProviderList> fDatabaseAdaptor =
 		new DatabaseAdaptor<MemberProvider, MemberProviderList>(MemberProvider.class, MemberProviderList.class);
 	public static DatabaseAdaptor<MemberProvider, MemberProviderList> getDatabaseAdaptor() { return fDatabaseAdaptor; }
 
 	/* Getters and Setters */
+	private CryptoCipher getCryptoCipher() throws Exception
+	{
+		if(fCryptoCipher == null)
+			fCryptoCipher = CryptoCipher.newInstance(CryptoKeyStore.getThe().getKeyPassword(KeyPassword));
+		return fCryptoCipher;
+	}
+
 	public MemberProviderID getMemberProviderID() { return fMemberProviderID; }
 
 	public MemberID getMemberID() { return fMemberID; }
 	public ProviderID getProviderID() { return fProviderID; }
 
-	public String getEncryptedUserName() { return fEncryptedUserName; }
-	public void setEncryptedUserName(String encryptedUserName) { fEncryptedUserName = encryptedUserName; }
+	public String getUserID() throws Exception
+	{
+		if(StrUtil.hasLen(fUserIDEncrypted) && !StrUtil.hasLen(fUserIDPlainText))
+			fUserIDPlainText = getCryptoCipher().decrypt(fUserIDEncrypted);
+		return fUserIDPlainText;
+	}
 
-	public String getEncryptedPassword() { return fEncryptedPassword; }
-	public void setEncryptedPassword(String encryptedPassword) { fEncryptedPassword = encryptedPassword; }
+	public void setUserID(String userID) throws Exception
+	{
+		fUserIDPlainText = userID;
+		fUserIDEncrypted = getCryptoCipher().encrypt(fUserIDPlainText);
+	}
+
+	public String getPassword() throws Exception
+	{
+		if(StrUtil.hasLen(fPasswordEncrypted) && !StrUtil.hasLen(fPasswordPlainText))
+			fPasswordPlainText = getCryptoCipher().decrypt(fPasswordEncrypted);
+		return fPasswordPlainText;
+	}
+
+	public void setPassword(String password) throws Exception
+	{
+		fPasswordPlainText = password;
+		fPasswordEncrypted = getCryptoCipher().encrypt(fPasswordPlainText);
+	}
 
 	/* Construction */
 	protected MemberProvider(MemberID memberID, ProviderID providerID)
@@ -95,8 +132,8 @@ public class MemberProvider extends DatabaseObject
 			MemberProviderID.CtorString);
 		fMemberID = reader.readDataID("MemberID", MemberID.MaxLength, MemberID.CtorString);
 		fProviderID = reader.readDataID("ProviderID", ProviderID.MaxLength, ProviderID.CtorString);
-		fEncryptedUserName = reader.readString("EncryptedUserName", EncryptedUserIDMaxLength);
-		fEncryptedPassword = reader.readString("EncryptedPassword", EncryptedPasswordMaxLength);
+		fUserIDEncrypted = reader.readString("UserID", UserIDMaxLength);
+		fPasswordEncrypted = reader.readString("Password", PasswordMaxLength);
 	}
 
 	public void writeTo(DataWriter writer) throws Exception
@@ -104,8 +141,8 @@ public class MemberProvider extends DatabaseObject
 		writer.writeDataID("MemberProviderID", fMemberProviderID, MemberProviderID.MaxLength);
 		writer.writeDataID("MemberID", fMemberID, MemberID.MaxLength);
 		writer.writeDataID("ProviderID", fProviderID, ProviderID.MaxLength);
-		writer.writeString("EncryptedUserName", fEncryptedUserName, EncryptedUserIDMaxLength);
-		writer.writeString("EncryptedPassword", fEncryptedPassword, EncryptedPasswordMaxLength);
+		writer.writeString("UserID", fUserIDEncrypted, UserIDMaxLength);
+		writer.writeString("Password", fPasswordEncrypted, PasswordMaxLength);
 	}
 
 	public void update() throws Exception
