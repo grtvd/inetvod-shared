@@ -4,38 +4,48 @@
  */
 package com.inetvod.common.dbdata;
 
-import java.util.Date;
 import java.sql.Types;
+import java.util.Date;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import com.inetvod.common.core.CompUtil;
+import com.inetvod.common.core.DataExists;
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DataWriter;
-import com.inetvod.common.core.DataExists;
-import com.inetvod.common.core.CompUtil;
+import com.inetvod.common.core.StrUtil;
+import com.inetvod.common.crypto.CryptoCipher;
+import com.inetvod.common.crypto.CryptoKeyStore;
 import com.inetvod.common.data.MemberID;
 
 public class MemberLogon extends DatabaseObject
 {
 	/* Constants */
+	public static final String KeyPassword = "com.inetvod.common.dbdata.MemberLogon";
+
 	private static final int EmailMaxLength = 64;
 	private static final int PasswordMaxLength = 32;
 	private static final int PINMaxLength = 32;
 
-	private static final int SecretQuestionMaxLength = 64;
-	private static final int SecretAnswerMaxLength = 32;
+	private static final int SecretQuestionMaxLength = 128;		// max encrypted length
+	private static final int SecretAnswerMaxLength = 64;		// max encrypted length
 	private static final int TermsAcceptedVersionMaxLength = 16;
 
 	/* Fields */
+	private CryptoCipher fCryptoCipher;		// don't access directory, use getCryptoCipher()
+
 	private MemberID fMemberID;
 	private String fEmail;
 	private String fPassword;
 	private int fLogonID;
 	private String fPIN;
 
-	private String fSecretQuestion;
-	private String fSecretAnswer;
+	private String fSecretQuestionEncrypted;
+	private String fSecretQuestionPlainText;
+	private String fSecretAnswerEncrypted;
+	private String fSecretAnswerPlainText;
+
 	private Date fTermsAcceptedOn;
 	private String fTermsAcceptedVersion;
 	private Date fLogonFailedAt;
@@ -47,6 +57,13 @@ public class MemberLogon extends DatabaseObject
 	public static DatabaseAdaptor<MemberLogon, MemberLogonList> getDatabaseAdaptor() { return fDatabaseAdaptor; }
 
 	/* Getters and Setters */
+	private CryptoCipher getCryptoCipher() throws Exception
+	{
+		if(fCryptoCipher == null)
+			fCryptoCipher = CryptoCipher.newInstance(CryptoKeyStore.getThe().getKeyPassword(KeyPassword));
+		return fCryptoCipher;
+	}
+
 	public MemberID getMemberID() { return fMemberID; }
 
 	public String getEmail() { return fEmail; }
@@ -65,11 +82,31 @@ public class MemberLogon extends DatabaseObject
 	public String getPIN() { return fPIN; }
 	public void setPIN(String PIN) { fPIN = PIN; }
 
-	public String getSecretQuestion() { return fSecretQuestion; }
-	public void setSecretQuestion(String secretQuestion) { fSecretQuestion = secretQuestion; }
+	public String getSecretQuestion() throws Exception
+	{
+		if(StrUtil.hasLen(fSecretQuestionEncrypted) && !StrUtil.hasLen(fSecretQuestionPlainText))
+			fSecretQuestionPlainText = getCryptoCipher().decrypt(fSecretQuestionEncrypted);
+		return fSecretQuestionPlainText;
+	}
 
-	public String getSecretAnswer() { return fSecretAnswer; }
-	public void setSecretAnswer(String secretAnswer) { fSecretAnswer = secretAnswer; }
+	public void setSecretQuestion(String secretQuestion) throws Exception
+	{
+		fSecretQuestionPlainText = secretQuestion;
+		fSecretQuestionEncrypted = getCryptoCipher().encrypt(fSecretQuestionPlainText);
+	}
+
+	public String getSecretAnswer() throws Exception
+	{
+		if(StrUtil.hasLen(fSecretAnswerEncrypted) && !StrUtil.hasLen(fSecretAnswerPlainText))
+			fSecretAnswerPlainText = getCryptoCipher().decrypt(fSecretAnswerEncrypted);
+		return fSecretAnswerPlainText;
+	}
+
+	public void setSecretAnswer(String secretAnswer) throws Exception
+	{
+		fSecretAnswerPlainText = secretAnswer;
+		fSecretAnswerEncrypted = getCryptoCipher().encrypt(fSecretAnswerPlainText);
+	}
 
 	public Date getTermsAcceptedOn() { return fTermsAcceptedOn; }
 	public void setTermsAcceptedOn(Date termsAcceptedOn) { fTermsAcceptedOn = termsAcceptedOn; }
@@ -166,8 +203,8 @@ public class MemberLogon extends DatabaseObject
 		fLogonID = reader.readIntValue("LogonID");
 		fPIN = reader.readString("PIN", PINMaxLength);
 
-		fSecretQuestion = reader.readString("SecretQuestion", SecretQuestionMaxLength);
-		fSecretAnswer = reader.readString("SecretAnswer", SecretAnswerMaxLength);
+		fSecretQuestionEncrypted = reader.readString("SecretQuestion", SecretQuestionMaxLength);
+		fSecretAnswerEncrypted = reader.readString("SecretAnswer", SecretAnswerMaxLength);
 		fTermsAcceptedOn = reader.readDateTime("TermsAcceptedOn");
 		fTermsAcceptedVersion = reader.readString("TermsAcceptedVersion", TermsAcceptedVersionMaxLength);
 		fLogonFailedAt = reader.readDateTime("LogonFailedAt");
@@ -183,8 +220,8 @@ public class MemberLogon extends DatabaseObject
 		writer.writeIntValue("LogonID", fLogonID);
 		writer.writeString("PIN", fPIN, PINMaxLength);
 
-		writer.writeString("SecretQuestion", fSecretQuestion, SecretQuestionMaxLength);
-		writer.writeString("SecretAnswer", fSecretAnswer, SecretAnswerMaxLength);
+		writer.writeString("SecretQuestion", fSecretQuestionEncrypted, SecretQuestionMaxLength);
+		writer.writeString("SecretAnswer", fSecretAnswerEncrypted, SecretAnswerMaxLength);
 		writer.writeDateTime("TermsAcceptedOn", fTermsAcceptedOn);
 		writer.writeString("TermsAcceptedVersion", fTermsAcceptedVersion, TermsAcceptedVersionMaxLength);
 		writer.writeDateTime("LogonFailedAt", fLogonFailedAt);

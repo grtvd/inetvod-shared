@@ -244,8 +244,8 @@ CREATE TABLE [dbo].[MemberLogon] (
 	[LogonID] [int] NOT NULL IDENTITY (100000200, 1),
 	[PIN] [varchar] (32) NULL,
 
-	[SecretQuestion] [varchar] (64) NOT NULL,
-	[SecretAnswer] [varchar] (32) NOT NULL,
+	[SecretQuestion] [varchar] (128) NOT NULL,
+	[SecretAnswer] [varchar] (64) NOT NULL,
 	[TermsAcceptedOn] [datetime] NOT NULL,
 	[TermsAcceptedVersion] [varchar] (16) NOT NULL,
 	[LogonFailedAt] [datetime] NULL,

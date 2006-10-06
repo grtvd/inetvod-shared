@@ -546,8 +546,8 @@ CREATE PROCEDURE dbo.MemberLogon_Insert
 	@LogonID int,
 	@PIN varchar(32),
 
-	@SecretQuestion varchar(64),
-	@SecretAnswer varchar(32),
+	@SecretQuestion varchar(128),
+	@SecretAnswer varchar(64),
 	@TermsAcceptedOn datetime,
 	@TermsAcceptedVersion varchar(16),
 	@LogonFailedAt datetime,
@@ -599,8 +599,8 @@ CREATE PROCEDURE dbo.MemberLogon_Update
 	@LogonID int,
 	@PIN varchar(32),
 
-	@SecretQuestion varchar(64),
-	@SecretAnswer varchar(32),
+	@SecretQuestion varchar(128),
+	@SecretAnswer varchar(64),
 	@TermsAcceptedOn datetime,
 	@TermsAcceptedVersion varchar(16),
 	@LogonFailedAt datetime,
