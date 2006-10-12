@@ -48,14 +48,14 @@ public class ProviderRequestor
 	public ProviderStatusCode getStatusCode() { return fStatusCode; }
 
 	/* Construction */
-	private ProviderRequestor(ProviderConnection providerConnection)
+	private ProviderRequestor(ProviderConnection providerConnection) throws Exception
 	{
 		fProviderRequestURL = providerConnection.getConnectionURL();
 		fProviderAdminUserID = providerConnection.getAdminUserID();
 		fProviderAdminPassword = providerConnection.getAdminPassword();
 	}
 
-	public static ProviderRequestor newInstance(ProviderConnection providerConnection)
+	public static ProviderRequestor newInstance(ProviderConnection providerConnection) throws Exception
 	{
 		return new ProviderRequestor(providerConnection);
 	}
@@ -65,7 +65,6 @@ public class ProviderRequestor
 	{
 		ProviderRequestor providerRequestor = newInstance(providerConnection);
 
-		//TODO: need to decrypt Member's Provider credentials
 		if(memberProvider != null)
 			providerRequestor.setMemberUser(memberProvider.getUserID(), memberProvider.getPassword());
 
