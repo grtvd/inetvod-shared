@@ -4,9 +4,6 @@
  */
 package com.inetvod.common.dbdata;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -18,13 +15,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.HashMap;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
-import java.util.Properties;
+
+import org.apache.commons.dbcp.BasicDataSource;
 
 import com.inetvod.common.core.DataExists;
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.Logger;
+import com.inetvod.common.core.PropertyReader;
+import com.inetvod.common.core.StrUtil;
 
 public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 {
@@ -33,6 +32,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 	private static String fSchemaName;
 	private static String fLogonUserID;
 	private static String fLogonPassword;
+	private static BasicDataSource fBasicDataSource;
 
 	//private static final int MetaDataTableColumnName = 4;
 	//private static final int MetaDataTableColumnSqlType = 5;
@@ -93,25 +93,57 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 		fDeleteStoredProcedure = buildProcName(fObjectName + DeleteProcedureSuffix, 1);
 	}
 
-	public static void setDBConnectFile(String dbConnectFilePath) throws IOException, InvalidPropertiesFormatException
+	public static void setDBConnectFile(String dbConnectFilePath) throws Exception
 	{
-		//noinspection MismatchedQueryAndUpdateOfCollection
-		Properties properties = new Properties();
-		FileInputStream propertiesFile = new FileInputStream(new File(dbConnectFilePath));
-		try
-		{
-			properties.loadFromXML(propertiesFile);
-		}
-		finally
-		{
-			propertiesFile.close();
-		}
+		PropertyReader propertyReader = PropertyReader.newInstance(dbConnectFilePath);
 
-		fServer = properties.getProperty("Server");
-		fDatabaseName = properties.getProperty("DatabaseName");
-		fSchemaName = properties.getProperty("SchemaName");
-		fLogonUserID = properties.getProperty("LogonUserID");
-		fLogonPassword = properties.getProperty("LogonPassword");
+		fServer = propertyReader.readString("Server");
+		fDatabaseName = propertyReader.readString("DatabaseName");
+		fSchemaName = propertyReader.readString("SchemaName");
+		fLogonUserID = propertyReader.readString("LogonUserID");
+		fLogonPassword = propertyReader.readString("LogonPassword");
+
+		Boolean usePool = propertyReader.readBoolean("UsePool");
+
+		if((usePool != null) && usePool)
+		{
+			Logger.logInfo(DatabaseAdaptor.class, "setDBConnectFile", "Using connection pool");
+
+			fBasicDataSource = new BasicDataSource();
+			fBasicDataSource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			fBasicDataSource.setUsername(fLogonUserID);
+			fBasicDataSource.setPassword(fLogonPassword);
+			fBasicDataSource.setUrl("jdbc:sqlserver://" + fServer + ";DatabaseName=" + fDatabaseName);
+
+			Integer valueInt;
+			String valueStr;
+
+			valueInt = propertyReader.readInt("MinIdle");
+			if(valueInt != null)
+				fBasicDataSource.setMaxIdle(valueInt);
+
+			valueInt = propertyReader.readInt("MaxIdle");
+			if(valueInt != null)
+				fBasicDataSource.setMaxIdle(valueInt);
+
+			valueInt = propertyReader.readInt("MaxActive");
+			if(valueInt != null)
+				fBasicDataSource.setMaxActive(valueInt);
+
+			valueStr = propertyReader.readString("ValidationQuery");
+			if(StrUtil.hasLen(valueStr))
+				fBasicDataSource.setValidationQuery(valueStr);
+
+			try
+			{
+				fBasicDataSource.getConnection().close();
+			}
+			catch(SQLException e)
+			{
+				fBasicDataSource = null;
+				Logger.logErr(DatabaseAdaptor.class, "setDBConnectFile", "Failed using connection pool", e);
+			}
+		}
 	}
 
 	private boolean initialize()
@@ -120,9 +152,16 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 		{
 			Connection connection = getConnection();
 
-			initFields(connection);
-			confirmProcedures(connection);
-			return true;
+			try
+			{
+				initFields(connection);
+				confirmProcedures(connection);
+				return true;
+			}
+			finally
+			{
+				connection.close();
+			}
 		}
 		catch(Exception e)
 		{
@@ -273,6 +312,9 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 
 	private Connection getConnection() throws Exception
 	{
+		if(fBasicDataSource != null)
+			return fBasicDataSource.getConnection();
+
 		if((fServer == null) || (fDatabaseName == null) || (fSchemaName == null) || (fLogonUserID == null))
 			throw new Exception("DB connection not set");
 
