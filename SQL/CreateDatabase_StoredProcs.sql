@@ -1189,7 +1189,7 @@ AS
 		Description, RunningMins, PictureURL, RatingID, IsAdult
 	from Show
 	where Name like '%' + isnull(@PartialName, '') + '%'
-	order by Name
+	order by Name, ReleasedOn desc, ReleasedYear desc
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -1202,7 +1202,7 @@ AS
 	from Show s
 	join ShowProvider sp on sp.ShowID = s.ShowID
 	where sp.ProviderID = @ProviderID
-	order by s.Name
+	order by s.Name, ReleasedOn desc, ReleasedYear desc
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -1215,7 +1215,7 @@ AS
 	from Show s
 	join ShowCategory sc on sc.ShowID = s.ShowID
 	where sc.CategoryID = @CategoryID
-	order by s.Name
+	order by s.Name, ReleasedOn desc, ReleasedYear desc
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
