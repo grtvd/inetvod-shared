@@ -201,9 +201,9 @@ public abstract class ServletFulfiller
 			timer.stop();
 			double milliSecs = timer.getDuration();
 
-			StringBuffer sb = new StringBuffer();
 			String baseFileName = String.format ("%s-%d", (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSSS")).format(
-				new Date(), sb, new FieldPosition(DateFormat.YEAR_FIELD)).toString(), Thread.currentThread().getId());
+				new Date(), new StringBuffer(), new FieldPosition(DateFormat.YEAR_FIELD)).toString(),
+				Thread.currentThread().getId());
 
 			if(requestStream != null)
 				Logger.logFile(requestStream, "request", baseFileName + "_Rqst" + requestFileExt);
@@ -211,7 +211,7 @@ public abstract class ServletFulfiller
 			if(responseStream != null)
 				Logger.logFile(responseStream, "request", baseFileName + "_Resp" + requestFileExt);
 
-			sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append(String.format("result:%s; ", (success ? "Success" : "FAILED")));
 			if((msg != null) && (msg.length() > 0))
 				sb.append(String.format("msg:%s; ", msg));

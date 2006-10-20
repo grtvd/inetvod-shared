@@ -46,7 +46,7 @@ public class DatabaseFieldWriter extends DataWriter
 		if(fFieldNamePrefixList.size() == 0)
 			return fieldName;
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for(String namePrefix : fFieldNamePrefixList)
 			sb.append(namePrefix);
 		sb.append(fieldName);
