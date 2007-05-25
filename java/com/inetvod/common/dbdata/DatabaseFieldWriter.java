@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -98,6 +98,21 @@ public class DatabaseFieldWriter extends DataWriter
 		int fieldPosition = getField(buildFullFieldName(fieldName)).Position;
 		if (data != null)
 			fStatement.setInt(fieldPosition, data);
+		else
+			fStatement.setNull(fieldPosition, Types.INTEGER);
+	}
+
+	/**
+	 * Write a Long
+	 *
+	 * @param fieldName
+	 * @param data
+	 */
+	public void writeLong(String fieldName, Long data) throws Exception
+	{
+		int fieldPosition = getField(buildFullFieldName(fieldName)).Position;
+		if (data != null)
+			fStatement.setLong(fieldPosition, data);
 		else
 			fStatement.setNull(fieldPosition, Types.INTEGER);
 	}

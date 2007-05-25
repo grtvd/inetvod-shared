@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.core;
@@ -18,6 +18,7 @@ public class BinaryDataWriter extends DataWriter
 	protected static final byte UndefinedByteValue = (byte)255;
 	protected static final short UndefinedShortValue = Short.MIN_VALUE;
 	protected static final int UndefinedIntValue = Integer.MIN_VALUE;
+	protected static final long UndefinedLongValue = Long.MIN_VALUE;
 	protected static final float UndefinedFloatValue = Float.MIN_VALUE;	//TODO: this is not correct
 	protected static final double UndefinedDoubleValue = Float.MIN_VALUE;
 	protected static final byte UndefinedBooleanValue = (byte)255;
@@ -65,6 +66,17 @@ public class BinaryDataWriter extends DataWriter
 	public void writeInt(String fieldName, Integer data) throws Exception
 	{
 		fDataOutputStream.writeInt(data != null ? (data) : UndefinedIntValue);
+	}
+
+	/**
+	 * Write a Long
+	 *
+	 * @param fieldName
+	 * @param data
+	 */
+	public void writeLong(String fieldName, Long data) throws Exception
+	{
+		fDataOutputStream.writeLong(data != null ? (data) : UndefinedIntValue);
 	}
 
 	/**

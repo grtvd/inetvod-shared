@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.core;
@@ -59,6 +59,13 @@ public abstract class DataReader
 
 		return value;
 	}
+
+	/**
+	 * Read a Long.
+	 * @param fieldName
+	 * @return may return null
+	 */
+	public abstract Long readLong(String fieldName) throws Exception;
 
 	/**
 	 * Read a Float.

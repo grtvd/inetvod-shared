@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -88,7 +88,7 @@ public class DatabaseFieldReader extends DataReader
 	}
 
 	/**
-	 * Read a Integer.
+	 * Read an Integer.
 	 *
 	 * @param fieldName
 	 * @return may return null
@@ -96,6 +96,22 @@ public class DatabaseFieldReader extends DataReader
 	public Integer readInt(String fieldName) throws Exception
 	{
 		int value = fResultSet.getInt(buildFullFieldName(fieldName));
+
+		if(fResultSet.wasNull())
+			return null;
+
+		return value;
+	}
+
+	/**
+	 * Read a Long.
+	 *
+	 * @param fieldName
+	 * @return may return null
+	 */
+	public Long readLong(String fieldName) throws Exception
+	{
+		long value = fResultSet.getLong(buildFullFieldName(fieldName));
 
 		if(fResultSet.wasNull())
 			return null;

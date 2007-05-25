@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.core;
@@ -56,12 +56,23 @@ public class BinaryDataReader extends DataReader
 	}
 
 	/**
-	 * Read a Integer.
+	 * Read an Integer.
 	 *
 	 * @param fieldName
 	 * @return may return null
 	 */
 	public Integer readInt(String fieldName) throws Exception
+	{
+		throw new UnsupportedOperationException("need to implement");	//TODO: need to implement
+	}
+
+	/**
+	 * Read a Long.
+	 *
+	 * @param fieldName
+	 * @return may return null
+	 */
+	public Long readLong(String fieldName) throws Exception
 	{
 		throw new UnsupportedOperationException("need to implement");	//TODO: need to implement
 	}

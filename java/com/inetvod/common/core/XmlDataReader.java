@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.core;
@@ -168,7 +168,7 @@ public class XmlDataReader extends DataReader
 	}
 
 	/**
-	 * Read a Integer.
+	 * Read an Integer.
 	 * @param fieldName
 	 * @return may return null
 	 */
@@ -180,6 +180,21 @@ public class XmlDataReader extends DataReader
 			return null;
 
 		return Integer.decode(data);
+	}
+
+	/**
+	 * Read a Long.
+	 * @param fieldName
+	 * @return may return null
+	 */
+	public Long readLong(String fieldName) throws Exception
+	{
+		String data = readString(fieldName);
+
+		if(data == null)
+			return null;
+
+		return Long.decode(data);
 	}
 
 	/**
