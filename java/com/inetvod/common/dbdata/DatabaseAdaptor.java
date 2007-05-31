@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -63,7 +63,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 	private String fUpdateStoredProcedure;
 	private String fDeleteStoredProcedure;
 
-	protected DatabaseAdaptor(Class<T> objectType, Class<L> listType)
+	public DatabaseAdaptor(Class<T> objectType, Class<L> listType)
 	{
 		fObjectType = objectType;
 		fListType = listType;
@@ -507,6 +507,34 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 			setProcParams(statement, params);
 
 			return statement.executeUpdate();	// returns number of records effected
+		}
+		finally
+		{
+			if(statement != null)
+				statement.close();
+			if(connection != null)
+				connection.close();
+		}
+	}
+
+	public Object executeProcWithReturn(String prodecure, DatabaseProcParam[] params) throws Exception
+	{
+		Connection connection = null;
+		CallableStatement statement = null;
+		ResultSet resultSet;
+
+		try
+		{
+			connection = getConnection();
+
+			statement = connection.prepareCall(buildProcName(prodecure, (params == null) ? 0 : params.length));
+			setProcParams(statement, params);
+
+			resultSet = statement.executeQuery();
+			if(!resultSet.next())
+				throw new SearchException("No Result Returned");
+
+			return resultSet.getObject(1);
 		}
 		finally
 		{
