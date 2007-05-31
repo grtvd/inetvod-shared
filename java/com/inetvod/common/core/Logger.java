@@ -1,11 +1,10 @@
 /**
- * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2005-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.core;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 
@@ -68,6 +67,11 @@ public class Logger
 		logWarn(objClass.getClass(), method, e);
 	}
 
+	public static void logErr(Class objClass, String method, String message)
+	{
+		getLogger(objClass).error(String.format("%s|%s", method, ((message != null) ? message : "")));
+	}
+
 	public static void logErr(Class objClass, String method, String message, Exception e)
 	{
 		getLogger(objClass).error(String.format("%s|%s", method, ((message != null) ? message : "")), e);
@@ -76,6 +80,11 @@ public class Logger
 	public static void logErr(Class objClass, String method, Exception e)
 	{
 		getLogger(objClass).error(String.format("%s|", method), e);
+	}
+
+	public static void logErr(Object objClass, String method, String message)
+	{
+		logErr(objClass.getClass(), method, message);
 	}
 
 	public static void logErr(Object objClass, String method, String message, Exception e)
@@ -88,7 +97,7 @@ public class Logger
 		logErr(objClass.getClass(), method, e);
 	}
 
-	public static void logFile(InputStream inputStream, String subDir, FileExtension fileExtension) throws IOException
+	public static void logFile(InputStream inputStream, String subDir, FileExtension fileExtension)
 	{
 		try
 		{
@@ -103,7 +112,7 @@ public class Logger
 		}
 	}
 
-	public static void logFile(InputStream inputStream, String subDir, String fileName) throws IOException
+	public static void logFile(InputStream inputStream, String subDir, String fileName)
 	{
 		try
 		{
