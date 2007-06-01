@@ -6,6 +6,8 @@ package com.inetvod.common.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,6 +44,19 @@ public class StreamUtil
 		try
 		{
 			streamCopy (stream, fileStream, stream.markSupported());
+		}
+		finally
+		{
+			fileStream.close();
+		}
+	}
+
+	public static void streamFile(File file, OutputStream stream) throws Exception
+	{
+		FileInputStream fileStream = new FileInputStream(file);
+		try
+		{
+			streamCopy (fileStream, stream, false);
 		}
 		finally
 		{
