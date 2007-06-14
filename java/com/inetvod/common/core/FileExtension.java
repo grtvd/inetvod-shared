@@ -20,6 +20,7 @@ public class FileExtension
 	public static final FileExtension rm = new FileExtension(".rm");
 	public static final FileExtension mov = new FileExtension(".mov");
 	public static final FileExtension mp4 = new FileExtension(".mp4");
+	public static final FileExtension m4v = new FileExtension(".m4v");
 
 	/* Fields */
 	private static HashMap<String, FileExtension> fAllValues;
