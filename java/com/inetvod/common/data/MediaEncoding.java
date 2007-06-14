@@ -1,44 +1,41 @@
 /**
- * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2005-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.data;
 
 import java.util.HashMap;
 
-public class MediaEncoding
+public enum MediaEncoding
 {
+	WMV9("WMV9"),
+	RV9("RV9"),
+	SVQ3("SVQ3"),
+	DivX5("DivX5"),
+	Xvid("Xvid"),
+	MP3("MP3");
+
+	/* Constants */
 	public static final int MaxLength = 32;
 
-	public static final MediaEncoding WMV9 = new MediaEncoding("WMV9");
-	public static final MediaEncoding RV9 = new MediaEncoding("RV9");
-	public static final MediaEncoding SVQ3 = new MediaEncoding("SVQ3");
-	public static final MediaEncoding DivX5 = new MediaEncoding("DivX5");
-	public static final MediaEncoding Xvid = new MediaEncoding("Xvid");
-	public static final MediaEncoding MP3 = new MediaEncoding("MP3");
-	private static HashMap<String, MediaEncoding> fAllValues;
+	/* Fields */
+	private static HashMap<String, MediaEncoding> fAllValues = new HashMap<String, MediaEncoding>();
 
 	private final String fValue;
 
+	static
+	{
+		for(MediaEncoding value : values())
+			fAllValues.put(value.toString(), value);
+	}
+
+	/* Getters and Setters */
+	public String toString() { return fValue; }
+
+	/* Construction */
 	private MediaEncoding(String name)
 	{
-		if(fAllValues == null)
-			fAllValues = new HashMap<String, MediaEncoding>();
 		fValue = name;
-		fAllValues.put(name, this);
-	}
-
-	public String toString()
-	{
-		return fValue;
-	}
-
-	public boolean equals(Object obj)
-	{
-		if(!(obj instanceof MediaEncoding))
-			return false;
-
-		return fValue.equals(((MediaEncoding)obj).fValue);
 	}
 
 	public static MediaEncoding convertFromString(String value)
