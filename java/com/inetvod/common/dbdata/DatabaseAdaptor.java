@@ -17,13 +17,12 @@ import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.dbcp.BasicDataSource;
-
 import com.inetvod.common.core.DataExists;
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.Logger;
 import com.inetvod.common.core.PropertyReader;
 import com.inetvod.common.core.StrUtil;
+import org.apache.commons.dbcp.BasicDataSource;
 
 public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 {
@@ -180,7 +179,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 			getFieldsFromUpdateProcedures(connection, false);
 
 		if(fFields.size() == 0)
-			Logger.logWarn(this, "initFields", String.format("No write procedures found for table(%s)", fObjectName));	//TODO: convert to logDebug
+			Logger.logInfo(this, "initFields", String.format("No write procedures found for table(%s)", fObjectName));
 	}
 
 	private void getFieldsFromUpdateProcedures(Connection connection, boolean useInsert)
@@ -197,7 +196,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 			if(fFields.size() > 0)
 				throw new Exception(String.format("Table (%s) already initialized", fObjectName));
 
-			//Logger.logInfo(this, "getFieldsFromUpdateProcedures", String.format("Confirming table (%s) via (%s)", fObjectName, procedureName));	//TODO: convert to logDebug
+			//Logger.logInfo(this, "getFieldsFromUpdateProcedures", String.format("Confirming table (%s) via (%s)", fObjectName, procedureName));
 
 			fieldPos = 0;
 			resultSet = connection.getMetaData().getProcedureColumns(fDatabaseName, fSchemaName, procedureName, null);
@@ -234,7 +233,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 			if(fFields.size() == 0)
 				return;
 
-			//Logger.logInfo(this, "confirmProcedures", String.format("Confirming table(%s)", fObjectName));	//TODO: convert to logDebug
+			//Logger.logInfo(this, "confirmProcedures", String.format("Confirming table(%s)", fObjectName));
 
 			resultSet = connection.getMetaData().getProcedureColumns(fDatabaseName, fSchemaName, procedureNameMatch,
 				"@RETURN_VALUE");
@@ -246,7 +245,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 					procedureName = procedureName.split(";")[0];
 				if(procedureName.startsWith(procedureNameMatch))
 				{
-					//Logger.logInfo(this, "confirmProcedures", String.format("Confirming procedure(%s)", procedureName));	//TODO: convert to logDebug
+					//Logger.logInfo(this, "confirmProcedures", String.format("Confirming procedure(%s)", procedureName));
 
 					allFields = (procedureName.endsWith(InsertProcedureSuffix)
 						|| procedureName.endsWith(UpdateProcedureSuffix));
@@ -310,7 +309,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 		}
 	}
 
-	private Connection getConnection() throws Exception
+	private static Connection getConnection() throws Exception
 	{
 		if(fBasicDataSource != null)
 			return fBasicDataSource.getConnection();
@@ -428,7 +427,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 		return newList;
 	}
 
-	protected String buildProcName(String procedure, int numParams)
+	private static String buildProcName(String procedure, int numParams)
 	{
 		String fields = "";
 
@@ -443,7 +442,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 		return "{call " + procedure + "(" + fields +")}";
 	}
 
-	protected void setProcParams(PreparedStatement statement, DatabaseProcParam[] params) throws SQLException
+	private static void setProcParams(PreparedStatement statement, DatabaseProcParam[] params) throws SQLException
 	{
 		DatabaseProcParam param;
 
@@ -469,7 +468,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 		}
 	}
 
-	protected T readOne(ResultSet resultSet, DataExists exists, boolean maxOne) throws SQLException, SearchException
+	private T readOne(ResultSet resultSet, DataExists exists, boolean maxOne) throws SQLException, SearchException
 	{
 		if(!resultSet.next())
 		{
