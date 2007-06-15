@@ -16,6 +16,7 @@ public class ShowRentalList extends ArrayList<ShowRental>
 	public void copy(ShowRentalList showRentalList)
 	{
 		clear();
-		addAll(showRentalList);
+		if(showRentalList != null)
+			addAll(showRentalList);
 	}
 }
