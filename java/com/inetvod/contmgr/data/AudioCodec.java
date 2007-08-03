@@ -8,20 +8,17 @@ import java.util.HashMap;
 
 import com.inetvod.common.core.FileExtension;
 
-public enum VideoCodec
+public enum AudioCodec
 {
 	/* Constants */
-	WMV1("WMV1", FileExtension.wmv),
-	WMV2("WMV2", FileExtension.wmv),
-	WMV3("WMV3", FileExtension.wmv),
-	AVC1("avc1", FileExtension.mp4),
-	MP4V("mp4v", FileExtension.mp4);
+	MP3("mpga", FileExtension.mp3),
+	M4A("mp4a", FileExtension.m4a);
 
 	/* Fields */
 	private final String fValue;
 	private final FileExtension fDefaultFileExtension;
 
-	private static HashMap<String, VideoCodec> fAllValues = new HashMap<String, VideoCodec>();
+	private static HashMap<String, AudioCodec> fAllValues = new HashMap<String, AudioCodec>();
 
 	/* Getters and Setters */
 	public String toString() { return fValue; }
@@ -30,30 +27,30 @@ public enum VideoCodec
 	/* Construction */
 	static
 	{
-		for(VideoCodec value : values())
+		for(AudioCodec value : values())
 			fAllValues.put(value.toString(), value);
 	}
 
-	private VideoCodec(String value, FileExtension defaultFileExtension)
+	private AudioCodec(String value, FileExtension defaultFileExtension)
 	{
 		fValue = value;
 		fDefaultFileExtension = defaultFileExtension;
 	}
 
 	/* Implementation */
-	public static VideoCodec convertFromString(String value)
+	public static AudioCodec convertFromString(String value)
 	{
 		if((value == null) || (value.length() == 0))
 			return null;
 
-		VideoCodec videoCodec = fAllValues.get(value);
-		if(videoCodec != null)
-			return videoCodec;
+		AudioCodec audioCodec = fAllValues.get(value);
+		if(audioCodec != null)
+			return audioCodec;
 
 		throw new IllegalArgumentException("bad value(" + value + ")");
 	}
 
-	public static String convertToString(VideoCodec value)
+	public static String convertToString(AudioCodec value)
 	{
 		if(value == null)
 			return null;
