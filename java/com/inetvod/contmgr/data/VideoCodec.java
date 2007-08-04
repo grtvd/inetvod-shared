@@ -15,7 +15,8 @@ public enum VideoCodec
 	WMV2("WMV2", FileExtension.wmv),
 	WMV3("WMV3", FileExtension.wmv),
 	AVC1("avc1", FileExtension.mp4),
-	MP4V("mp4v", FileExtension.mp4);
+	MP4V("mp4v", FileExtension.mp4),
+	SVQ3("SVQ3", FileExtension.mov);
 
 	/* Fields */
 	private final String fValue;
