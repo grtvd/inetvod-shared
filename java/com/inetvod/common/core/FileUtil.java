@@ -15,8 +15,11 @@ public class FileUtil
 	/* Implementation */
 	public static String buildFileName(String fileNameBase, FileExtension fileExtension)
 	{
-		if(!StrUtil.hasLen(fileNameBase) || (fileExtension == null))
-			throw new IllegalArgumentException(String.format("fileNameBase or fileExtension is null"));
+		if(!StrUtil.hasLen(fileNameBase))
+			throw new IllegalArgumentException(String.format("fileNameBase is null"));
+
+		if(fileExtension == null)
+			return fileNameBase;
 
 		return fileNameBase.concat(fileExtension.toString());
 	}
@@ -28,6 +31,9 @@ public class FileUtil
 
 		int dotPos = url.lastIndexOf(".");
 		if(dotPos < 0)
+			return null;
+
+		if(url.lastIndexOf("/") >= dotPos)
 			return null;
 
 		int paramPos = url.lastIndexOf("?");

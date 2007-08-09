@@ -24,6 +24,8 @@ public class FileExtension
 	public static final FileExtension m4v = new FileExtension(".m4v");
 	public static final FileExtension mp3 = new FileExtension(".mp3");
 	public static final FileExtension m4a = new FileExtension(".m4a");
+	public static final FileExtension flv = new FileExtension(".flv");
+	public static final FileExtension swf = new FileExtension(".swf");
 
 	/* Fields */
 	private static HashMap<String, FileExtension> fAllValues;
