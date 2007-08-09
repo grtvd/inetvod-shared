@@ -17,6 +17,7 @@ public class FileExtension
 	public static final FileExtension raw = new FileExtension(".raw");
 	public static final FileExtension avi = new FileExtension(".avi");
 	public static final FileExtension wmv = new FileExtension(".wmv");
+	public static final FileExtension wma = new FileExtension(".wma");
 	public static final FileExtension rm = new FileExtension(".rm");
 	public static final FileExtension mov = new FileExtension(".mov");
 	public static final FileExtension mp4 = new FileExtension(".mp4");

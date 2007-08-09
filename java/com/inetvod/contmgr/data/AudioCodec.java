@@ -12,7 +12,8 @@ public enum AudioCodec
 {
 	/* Constants */
 	MP3("mpga", FileExtension.mp3),
-	M4A("mp4a", FileExtension.m4a);
+	M4A("mp4a", FileExtension.m4a),
+	WMA2("WMA2", FileExtension.wma);
 
 	/* Fields */
 	private final String fValue;
