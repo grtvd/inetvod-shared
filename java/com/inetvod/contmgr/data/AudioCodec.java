@@ -15,6 +15,8 @@ public enum AudioCodec
 	M4A("mp4a", FileExtension.m4a),
 	WMA2("WMA2", FileExtension.wma);
 
+	public static final int MaxLength = 8;
+
 	/* Fields */
 	private final String fValue;
 	private final FileExtension fDefaultFileExtension;

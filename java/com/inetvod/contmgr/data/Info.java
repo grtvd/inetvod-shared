@@ -19,13 +19,11 @@ public class Info implements com.inetvod.common.core.Readable, Writeable
 	/* Constants */
 	private static final Constructor<Info> CtorDataReader = DataReader.getCtor(Info.class);
 	private static final String NodeName = "info";
-	private static final int VideoCodecMaxLength = 8;
-	private static final int AudioCodecMaxLength = 8;
 
 	/* Fields */
 	private long fFileSize;
-	private String fVideoCodec;
-	private String fAudioCodec;
+	private VideoCodec fVideoCodec;
+	private AudioCodec fAudioCodec;
 	private Short fHorzResolution;
 	private Short fVertResolution;
 	private Short fFramesPerSecond;
@@ -36,11 +34,11 @@ public class Info implements com.inetvod.common.core.Readable, Writeable
 	public long getFileSize() { return fFileSize; }
 	public void setFileSize(long fileSize) { fFileSize = fileSize; }
 
-	public String getVideoCodec() { return fVideoCodec; }
-	public void setVideoCodec(String videoCodec) { fVideoCodec = videoCodec; }
+	public VideoCodec getVideoCodec() { return fVideoCodec; }
+	public void setVideoCodec(VideoCodec videoCodec) { fVideoCodec = videoCodec; }
 
-	public String getAudioCodec() { return fAudioCodec; }
-	public void setAudioCodec(String audioCodec) { fAudioCodec = audioCodec; }
+	public AudioCodec getAudioCodec() { return fAudioCodec; }
+	public void setAudioCodec(AudioCodec audioCodec) { fAudioCodec = audioCodec; }
 
 	public Short getHorzResolution() { return fHorzResolution; }
 	public void setHorzResolution(Short horzResolution) { fHorzResolution = horzResolution; }
@@ -84,8 +82,8 @@ public class Info implements com.inetvod.common.core.Readable, Writeable
 	public void readFrom(DataReader reader) throws Exception
 	{
 		fFileSize = reader.readLong("file-size");
-		fVideoCodec = reader.readString("video-codec", VideoCodecMaxLength);
-		fAudioCodec = reader.readString("audio-codec", AudioCodecMaxLength);
+		fVideoCodec = VideoCodec.convertFromString(reader.readString("video-codec", VideoCodec.MaxLength));
+		fAudioCodec = AudioCodec.convertFromString(reader.readString("audio-codec", AudioCodec.MaxLength));
 		fHorzResolution = reader.readShort("horz-resolution");
 		fVertResolution = reader.readShort("vert-resolution");
 		fFramesPerSecond = reader.readShort("frames-per-second");
@@ -96,8 +94,8 @@ public class Info implements com.inetvod.common.core.Readable, Writeable
 	public void writeTo(DataWriter writer) throws Exception
 	{
 		writer.writeLong("file-size", fFileSize);
-		writer.writeString("video-codec", fVideoCodec, VideoCodecMaxLength);
-		writer.writeString("audio-codec", fAudioCodec, AudioCodecMaxLength);
+		writer.writeString("video-codec", VideoCodec.convertToString(fVideoCodec), VideoCodec.MaxLength);
+		writer.writeString("audio-codec", AudioCodec.convertToString(fAudioCodec), AudioCodec.MaxLength);
 		writer.writeShort("horz-resolution", fHorzResolution);
 		writer.writeShort("vert-resolution", fVertResolution);
 		writer.writeShort("frames-per-second", fFramesPerSecond);

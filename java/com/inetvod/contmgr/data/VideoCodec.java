@@ -18,6 +18,8 @@ public enum VideoCodec
 	MP4V("mp4v", FileExtension.mp4),
 	SVQ3("SVQ3", FileExtension.mov);
 
+	public static final int MaxLength = 8;
+
 	/* Fields */
 	private final String fValue;
 	private final FileExtension fDefaultFileExtension;
