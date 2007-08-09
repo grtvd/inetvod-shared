@@ -84,6 +84,13 @@ public class Info implements com.inetvod.common.core.Readable, Writeable
 	public void readFrom(DataReader reader) throws Exception
 	{
 		fFileSize = reader.readLong("file-size");
+		fVideoCodec = reader.readString("video-codec", VideoCodecMaxLength);
+		fAudioCodec = reader.readString("audio-codec", AudioCodecMaxLength);
+		fHorzResolution = reader.readShort("horz-resolution");
+		fVertResolution = reader.readShort("vert-resolution");
+		fFramesPerSecond = reader.readShort("frames-per-second");
+		fBitRate = reader.readShort("bit-rate");
+		fRunningTimeSecs = reader.readInt("running-time");
 	}
 
 	public void writeTo(DataWriter writer) throws Exception
