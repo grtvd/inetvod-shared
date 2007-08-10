@@ -6,26 +6,22 @@ package com.inetvod.contmgr.data;
 
 import java.util.HashMap;
 
-import com.inetvod.common.core.FileExtension;
-
 public enum AudioCodec
 {
 	/* Constants */
-	MP3("mpga", FileExtension.mp3),
-	M4A("mp4a", FileExtension.m4a),
-	WMA2("WMA2", FileExtension.wma);
+	MP3("mpga"),
+	M4A("mp4a"),
+	WMA2("WMA2");
 
 	public static final int MaxLength = 8;
 
 	/* Fields */
 	private final String fValue;
-	private final FileExtension fDefaultFileExtension;
 
 	private static HashMap<String, AudioCodec> fAllValues = new HashMap<String, AudioCodec>();
 
 	/* Getters and Setters */
 	public String toString() { return fValue; }
-	public FileExtension getDefaultFileExtension() { return fDefaultFileExtension; }
 
 	/* Construction */
 	static
@@ -34,10 +30,9 @@ public enum AudioCodec
 			fAllValues.put(value.toString(), value);
 	}
 
-	private AudioCodec(String value, FileExtension defaultFileExtension)
+	private AudioCodec(String value)
 	{
 		fValue = value;
-		fDefaultFileExtension = defaultFileExtension;
 	}
 
 	/* Implementation */

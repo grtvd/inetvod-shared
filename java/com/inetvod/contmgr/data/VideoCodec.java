@@ -6,29 +6,25 @@ package com.inetvod.contmgr.data;
 
 import java.util.HashMap;
 
-import com.inetvod.common.core.FileExtension;
-
 public enum VideoCodec
 {
 	/* Constants */
-	WMV1("WMV1", FileExtension.wmv),
-	WMV2("WMV2", FileExtension.wmv),
-	WMV3("WMV3", FileExtension.wmv),
-	AVC1("avc1", FileExtension.mp4),
-	MP4V("mp4v", FileExtension.mp4),
-	SVQ3("SVQ3", FileExtension.mov);
+	WMV1("WMV1"),
+	WMV2("WMV2"),
+	WMV3("WMV3"),
+	AVC1("avc1"),
+	MP4V("mp4v"),
+	SVQ3("SVQ3");
 
 	public static final int MaxLength = 8;
 
 	/* Fields */
 	private final String fValue;
-	private final FileExtension fDefaultFileExtension;
 
 	private static HashMap<String, VideoCodec> fAllValues = new HashMap<String, VideoCodec>();
 
 	/* Getters and Setters */
 	public String toString() { return fValue; }
-	public FileExtension getDefaultFileExtension() { return fDefaultFileExtension; }
 
 	/* Construction */
 	static
@@ -37,10 +33,9 @@ public enum VideoCodec
 			fAllValues.put(value.toString(), value);
 	}
 
-	private VideoCodec(String value, FileExtension defaultFileExtension)
+	private VideoCodec(String value)
 	{
 		fValue = value;
-		fDefaultFileExtension = defaultFileExtension;
 	}
 
 	/* Implementation */
