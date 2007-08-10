@@ -15,7 +15,8 @@ public enum MediaMIME
 	video_mp4("video/mp4"),
 	video_mov("video/mov"),
 	video_quicktime("video/quicktime"),
-	audio_mpeg("audio/mpeg");
+	audio_mpeg("audio/mpeg"),
+	audio_mp4("audio/mp4");
 
 	/* Constants */
 	public static final int MaxLength = 32;
