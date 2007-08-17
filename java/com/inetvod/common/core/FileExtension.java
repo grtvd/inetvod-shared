@@ -49,7 +49,7 @@ public class FileExtension
 		if((value == null) || (value.length() == 0))
 			return null;
 
-		FileExtension item = fAllValues.get(value);
+		FileExtension item = fAllValues.get(value.toLowerCase());
 		if(item != null)
 			return item;
 
