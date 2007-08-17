@@ -24,6 +24,18 @@ public class FileUtil
 		return fileNameBase.concat(fileExtension.toString());
 	}
 
+	public static FileExtension determineFileExtFromFilePath(String filePath)
+	{
+		if(!StrUtil.hasLen(filePath))
+			return null;
+
+		int dotPos = filePath.lastIndexOf(".");
+		if(dotPos < 0)
+			return null;
+
+		return FileExtension.convertFromString(filePath.substring(dotPos).trim());
+	}
+
 	public static FileExtension determineFileExtFromURL(String url)
 	{
 		if(!StrUtil.hasLen(url))
