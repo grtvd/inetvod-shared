@@ -1,19 +1,19 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.data;
 
 import java.lang.reflect.Constructor;
 
+import com.inetvod.common.core.CompUtil;
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DataWriter;
 import com.inetvod.common.core.Money;
 import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.Writeable;
-import com.inetvod.common.core.CompUtil;
 
-public class ShowCost implements Readable, Writeable
+public class ShowCost implements Readable, Writeable, Comparable<ShowCost>
 {
 	/* Constants */
 	public static Constructor<ShowCost> CtorDataReader = DataReader.getCtor(ShowCost.class);
@@ -54,7 +54,8 @@ public class ShowCost implements Readable, Writeable
 
 	/* Implementation */
 	@SuppressWarnings({"NonFinalFieldReferenceInEquals"})
-	@Override public boolean equals(Object obj)
+	@Override
+	public boolean equals(Object obj)
 	{
 		if(!(obj instanceof ShowCost))
 			return false;
@@ -83,5 +84,17 @@ public class ShowCost implements Readable, Writeable
 		writer.writeString("CostDisplay", fCostDisplay, DescriptionMaxLength);
 		writer.writeShort("RentalWindowDays", fRentalWindowDays);
 		writer.writeShort("RentalPeriodHours", fRentalPeriodHours);
+	}
+
+	public int compareTo(ShowCost o)
+	{
+		if(o == null)
+			return 1;
+
+		int rc = CompUtil.compare(fShowCostType, o.fShowCostType);
+		if(rc != 0)
+			return rc;
+
+		return CompUtil.compare(fCost, o.fCost);
 	}
 }
