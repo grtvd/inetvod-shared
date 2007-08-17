@@ -13,6 +13,7 @@ import com.inetvod.common.core.DataWriter;
 import com.inetvod.common.core.Writeable;
 import com.inetvod.common.core.XmlDataReader;
 import com.inetvod.common.core.XmlDataWriter;
+import com.inetvod.common.data.MediaMIME;
 
 public class Info implements com.inetvod.common.core.Readable, Writeable
 {
@@ -22,6 +23,7 @@ public class Info implements com.inetvod.common.core.Readable, Writeable
 
 	/* Fields */
 	private long fFileSize;
+	private MediaMIME fMediaMIME;
 	private VideoCodec fVideoCodec;
 	private AudioCodec fAudioCodec;
 	private Short fHorzResolution;
@@ -33,6 +35,9 @@ public class Info implements com.inetvod.common.core.Readable, Writeable
 	/* Getters and Setters */
 	public long getFileSize() { return fFileSize; }
 	public void setFileSize(long fileSize) { fFileSize = fileSize; }
+
+	public MediaMIME getMediaMIME() { return fMediaMIME; }
+	public void setMediaMIME(MediaMIME mediaMIME) { fMediaMIME = mediaMIME; }
 
 	public VideoCodec getVideoCodec() { return fVideoCodec; }
 	public void setVideoCodec(VideoCodec videoCodec) { fVideoCodec = videoCodec; }
@@ -82,6 +87,7 @@ public class Info implements com.inetvod.common.core.Readable, Writeable
 	public void readFrom(DataReader reader) throws Exception
 	{
 		fFileSize = reader.readLong("file-size");
+		fMediaMIME = MediaMIME.convertFromString(reader.readString("media-mime", MediaMIME.MaxLength));
 		fVideoCodec = VideoCodec.convertFromString(reader.readString("video-codec", VideoCodec.MaxLength));
 		fAudioCodec = AudioCodec.convertFromString(reader.readString("audio-codec", AudioCodec.MaxLength));
 		fHorzResolution = reader.readShort("horz-resolution");
@@ -94,6 +100,7 @@ public class Info implements com.inetvod.common.core.Readable, Writeable
 	public void writeTo(DataWriter writer) throws Exception
 	{
 		writer.writeLong("file-size", fFileSize);
+		writer.writeString("media-mime", MediaMIME.convertToString(fMediaMIME), MediaMIME.MaxLength);
 		writer.writeString("video-codec", VideoCodec.convertToString(fVideoCodec), VideoCodec.MaxLength);
 		writer.writeString("audio-codec", AudioCodec.convertToString(fAudioCodec), AudioCodec.MaxLength);
 		writer.writeShort("horz-resolution", fHorzResolution);
