@@ -9,7 +9,7 @@ import java.util.HashMap;
 import com.inetvod.common.core.FileExtension;
 import com.inetvod.common.core.Logger;
 
-public class FileExtensionMapper
+public class MediaMapper
 {
 	/* Fields */
 	private static HashMap<VideoCodec, FileExtension> fMapVideoCodec;
@@ -33,23 +33,23 @@ public class FileExtensionMapper
 	}
 
 	/* Implementation */
-	public static FileExtension getDefaultForVideoCodec(VideoCodec videoCodec)
+	public static FileExtension getDefaultFileExtension(VideoCodec videoCodec)
 	{
 		FileExtension fileExtension = fMapVideoCodec.get(videoCodec);
 
 		if(fileExtension == null)
-			Logger.logWarn(FileExtensionMapper.class, "getDefaultForVideoCodec", String.format("No map for VideoCodec(%s)",
+			Logger.logWarn(MediaMapper.class, "getDefaultFileExtension", String.format("No map for VideoCodec(%s)",
 				VideoCodec.convertToString(videoCodec)));
 
 		return fileExtension;
 	}
 
-	public static FileExtension getDefaultForAudioCodec(AudioCodec audioCodec)
+	public static FileExtension getDefaultFileExtension(AudioCodec audioCodec)
 	{
 		FileExtension fileExtension = fMapAudioCodec.get(audioCodec);
 
 		if(fileExtension == null)
-			Logger.logWarn(FileExtensionMapper.class, "getDefaultForAudioCodec", String.format("No map for AudioCodec(%s)",
+			Logger.logWarn(MediaMapper.class, "getDefaultFileExtension", String.format("No map for AudioCodec(%s)",
 				AudioCodec.convertToString(audioCodec)));
 
 		return fileExtension;
