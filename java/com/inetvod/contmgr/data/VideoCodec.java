@@ -14,7 +14,8 @@ public enum VideoCodec
 	WMV3("WMV3"),
 	AVC1("avc1"),
 	MP4V("mp4v"),
-	SVQ3("SVQ3");
+	SVQ3("SVQ3"),
+	DIVX("divx");
 
 	public static final int MaxLength = 8;
 
