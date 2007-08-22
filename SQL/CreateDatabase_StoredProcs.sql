@@ -1,5 +1,5 @@
 --//////////////////////////////////////////////////////////////////////////////
--- Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+-- Copyright © 2005-2007 iNetVOD, Inc. All Rights Reserved.
 -- iNetVOD Confidential and Proprietary.  See LEGAL.txt.
 --//////////////////////////////////////////////////////////////////////////////
 
@@ -222,6 +222,10 @@ GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByProviderIDProviderShowID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowProvider_GetByProviderIDProviderShowID]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByProviderConnectionIDProviderShowID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowProvider_GetByProviderConnectionIDProviderShowID]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_Search]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -1276,12 +1280,7 @@ CREATE PROCEDURE dbo.ShowProvider_Insert
 	@ProviderShowID varchar(128),
 	@ShowURL varchar(4096),
 	@ShowFormatMime varchar(32),
-	@ShowCost_ShowCostType varchar(32),
-	@ShowCost_Cost_CurrencyID varchar(3),
-	@ShowCost_Cost_Amount decimal(17,2),
-	@ShowCost_CostDisplay varchar(32),
-	@ShowCost_RentalWindowDays smallint,
-	@ShowCost_RentalPeriodHours smallint,
+	@ShowCostList varchar(2048),
 	@ShowAvail varchar(32)
 AS
 	insert into ShowProvider
@@ -1293,12 +1292,7 @@ AS
 		ProviderShowID,
 		ShowURL,
 		ShowFormatMime,
-		ShowCost_ShowCostType,
-		ShowCost_Cost_CurrencyID,
-		ShowCost_Cost_Amount,
-		ShowCost_CostDisplay,
-		ShowCost_RentalWindowDays,
-		ShowCost_RentalPeriodHours,
+		ShowCostList,
 		ShowAvail
 	)
 	values
@@ -1310,12 +1304,7 @@ AS
 		@ProviderShowID,
 		@ShowURL,
 		@ShowFormatMime,
-		@ShowCost_ShowCostType,
-		@ShowCost_Cost_CurrencyID,
-		@ShowCost_Cost_Amount,
-		@ShowCost_CostDisplay,
-		@ShowCost_RentalWindowDays,
-		@ShowCost_RentalPeriodHours,
+		@ShowCostList,
 		@ShowAvail
 	)
 GO
@@ -1330,12 +1319,7 @@ CREATE PROCEDURE dbo.ShowProvider_Update
 	@ProviderShowID varchar(128),
 	@ShowURL varchar(4096),
 	@ShowFormatMime varchar(32),
-	@ShowCost_ShowCostType varchar(32),
-	@ShowCost_Cost_CurrencyID varchar(3),
-	@ShowCost_Cost_Amount decimal(17,2),
-	@ShowCost_CostDisplay varchar(32),
-	@ShowCost_RentalWindowDays smallint,
-	@ShowCost_RentalPeriodHours smallint,
+	@ShowCostList varchar(2048),
 	@ShowAvail varchar(32)
 AS
 	update ShowProvider set
@@ -1346,12 +1330,7 @@ AS
 		--ProviderShowID = @ProviderShowID,
 		ShowURL = @ShowURL,
 		ShowFormatMime = @ShowFormatMime,
-		ShowCost_ShowCostType = @ShowCost_ShowCostType,
-		ShowCost_Cost_CurrencyID = @ShowCost_Cost_CurrencyID,
-		ShowCost_Cost_Amount = @ShowCost_Cost_Amount,
-		ShowCost_CostDisplay = @ShowCost_CostDisplay,
-		ShowCost_RentalWindowDays = @ShowCost_RentalWindowDays,
-		ShowCost_RentalPeriodHours = @ShowCost_RentalPeriodHours,
+		ShowCostList = @ShowCostList,
 		ShowAvail = @ShowAvail
 	where ShowProviderID = @ShowProviderID
 GO
@@ -1372,9 +1351,7 @@ CREATE PROCEDURE dbo.ShowProvider_GetByShowIDProviderID
 	@ProviderID varchar(64)
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
-		ShowURL, ShowFormatMime, ShowCost_ShowCostType, ShowCost_Cost_CurrencyID,
-		ShowCost_Cost_Amount, ShowCost_CostDisplay, ShowCost_RentalWindowDays,
-		ShowCost_RentalPeriodHours, ShowAvail
+		ShowURL, ShowFormatMime, ShowCostList, ShowAvail
 	from ShowProvider
 	where (ShowID = @ShowID)
 	and (ProviderID = @ProviderID)
@@ -1386,9 +1363,7 @@ CREATE PROCEDURE dbo.ShowProvider_GetByShowID
 	@ShowID uniqueidentifier
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
-		ShowURL, ShowFormatMime, ShowCost_ShowCostType, ShowCost_Cost_CurrencyID,
-		ShowCost_Cost_Amount, ShowCost_CostDisplay, ShowCost_RentalWindowDays,
-		ShowCost_RentalPeriodHours, ShowAvail
+		ShowURL, ShowFormatMime, ShowCostList, ShowAvail
 	from ShowProvider
 	where (ShowID = @ShowID)
 GO
@@ -1400,11 +1375,22 @@ CREATE PROCEDURE dbo.ShowProvider_GetByProviderIDProviderShowID
 	@ProviderShowID varchar(128)
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
-		ShowURL, ShowFormatMime, ShowCost_ShowCostType, ShowCost_Cost_CurrencyID,
-		ShowCost_Cost_Amount, ShowCost_CostDisplay, ShowCost_RentalWindowDays,
-		ShowCost_RentalPeriodHours, ShowAvail
+		ShowURL, ShowFormatMime, ShowCostList, ShowAvail
 	from ShowProvider
 	where (ProviderID = @ProviderID)
+	and (ProviderShowID = @ProviderShowID)
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.ShowProvider_GetByProviderConnectionIDProviderShowID
+	@ProviderConnectionID uniqueidentifier,
+	@ProviderShowID varchar(128)
+AS
+	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
+		ShowURL, ShowFormatMime, ShowCostList, ShowAvail
+	from ShowProvider
+	where (ProviderConnectionID = @ProviderConnectionID)
 	and (ProviderShowID = @ProviderShowID)
 GO
 
@@ -1414,9 +1400,7 @@ CREATE PROCEDURE dbo.ShowProvider_Search
 	@PartialName varchar(64)
 AS
 	select sp.ShowProviderID, sp.ShowID, ProviderID, ProviderConnectionID,
-		ProviderShowID, ShowURL, ShowFormatMime, ShowCost_ShowCostType,
-		ShowCost_Cost_CurrencyID, ShowCost_Cost_Amount, ShowCost_CostDisplay,
-		ShowCost_RentalWindowDays, ShowCost_RentalPeriodHours, ShowAvail
+		ProviderShowID, ShowURL, ShowFormatMime, ShowCostList, ShowAvail
 	from ShowProvider sp
 	join Show s on s.ShowID = sp.ShowID
 	where s.Name like '%' + isnull(@PartialName, '') + '%'
@@ -1428,9 +1412,7 @@ CREATE PROCEDURE dbo.ShowProvider_GetByProviderID
 	@ProviderID varchar(64)
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
-		ShowURL, ShowFormatMime, ShowCost_ShowCostType, ShowCost_Cost_CurrencyID,
-		ShowCost_Cost_Amount, ShowCost_CostDisplay, ShowCost_RentalWindowDays,
-		ShowCost_RentalPeriodHours, ShowAvail
+		ShowURL, ShowFormatMime, ShowCostList, ShowAvail
 	from ShowProvider
 	where ProviderID = @ProviderID
 GO
@@ -1441,9 +1423,8 @@ CREATE PROCEDURE dbo.ShowProvider_GetByCategoryID
 	@CategoryID varchar(32)
 AS
 	select sp.ShowProviderID, sp.ShowID, ProviderID, ProviderConnectionID,
-		ProviderShowID, ShowURL, ShowFormatMime, ShowCost_ShowCostType,
-		ShowCost_Cost_CurrencyID, ShowCost_Cost_Amount, ShowCost_CostDisplay,
-		ShowCost_RentalWindowDays, ShowCost_RentalPeriodHours, ShowAvail
+		ProviderShowID, ShowURL, ShowFormatMime, ShowCostList,
+		ShowAvail
 	from ShowProvider sp
 	join ShowCategory sc on sc.ShowID = sp.ShowID
 	where sc.CategoryID = @CategoryID
@@ -1455,9 +1436,8 @@ CREATE PROCEDURE dbo.ShowProvider_GetByRentedShowMemberID
 	@MemberID uniqueidentifier
 AS
 	select ShowProviderID, sp.ShowID, sp.ProviderID, sp.ProviderConnectionID,
-		ProviderShowID, sp.ShowURL, ShowFormatMime, sp.ShowCost_ShowCostType,
-		sp.ShowCost_Cost_CurrencyID, sp.ShowCost_Cost_Amount, sp.ShowCost_CostDisplay,
-		sp.ShowCost_RentalWindowDays, sp.ShowCost_RentalPeriodHours, ShowAvail
+		ProviderShowID, sp.ShowURL, ShowFormatMime, ShowCostList,
+		ShowAvail
 	from ShowProvider sp
 	join RentedShow rs on (rs.ShowID = sp.ShowID) and (rs.ProviderID = sp.ProviderID)
 		and (rs.ProviderConnectionID = sp.ProviderConnectionID)
@@ -1759,6 +1739,7 @@ GRANT EXECUTE ON [dbo].[ShowProvider_Delete] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByShowIDProviderID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByShowID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderIDProviderShowID] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderConnectionIDProviderShowID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_Search] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByCategoryID] TO [inetvod]

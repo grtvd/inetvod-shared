@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -28,8 +28,9 @@ public class Player implements com.inetvod.common.core.Readable
 	/* Fields */
 	private PlayerID fPlayerID;
 	private String fName;
-	protected ManufacturerID fManufacturerID;
-	protected String fModelNo;
+	private ManufacturerID fManufacturerID;
+	private String fModelNo;
+	private ArrayList<String> fMimeTypeList;	//ordered list
 	private HashSet<String> fMimeTypeSet;
 
 	/* Getters & Setters */
@@ -51,12 +52,16 @@ public class Player implements com.inetvod.common.core.Readable
 		fManufacturerID = reader.readDataID("ManufacturerID", ManufacturerID.MaxLength, ManufacturerID.CtorString);
 		fModelNo = reader.readString("ModelNo", ModelNoMaxLength);
 
-		ArrayList<String> mimeTypeList = reader.readStringList("MimeType", MimeTypeMaxLength,
-			ArrayListString.Ctor, StrUtil.CtorString);
+		fMimeTypeList = reader.readStringList("MimeType", MimeTypeMaxLength, ArrayListString.Ctor, StrUtil.CtorString);
 
 		fMimeTypeSet = new HashSet<String>();
-		for(String mimeType : mimeTypeList)
+		for(String mimeType : fMimeTypeList)
 			fMimeTypeSet.add(mimeType);
+	}
+
+	public ArrayList<String> getMimeTypeList()
+	{
+		return fMimeTypeList;
 	}
 
 	public boolean supportsMimeType(String mimeType)

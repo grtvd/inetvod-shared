@@ -1,5 +1,5 @@
 --//////////////////////////////////////////////////////////////////////////////
--- Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+-- Copyright © 2005-2007 iNetVOD, Inc. All Rights Reserved.
 -- iNetVOD Confidential and Proprietary.  See LEGAL.txt.
 --//////////////////////////////////////////////////////////////////////////////
 
@@ -461,15 +461,10 @@ CREATE TABLE [dbo].[ShowProvider] (
 	[ShowID] uniqueidentifier NOT NULL ,
 	[ProviderID] [varchar] (64) NOT NULL ,
 	[ProviderConnectionID] uniqueidentifier NOT NULL ,
-	[ProviderShowID] [varchar] (128) NOT NULL ,
+	[ProviderShowID] [varchar] (256) NOT NULL ,
 	[ShowURL] [varchar] (4096) NULL ,
 	[ShowFormatMime] [varchar] (32) NULL ,
-	[ShowCost_ShowCostType] [varchar] (32) NOT NULL ,
-	[ShowCost_Cost_CurrencyID] [varchar] (3) NULL ,
-	[ShowCost_Cost_Amount] [decimal] (17,2) NULL ,
-	[ShowCost_CostDisplay] [varchar] (32) NOT NULL ,
-	[ShowCost_RentalWindowDays] [smallint] NULL ,
-	[ShowCost_RentalPeriodHours] [smallint] NULL ,
+	[ShowCostList] [varchar] (2048) NULL ,
 	[ShowAvail] [varchar] (32) NOT NULL
 ) ON [PRIMARY]
 

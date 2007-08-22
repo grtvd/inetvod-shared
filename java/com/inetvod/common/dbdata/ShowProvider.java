@@ -1,19 +1,16 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
 
-import java.sql.Types;
-
-import com.inetvod.common.core.DataExists;
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DataWriter;
 import com.inetvod.common.data.ProviderConnectionID;
 import com.inetvod.common.data.ProviderID;
 import com.inetvod.common.data.ProviderShowID;
 import com.inetvod.common.data.ShowAvail;
-import com.inetvod.common.data.ShowCost;
+import com.inetvod.common.data.ShowCostList;
 import com.inetvod.common.data.ShowID;
 import com.inetvod.common.data.ShowProviderID;
 
@@ -21,6 +18,7 @@ public class ShowProvider extends DatabaseObject
 {
 	/* Constants */
 	public static final int ShowFormatMimeMaxLength = 32;
+	private static final int ShowCostListMaxLength = 2048;
 
 	/* Fields */
 	private ShowProviderID fShowProviderID;
@@ -30,8 +28,8 @@ public class ShowProvider extends DatabaseObject
 	private ProviderConnectionID fProviderConnectionID;
 	private ProviderShowID fProviderShowID;
 	private String fShowURL;			// only available for 'Connection' type providers
-	private String fShowFormatMime;		// only available for 'Connection' type providers
-	private ShowCost fShowCost;
+	private String fShowFormatMime;		//TODO to become MediaFormatID
+	private ShowCostList fShowCostList;
 
 	private ShowAvail fShowAvail;
 
@@ -53,15 +51,14 @@ public class ShowProvider extends DatabaseObject
 	public String getShowFormatMime() { return fShowFormatMime; }
 	public void setShowFormatMime(String showFormatMime) { fShowFormatMime = showFormatMime; }
 
-	public ShowCost getShowCost() { return fShowCost; }
-	public void setShowCost(ShowCost showCost) { fShowCost = showCost; }
+	public ShowCostList getShowCostList() { return fShowCostList; }
 
 	public ShowAvail getShowAvail() { return fShowAvail; }
 	public void setShowAvail(ShowAvail showAvail) { fShowAvail = showAvail; }
 
 	/* Construction */
 	private ShowProvider(ShowID showID, ProviderID providerID, ProviderConnectionID providerConnectionID,
-		ProviderShowID providerShowID)
+		ProviderShowID providerShowID, String showFormatMime /*TODO to become MediaFormatID*/)
 	{
 		super(true);
 		fShowProviderID = ShowProviderID.newInstance();
@@ -69,6 +66,8 @@ public class ShowProvider extends DatabaseObject
 		fProviderID = providerID;
 		fProviderConnectionID = providerConnectionID;
 		fProviderShowID = providerShowID;
+		fShowFormatMime = showFormatMime;
+		fShowCostList = new ShowCostList();
 	}
 
 	public ShowProvider(DataReader reader) throws Exception
@@ -78,46 +77,9 @@ public class ShowProvider extends DatabaseObject
 	}
 
 	public static ShowProvider newInstance(ShowID showID, ProviderID providerID,
-		ProviderConnectionID providerConnectionID, ProviderShowID providerShowID)
+		ProviderConnectionID providerConnectionID, ProviderShowID providerShowID, String showFormatMime /*TODO to become MediaFormatID*/)
 	{
-		return new ShowProvider(showID, providerID, providerConnectionID, providerShowID);
-	}
-
-	private static ShowProvider loadByShowIDProviderID(ShowID showID, ProviderID providerID, DataExists dataExists)
-		throws Exception
-	{
-		DatabaseProcParam params[] = new DatabaseProcParam[2];
-
-		params[0] = new DatabaseProcParam(Types.VARCHAR, showID.toString());
-		params[1] = new DatabaseProcParam(Types.VARCHAR, providerID.toString());
-
-		return fDatabaseAdaptor.selectByProc("ShowProvider_GetByShowIDProviderID", params, dataExists);
-	}
-
-	public static ShowProvider findByShowIDProviderID(ShowID showID, ProviderID providerID) throws Exception
-	{
-		return loadByShowIDProviderID(showID, providerID, DataExists.MayNotExist);
-	}
-
-	public static ShowProvider getByShowIDProviderID(ShowID showID, ProviderID providerID) throws Exception
-	{
-		return loadByShowIDProviderID(showID, providerID, DataExists.MustExist);
-	}
-
-	private static ShowProvider loadByProviderIDProviderShowID(ProviderID providerID, ProviderShowID providerShowID, DataExists dataExists)
-		throws Exception
-	{
-		DatabaseProcParam params[] = new DatabaseProcParam[2];
-
-		params[0] = new DatabaseProcParam(Types.VARCHAR, providerID.toString());
-		params[1] = new DatabaseProcParam(Types.VARCHAR, providerShowID.toString());
-
-		return fDatabaseAdaptor.selectByProc("ShowProvider_GetByProviderIDProviderShowID", params, dataExists);
-	}
-
-	public static ShowProvider findByProviderIDProviderShowID(ProviderID providerID, ProviderShowID providerShowID) throws Exception
-	{
-		return loadByProviderIDProviderShowID(providerID, providerShowID, DataExists.MayNotExist);
+		return new ShowProvider(showID, providerID, providerConnectionID, providerShowID, showFormatMime);
 	}
 
 	/* Implementation */
@@ -132,7 +94,7 @@ public class ShowProvider extends DatabaseObject
 		fProviderShowID = reader.readDataID("ProviderShowID", ProviderShowID.MaxLength, ProviderShowID.CtorString);
 		fShowURL = reader.readString("ShowURL", Show.ShowURLMaxLength);
 		fShowFormatMime = reader.readString("ShowFormatMime", ShowFormatMimeMaxLength);
-		fShowCost = reader.readObject("ShowCost", ShowCost.CtorDataReader);
+		fShowCostList = ShowCostList.newInstanceFromXmlString(reader.readString("ShowCostList", ShowCostListMaxLength));
 
 		fShowAvail = ShowAvail.convertFromString(reader.readString("ShowAvail", ShowAvail.MaxLength));
 	}
@@ -147,7 +109,7 @@ public class ShowProvider extends DatabaseObject
 		writer.writeDataID("ProviderShowID", fProviderShowID, ProviderShowID.MaxLength);
 		writer.writeString("ShowURL", fShowURL, Show.ShowURLMaxLength);
 		writer.writeString("ShowFormatMime", fShowFormatMime, ShowFormatMimeMaxLength);
-		writer.writeObject("ShowCost", fShowCost);
+		writer.writeString("ShowCostList", ShowCostList.toXmlString(fShowCostList), ShowCostListMaxLength);
 
 		writer.writeString("ShowAvail", ShowAvail.convertToString(fShowAvail), ShowAvail.MaxLength);
 	}
