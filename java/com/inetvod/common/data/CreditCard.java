@@ -1,5 +1,5 @@
 /**
- * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2005-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.data;
@@ -8,13 +8,14 @@ import java.lang.reflect.Constructor;
 
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DataWriter;
+import com.inetvod.common.core.Logger;
 import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.StrUtil;
 import com.inetvod.common.core.Writeable;
 import com.inetvod.common.crypto.CryptoCipher;
 import com.inetvod.common.crypto.CryptoKeyStore;
 
-public class CreditCard implements Readable, Writeable
+public class CreditCard implements Readable, Writeable, Cloneable
 {
 	/* Constants */
 	public static Constructor<CreditCard> CtorDataReader = DataReader.getCtor(CreditCard.class);
@@ -29,6 +30,7 @@ public class CreditCard implements Readable, Writeable
 	private static final int DefaultMillennia = 2000;
 
 	/* Fields */
+	private boolean fStoreEncrypted = true;
 	private CryptoCipher fCryptoCipher;		// don't access directory, use getCryptoCipher()
 
 	private String fNameOnCCEncrypted;
@@ -43,6 +45,8 @@ public class CreditCard implements Readable, Writeable
 	private Address fBillingAddress;
 
 	/* Getters and Setters */
+	public void setStoreEncrypted(boolean storeEncrypted) { fStoreEncrypted = storeEncrypted; }
+
 	private CryptoCipher getCryptoCipher() throws Exception
 	{
 		if(fCryptoCipher == null)
@@ -143,6 +147,28 @@ public class CreditCard implements Readable, Writeable
 		readFrom(reader);
 	}
 
+	@Override
+	public CreditCard clone() throws CloneNotSupportedException
+	{
+		CreditCard creditCard = new CreditCard();
+
+		try
+		{
+			creditCard.setNameOnCC(getNameOnCC());
+			creditCard.setCCType(getCCType());
+			creditCard.setCCNumber(getCCNumber());
+			creditCard.setCCSIC(getCCSIC());
+			creditCard.setExpireDate(getExpireDate());
+			creditCard.setBillingAddress(getBillingAddress().clone());
+		}
+		catch(Exception e)
+		{
+			Logger.logErr(this, "clone", e);
+		}
+
+		return creditCard;
+	}
+
 	/* Implementation */
 	public void readFrom(DataReader reader) throws Exception
 	{
@@ -156,11 +182,21 @@ public class CreditCard implements Readable, Writeable
 
 	public void writeTo(DataWriter writer) throws Exception
 	{
-		writer.writeString("NameOnCC", fNameOnCCEncrypted, NameOnCCMaxLength);
 		writer.writeString("CCType", CreditCardType.convertToString(fCCType), CreditCardType.MaxLength);
-		writer.writeString("CCNumber", fCCNumberEncrypted, CCNumberMaxLength);
-		writer.writeString("CCSIC", fCCSICEncrypted, CCSICMaxLength);
-		writer.writeString("ExpireDate", fExpireDateEncrypted, ExpireDateMaxLength);
+		if(fStoreEncrypted)
+		{
+			writer.writeString("NameOnCC", fNameOnCCEncrypted, NameOnCCMaxLength);
+			writer.writeString("CCNumber", fCCNumberEncrypted, CCNumberMaxLength);
+			writer.writeString("CCSIC", fCCSICEncrypted, CCSICMaxLength);
+			writer.writeString("ExpireDate", fExpireDateEncrypted, ExpireDateMaxLength);
+		}
+		else
+		{
+			writer.writeString("NameOnCC", getNameOnCC(), NameOnCCMaxLength);
+			writer.writeString("CCNumber", getCCNumber(), CCNumberMaxLength);
+			writer.writeString("CCSIC", getCCSIC(), CCSICMaxLength);
+			writer.writeString("ExpireDate", getExpireDate(), ExpireDateMaxLength);
+		}
 		writer.writeObject("BillingAddress", fBillingAddress);
 	}
 }

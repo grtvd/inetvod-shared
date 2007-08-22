@@ -1,5 +1,5 @@
 /**
- * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2005-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.data;
@@ -12,7 +12,7 @@ import com.inetvod.common.core.DataWriter;
 import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.Writeable;
 
-public class Address implements Readable, Writeable
+public class Address implements Readable, Writeable, Cloneable
 {
 	/* Constants */
 	public static Constructor<Address> CtorDataReader = DataReader.getCtor(Address.class);
@@ -62,6 +62,22 @@ public class Address implements Readable, Writeable
 	public Address(DataReader reader) throws Exception
 	{
 		readFrom(reader);
+	}
+
+	@Override
+	protected Address clone() throws CloneNotSupportedException
+	{
+		Address address =  new Address();
+
+		address.setAddrStreet1(getAddrStreet1());
+		address.setAddrStreet2(getAddrStreet2());
+		address.setCity(getCity());
+		address.setState(getState());
+		address.setPostalCode(getPostalCode());
+		address.setCountry(getCountry());
+		address.setPhone(getPhone());
+
+		return address;
 	}
 
 	/* Implementation */
