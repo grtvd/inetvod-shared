@@ -1,5 +1,5 @@
 /**
- * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2005-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.providerClient;
@@ -156,20 +156,20 @@ public class ProviderRequestor
 		return rentShowResp;
 	}
 
-	public WatchShowResp watchShow(ProviderShowID showID, String playerIPAddress)
+	public WatchShowResp watchShow(ProviderShowID showID, String playerIPAddress, ShowFormat showFormat)
 	{
 		DataRequestor dataRequestor = newDataRequestor(true);
-		WatchShowRqst watchShowRqst = WatchShowRqst.newInstance(showID, playerIPAddress);
+		WatchShowRqst watchShowRqst = WatchShowRqst.newInstance(showID, playerIPAddress, showFormat);
 		WatchShowResp watchShowResp = dataRequestor.watchShow(watchShowRqst);
 
 		fStatusCode = dataRequestor.getStatusCode();
 		return watchShowResp;
 	}
 
-	public boolean releaseShow(ProviderShowID showID)
+	public boolean releaseShow(ProviderShowID showID, ShowFormat showFormat)
 	{
 		DataRequestor dataRequestor = newDataRequestor(true);
-		ReleaseShowRqst releaseShowRqst = ReleaseShowRqst.newInstance(showID);
+		ReleaseShowRqst releaseShowRqst = ReleaseShowRqst.newInstance(showID, showFormat);
 		dataRequestor.releaseShow(releaseShowRqst);
 
 		fStatusCode = dataRequestor.getStatusCode();
