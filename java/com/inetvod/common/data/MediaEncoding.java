@@ -8,12 +8,18 @@ import java.util.HashMap;
 
 public enum MediaEncoding
 {
-	WMV9("WMV9"),
-	RV9("RV9"),
+	WMV1("WMV1"),
+	WMV2("WMV2"),
+	WMV3("WMV3"),
+	RV30("RV30"),
+	RV40("RV40"),
 	SVQ3("SVQ3"),
-	DivX5("DivX5"),
-	Xvid("Xvid"),
-	MP3("MP3");
+	AVC1("avc1"),
+	MP4V("mp4v"),
+	DIVX("divx"),
+	MPGA("mpga"),
+	MP4A("mp4a"),
+	WMA2("WMA2");
 
 	/* Constants */
 	public static final int MaxLength = 32;

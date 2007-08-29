@@ -12,7 +12,8 @@ public enum MediaContainer
 	RM("RM"),
 	RTSP("RTSP"),
 	AVI("AVI"),
-	MOV("MOV");
+	MOV("MOV"),
+	MP3("MP3");
 
 	/* Constants */
 	public static final int MaxLength = 32;
