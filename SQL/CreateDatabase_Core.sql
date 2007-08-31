@@ -464,6 +464,13 @@ CREATE TABLE [dbo].[ShowProvider] (
 	[ProviderShowID] [varchar] (256) NOT NULL ,
 	[ShowURL] [varchar] (4096) NULL ,
 	[ShowFormatMime] [varchar] (32) NULL ,
+	[ShowFormat_ShowFormatID] [varchar] (256) NULL ,
+	[ShowFormat_MediaEncoding] [varchar] (32) NULL ,
+	[ShowFormat_MediaContainer] [varchar] (32) NULL ,
+	[ShowFormat_HorzResolution] [smallint] NULL ,
+	[ShowFormat_VertResolution] [smallint] NULL ,
+	[ShowFormat_FramesPerSecond] [smallint] NULL ,
+	[ShowFormat_BitRate] [smallint] NULL ,
 	[ShowCostList] [varchar] (2048) NULL ,
 	[ShowAvail] [varchar] (32) NOT NULL
 ) ON [PRIMARY]

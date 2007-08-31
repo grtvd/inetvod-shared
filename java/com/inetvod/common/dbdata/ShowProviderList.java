@@ -21,6 +21,7 @@ import com.inetvod.common.data.ProviderShowID;
 import com.inetvod.common.data.ShowAvail;
 import com.inetvod.common.data.ShowCost;
 import com.inetvod.common.data.ShowCostList;
+import com.inetvod.common.data.ShowFormat;
 import com.inetvod.common.data.ShowID;
 import com.inetvod.common.data.ShowProviderID;
 
@@ -179,6 +180,20 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 		for(ShowProvider showProvider : this)
 		{
 			if(showFormatMime.equals(showProvider.getShowFormatMime()))
+				return showProvider;
+		}
+
+		return null;
+	}
+
+	public ShowProvider findByShowFormat(ShowFormat showFormat)
+	{
+		if(showFormat == null)
+			return null;
+
+		for(ShowProvider showProvider : this)
+		{
+			if(showFormat.equals(showProvider.getShowFormat()))
 				return showProvider;
 		}
 

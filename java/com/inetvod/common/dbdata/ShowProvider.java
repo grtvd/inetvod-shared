@@ -11,6 +11,7 @@ import com.inetvod.common.data.ProviderID;
 import com.inetvod.common.data.ProviderShowID;
 import com.inetvod.common.data.ShowAvail;
 import com.inetvod.common.data.ShowCostList;
+import com.inetvod.common.data.ShowFormat;
 import com.inetvod.common.data.ShowID;
 import com.inetvod.common.data.ShowProviderID;
 
@@ -29,6 +30,7 @@ public class ShowProvider extends DatabaseObject
 	private ProviderShowID fProviderShowID;
 	private String fShowURL;			// only available for 'Connection' type providers
 	private String fShowFormatMime;		//TODO to become MediaFormatID
+	private ShowFormat fShowFormat;
 	private ShowCostList fShowCostList;
 
 	private ShowAvail fShowAvail;
@@ -51,6 +53,7 @@ public class ShowProvider extends DatabaseObject
 	public String getShowFormatMime() { return fShowFormatMime; }
 	public void setShowFormatMime(String showFormatMime) { fShowFormatMime = showFormatMime; }
 
+	public ShowFormat getShowFormat() { return fShowFormat; }
 	public ShowCostList getShowCostList() { return fShowCostList; }
 
 	public ShowAvail getShowAvail() { return fShowAvail; }
@@ -58,7 +61,7 @@ public class ShowProvider extends DatabaseObject
 
 	/* Construction */
 	private ShowProvider(ShowID showID, ProviderID providerID, ProviderConnectionID providerConnectionID,
-		ProviderShowID providerShowID, String showFormatMime /*TODO to become MediaFormatID*/)
+		ProviderShowID providerShowID, String showFormatMime, ShowFormat showFormat)
 	{
 		super(true);
 		fShowProviderID = ShowProviderID.newInstance();
@@ -67,6 +70,7 @@ public class ShowProvider extends DatabaseObject
 		fProviderConnectionID = providerConnectionID;
 		fProviderShowID = providerShowID;
 		fShowFormatMime = showFormatMime;
+		fShowFormat = showFormat;
 		fShowCostList = new ShowCostList();
 	}
 
@@ -77,9 +81,10 @@ public class ShowProvider extends DatabaseObject
 	}
 
 	public static ShowProvider newInstance(ShowID showID, ProviderID providerID,
-		ProviderConnectionID providerConnectionID, ProviderShowID providerShowID, String showFormatMime /*TODO to become MediaFormatID*/)
+		ProviderConnectionID providerConnectionID, ProviderShowID providerShowID, String showFormatMime,
+		ShowFormat showFormat)
 	{
-		return new ShowProvider(showID, providerID, providerConnectionID, providerShowID, showFormatMime);
+		return new ShowProvider(showID, providerID, providerConnectionID, providerShowID, showFormatMime, showFormat);
 	}
 
 	/* Implementation */
@@ -94,6 +99,7 @@ public class ShowProvider extends DatabaseObject
 		fProviderShowID = reader.readDataID("ProviderShowID", ProviderShowID.MaxLength, ProviderShowID.CtorString);
 		fShowURL = reader.readString("ShowURL", Show.ShowURLMaxLength);
 		fShowFormatMime = reader.readString("ShowFormatMime", ShowFormatMimeMaxLength);
+		fShowFormat = reader.readObject("ShowFormat", ShowFormat.CtorDataReader);
 		fShowCostList = ShowCostList.newInstanceFromXmlString(reader.readString("ShowCostList", ShowCostListMaxLength));
 
 		fShowAvail = ShowAvail.convertFromString(reader.readString("ShowAvail", ShowAvail.MaxLength));
@@ -109,6 +115,7 @@ public class ShowProvider extends DatabaseObject
 		writer.writeDataID("ProviderShowID", fProviderShowID, ProviderShowID.MaxLength);
 		writer.writeString("ShowURL", fShowURL, Show.ShowURLMaxLength);
 		writer.writeString("ShowFormatMime", fShowFormatMime, ShowFormatMimeMaxLength);
+		writer.writeObject("ShowFormat", fShowFormat);
 		writer.writeString("ShowCostList", ShowCostList.toXmlString(fShowCostList), ShowCostListMaxLength);
 
 		writer.writeString("ShowAvail", ShowAvail.convertToString(fShowAvail), ShowAvail.MaxLength);

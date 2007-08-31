@@ -1280,6 +1280,13 @@ CREATE PROCEDURE dbo.ShowProvider_Insert
 	@ProviderShowID varchar(128),
 	@ShowURL varchar(4096),
 	@ShowFormatMime varchar(32),
+	@ShowFormat_ShowFormatID varchar(256),
+	@ShowFormat_MediaEncoding varchar(32),
+	@ShowFormat_MediaContainer varchar(32),
+	@ShowFormat_HorzResolution smallint,
+	@ShowFormat_VertResolution smallint,
+	@ShowFormat_FramesPerSecond smallint,
+	@ShowFormat_BitRate smallint,
 	@ShowCostList varchar(2048),
 	@ShowAvail varchar(32)
 AS
@@ -1292,6 +1299,13 @@ AS
 		ProviderShowID,
 		ShowURL,
 		ShowFormatMime,
+		ShowFormat_ShowFormatID,
+		ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer,
+		ShowFormat_HorzResolution,
+		ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond,
+		ShowFormat_BitRate,
 		ShowCostList,
 		ShowAvail
 	)
@@ -1304,6 +1318,13 @@ AS
 		@ProviderShowID,
 		@ShowURL,
 		@ShowFormatMime,
+		@ShowFormat_ShowFormatID,
+		@ShowFormat_MediaEncoding,
+		@ShowFormat_MediaContainer,
+		@ShowFormat_HorzResolution,
+		@ShowFormat_VertResolution,
+		@ShowFormat_FramesPerSecond,
+		@ShowFormat_BitRate,
 		@ShowCostList,
 		@ShowAvail
 	)
@@ -1319,6 +1340,13 @@ CREATE PROCEDURE dbo.ShowProvider_Update
 	@ProviderShowID varchar(128),
 	@ShowURL varchar(4096),
 	@ShowFormatMime varchar(32),
+	@ShowFormat_ShowFormatID varchar(256),
+	@ShowFormat_MediaEncoding varchar(32),
+	@ShowFormat_MediaContainer varchar(32),
+	@ShowFormat_HorzResolution smallint,
+	@ShowFormat_VertResolution smallint,
+	@ShowFormat_FramesPerSecond smallint,
+	@ShowFormat_BitRate smallint,
 	@ShowCostList varchar(2048),
 	@ShowAvail varchar(32)
 AS
@@ -1330,6 +1358,13 @@ AS
 		--ProviderShowID = @ProviderShowID,
 		ShowURL = @ShowURL,
 		ShowFormatMime = @ShowFormatMime,
+		ShowFormat_ShowFormatID = @ShowFormat_ShowFormatID,
+		ShowFormat_MediaEncoding = @ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer = @ShowFormat_MediaContainer,
+		ShowFormat_HorzResolution = @ShowFormat_HorzResolution,
+		ShowFormat_VertResolution = @ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond = @ShowFormat_FramesPerSecond,
+		ShowFormat_BitRate = @ShowFormat_BitRate,
 		ShowCostList = @ShowCostList,
 		ShowAvail = @ShowAvail
 	where ShowProviderID = @ShowProviderID
@@ -1351,7 +1386,9 @@ CREATE PROCEDURE dbo.ShowProvider_GetByShowIDProviderID
 	@ProviderID varchar(64)
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
-		ShowURL, ShowFormatMime, ShowCostList, ShowAvail
+		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider
 	where (ShowID = @ShowID)
 	and (ProviderID = @ProviderID)
@@ -1363,7 +1400,9 @@ CREATE PROCEDURE dbo.ShowProvider_GetByShowID
 	@ShowID uniqueidentifier
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
-		ShowURL, ShowFormatMime, ShowCostList, ShowAvail
+		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider
 	where (ShowID = @ShowID)
 GO
@@ -1375,7 +1414,9 @@ CREATE PROCEDURE dbo.ShowProvider_GetByProviderIDProviderShowID
 	@ProviderShowID varchar(128)
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
-		ShowURL, ShowFormatMime, ShowCostList, ShowAvail
+		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider
 	where (ProviderID = @ProviderID)
 	and (ProviderShowID = @ProviderShowID)
@@ -1388,7 +1429,9 @@ CREATE PROCEDURE dbo.ShowProvider_GetByProviderConnectionIDProviderShowID
 	@ProviderShowID varchar(128)
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
-		ShowURL, ShowFormatMime, ShowCostList, ShowAvail
+		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider
 	where (ProviderConnectionID = @ProviderConnectionID)
 	and (ProviderShowID = @ProviderShowID)
@@ -1400,7 +1443,10 @@ CREATE PROCEDURE dbo.ShowProvider_Search
 	@PartialName varchar(64)
 AS
 	select sp.ShowProviderID, sp.ShowID, ProviderID, ProviderConnectionID,
-		ProviderShowID, ShowURL, ShowFormatMime, ShowCostList, ShowAvail
+		ProviderShowID, ShowURL, ShowFormatMime, ShowFormat_ShowFormatID,
+		ShowFormat_MediaEncoding, ShowFormat_MediaContainer,
+		ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider sp
 	join Show s on s.ShowID = sp.ShowID
 	where s.Name like '%' + isnull(@PartialName, '') + '%'
@@ -1412,7 +1458,9 @@ CREATE PROCEDURE dbo.ShowProvider_GetByProviderID
 	@ProviderID varchar(64)
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
-		ShowURL, ShowFormatMime, ShowCostList, ShowAvail
+		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider
 	where ProviderID = @ProviderID
 GO
@@ -1423,8 +1471,10 @@ CREATE PROCEDURE dbo.ShowProvider_GetByCategoryID
 	@CategoryID varchar(32)
 AS
 	select sp.ShowProviderID, sp.ShowID, ProviderID, ProviderConnectionID,
-		ProviderShowID, ShowURL, ShowFormatMime, ShowCostList,
-		ShowAvail
+		ProviderShowID, ShowURL, ShowFormatMime, ShowFormat_ShowFormatID,
+		ShowFormat_MediaEncoding, ShowFormat_MediaContainer,
+		ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider sp
 	join ShowCategory sc on sc.ShowID = sp.ShowID
 	where sc.CategoryID = @CategoryID
@@ -1436,8 +1486,10 @@ CREATE PROCEDURE dbo.ShowProvider_GetByRentedShowMemberID
 	@MemberID uniqueidentifier
 AS
 	select ShowProviderID, sp.ShowID, sp.ProviderID, sp.ProviderConnectionID,
-		ProviderShowID, sp.ShowURL, ShowFormatMime, ShowCostList,
-		ShowAvail
+		ProviderShowID, sp.ShowURL, ShowFormatMime, ShowFormat_ShowFormatID,
+		ShowFormat_MediaEncoding, ShowFormat_MediaContainer,
+		ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider sp
 	join RentedShow rs on (rs.ShowID = sp.ShowID) and (rs.ProviderID = sp.ProviderID)
 		and (rs.ProviderConnectionID = sp.ProviderConnectionID)
