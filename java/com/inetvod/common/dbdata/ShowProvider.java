@@ -6,6 +6,7 @@ package com.inetvod.common.dbdata;
 
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DataWriter;
+import com.inetvod.common.core.DataExists;
 import com.inetvod.common.data.ProviderConnectionID;
 import com.inetvod.common.data.ProviderID;
 import com.inetvod.common.data.ProviderShowID;
@@ -85,6 +86,16 @@ public class ShowProvider extends DatabaseObject
 		ShowFormat showFormat)
 	{
 		return new ShowProvider(showID, providerID, providerConnectionID, providerShowID, showFormatMime, showFormat);
+	}
+
+	private static ShowProvider load(ShowProviderID showProviderID, DataExists exists) throws Exception
+	{
+		return fDatabaseAdaptor.selectByKey(showProviderID, exists);
+	}
+
+	public static ShowProvider get(ShowProviderID showProviderID) throws Exception
+	{
+		return load(showProviderID, DataExists.MustExist);
 	}
 
 	/* Implementation */

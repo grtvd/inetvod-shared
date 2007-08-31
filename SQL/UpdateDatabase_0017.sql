@@ -223,3 +223,109 @@ COMMIT
 
 --//////////////////////////////////////////////////////////////////////////////
 --//////////////////////////////////////////////////////////////////////////////
+
+delete from dbo.RentedShow
+go
+
+BEGIN TRANSACTION
+ALTER TABLE dbo.RentedShow
+	DROP CONSTRAINT FK_RentedShow_Show
+GO
+COMMIT
+BEGIN TRANSACTION
+ALTER TABLE dbo.RentedShow
+	DROP CONSTRAINT FK_RentedShow_Member
+GO
+COMMIT
+BEGIN TRANSACTION
+CREATE TABLE dbo.Tmp_RentedShow
+	(
+	RentedShowID uniqueidentifier NOT NULL ROWGUIDCOL,
+	MemberID uniqueidentifier NOT NULL,
+	ShowID uniqueidentifier NOT NULL,
+	ProviderID varchar(64) NOT NULL,
+	ShowProviderID uniqueidentifier NOT NULL,
+	ShowURL varchar(4096) NOT NULL,
+	ShowCost_ShowCostType varchar(32) NOT NULL,
+	ShowCost_Cost_CurrencyID varchar(3) NULL,
+	ShowCost_Cost_Amount decimal(17, 2) NULL,
+	ShowCost_CostDisplay varchar(32) NOT NULL,
+	ShowCost_RentalWindowDays smallint NULL,
+	ShowCost_RentalPeriodHours smallint NULL,
+	RentedOn datetime NOT NULL,
+	AvailableUntil datetime NULL
+	)  ON [PRIMARY]
+GO
+IF EXISTS(SELECT * FROM dbo.RentedShow)
+	 EXEC('INSERT INTO dbo.Tmp_RentedShow (RentedShowID, MemberID, ShowID, ProviderID, ShowURL, ShowCost_ShowCostType, ShowCost_Cost_CurrencyID, ShowCost_Cost_Amount, ShowCost_CostDisplay, ShowCost_RentalWindowDays, ShowCost_RentalPeriodHours, RentedOn, AvailableUntil)
+		SELECT RentedShowID, MemberID, ShowID, ProviderID, ShowURL, ShowCost_ShowCostType, ShowCost_Cost_CurrencyID, ShowCost_Cost_Amount, ShowCost_CostDisplay, ShowCost_RentalWindowDays, ShowCost_RentalPeriodHours, RentedOn, AvailableUntil FROM dbo.RentedShow TABLOCKX')
+GO
+DROP TABLE dbo.RentedShow
+GO
+EXECUTE sp_rename N'dbo.Tmp_RentedShow', N'RentedShow', 'OBJECT'
+GO
+ALTER TABLE dbo.RentedShow ADD CONSTRAINT
+	PK_RentedShow PRIMARY KEY CLUSTERED
+	(
+	RentedShowID
+	) ON [PRIMARY]
+
+GO
+CREATE NONCLUSTERED INDEX IX_RentedShow_MemberID ON dbo.RentedShow
+	(
+	MemberID
+	) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX IX_RentedShow_ShowID ON dbo.RentedShow
+	(
+	ShowID
+	) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX IX_RentedShow_ProviderID ON dbo.RentedShow
+	(
+	ProviderID
+	) ON [PRIMARY]
+GO
+CREATE  INDEX [IX_RentedShow_ShowProviderID] ON [dbo].[RentedShow]([ShowProviderID]) ON [PRIMARY]
+GO
+ALTER TABLE dbo.RentedShow WITH NOCHECK ADD CONSTRAINT
+	FK_RentedShow_Member FOREIGN KEY
+	(
+	MemberID
+	) REFERENCES dbo.Member
+	(
+	MemberID
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+
+GO
+ALTER TABLE dbo.RentedShow WITH NOCHECK ADD CONSTRAINT
+	FK_RentedShow_Show FOREIGN KEY
+	(
+	ShowID
+	) REFERENCES dbo.Show
+	(
+	ShowID
+	)
+GO
+ALTER TABLE dbo.RentedShow WITH NOCHECK ADD CONSTRAINT
+	FK_RentedShow_Provider FOREIGN KEY
+	(
+	ProviderID
+	) REFERENCES dbo.Provider
+	(
+	ProviderID
+	)
+GO
+COMMIT
+ALTER TABLE [dbo].[RentedShow] ADD
+	CONSTRAINT [FK_RentedShow_ShowProvider] FOREIGN KEY
+	(
+		[ShowProviderID]
+	) REFERENCES [dbo].[ShowProvider] (
+		[ShowProviderID]
+	) ON DELETE NO ACTION  ON UPDATE NO ACTION
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+--//////////////////////////////////////////////////////////////////////////////

@@ -200,6 +200,10 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Show_GetBy
 drop procedure [dbo].[Show_GetByNameReleasedOn]
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_Get]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowProvider_Get]
+GO
+
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_Insert]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowProvider_Insert]
 GO
@@ -1272,6 +1276,19 @@ GO
 
 --//////////////////////////////////////////////////////////////////////////////
 
+CREATE PROCEDURE dbo.ShowProvider_Get
+	@ShowProviderID uniqueidentifier
+AS
+	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
+		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+	from ShowProvider
+	where ShowProviderID = @ShowProviderID
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
 CREATE PROCEDURE dbo.ShowProvider_Insert
 	@ShowProviderID uniqueidentifier,
 	@ShowID uniqueidentifier,
@@ -1485,14 +1502,13 @@ GO
 CREATE PROCEDURE dbo.ShowProvider_GetByRentedShowMemberID
 	@MemberID uniqueidentifier
 AS
-	select ShowProviderID, sp.ShowID, sp.ProviderID, sp.ProviderConnectionID,
+	select sp.ShowProviderID, sp.ShowID, sp.ProviderID, ProviderConnectionID,
 		ProviderShowID, sp.ShowURL, ShowFormatMime, ShowFormat_ShowFormatID,
 		ShowFormat_MediaEncoding, ShowFormat_MediaContainer,
 		ShowFormat_HorzResolution, ShowFormat_VertResolution,
 		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider sp
-	join RentedShow rs on (rs.ShowID = sp.ShowID) and (rs.ProviderID = sp.ProviderID)
-		and (rs.ProviderConnectionID = sp.ProviderConnectionID)
+	join RentedShow rs on (rs.ShowProviderID = sp.ShowProviderID)
 	where rs.MemberID = @MemberID
 GO
 
@@ -1588,7 +1604,7 @@ AS
 		MemberID,
 		ShowID,
 		ProviderID,
-		ProviderConnectionID,
+		ShowProviderID,
 		ShowURL,
 		ShowCost_ShowCostType,
 		ShowCost_Cost_CurrencyID,
@@ -1609,7 +1625,7 @@ CREATE PROCEDURE dbo.RentedShow_Insert
 	@MemberID uniqueidentifier,
 	@ShowID uniqueidentifier,
 	@ProviderID varchar(64),
-	@ProviderConnectionID uniqueidentifier,
+	@ShowProviderID uniqueidentifier,
 	@ShowURL varchar(4096),
 	@ShowCost_ShowCostType varchar(32),
 	@ShowCost_Cost_CurrencyID varchar(3),
@@ -1626,7 +1642,7 @@ AS
 		MemberID,
 		ShowID,
 		ProviderID,
-		ProviderConnectionID,
+		ShowProviderID,
 		ShowURL,
 		ShowCost_ShowCostType,
 		ShowCost_Cost_CurrencyID,
@@ -1643,7 +1659,7 @@ AS
 		@MemberID,
 		@ShowID,
 		@ProviderID,
-		@ProviderConnectionID,
+		@ShowProviderID,
 		@ShowURL,
 		@ShowCost_ShowCostType,
 		@ShowCost_Cost_CurrencyID,
@@ -1663,7 +1679,7 @@ CREATE PROCEDURE dbo.RentedShow_Update
 	@MemberID uniqueidentifier,
 	@ShowID uniqueidentifier,
 	@ProviderID varchar(64),
-	@ProviderConnectionID uniqueidentifier,
+	@ShowProviderID uniqueidentifier,
 	@ShowURL varchar(4096),
 	@ShowCost_ShowCostType varchar(32),
 	@ShowCost_Cost_CurrencyID varchar(3),
@@ -1678,7 +1694,7 @@ AS
 		--MemberID = @MemberID,
 		--ShowID = @ShowID,
 		--ProviderID = @ProviderID,
-		--ProviderConnectionID = @ProviderConnectionID,
+		--ShowProviderID = @ShowProviderID,
 		ShowURL = @ShowURL,
 		ShowCost_ShowCostType = @ShowCost_ShowCostType,
 		ShowCost_Cost_CurrencyID = @ShowCost_Cost_CurrencyID,
@@ -1709,7 +1725,7 @@ AS
 		MemberID,
 		ShowID,
 		ProviderID,
-		ProviderConnectionID,
+		ShowProviderID,
 		ShowURL,
 		ShowCost_ShowCostType,
 		ShowCost_Cost_CurrencyID,
@@ -1785,6 +1801,7 @@ GRANT EXECUTE ON [dbo].[Show_GetByRentedShowMemberID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Show_GetByNameReleasedYear] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Show_GetByNameReleasedOn] TO [inetvod]
 
+GRANT EXECUTE ON [dbo].[ShowProvider_Get] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_Insert] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_Update] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_Delete] TO [inetvod]

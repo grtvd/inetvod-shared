@@ -568,7 +568,7 @@ CREATE TABLE [dbo].[RentedShow] (
 	[MemberID] uniqueidentifier NOT NULL ,
 	[ShowID] uniqueidentifier NOT NULL ,
 	[ProviderID] [varchar] (64) NOT NULL ,
-	[ProviderConnectionID] uniqueidentifier NOT NULL ,
+	[ShowProviderID] uniqueidentifier NOT NULL ,
 	[ShowURL] [varchar] (4096) NOT NULL ,
 	[ShowCost_ShowCostType] [varchar] (32) NOT NULL ,
 	[ShowCost_Cost_CurrencyID] [varchar] (3) NULL ,
@@ -598,6 +598,9 @@ GO
 CREATE  INDEX [IX_RentedShow_ProviderID] ON [dbo].[RentedShow]([ProviderID]) ON [PRIMARY]
 GO
 
+CREATE  INDEX [IX_RentedShow_ShowProviderID] ON [dbo].[RentedShow]([ShowProviderID]) ON [PRIMARY]
+GO
+
 ALTER TABLE [dbo].[RentedShow] ADD
 	CONSTRAINT [FK_RentedShow_Member] FOREIGN KEY
 	(
@@ -622,6 +625,15 @@ ALTER TABLE [dbo].[RentedShow] ADD
 		[ProviderID]
 	) REFERENCES [dbo].[Provider] (
 		[ProviderID]
+	) ON DELETE NO ACTION  ON UPDATE NO ACTION
+GO
+
+ALTER TABLE [dbo].[RentedShow] ADD
+	CONSTRAINT [FK_RentedShow_ShowProvider] FOREIGN KEY
+	(
+		[ShowProviderID]
+	) REFERENCES [dbo].[ShowProvider] (
+		[ShowProviderID]
 	) ON DELETE NO ACTION  ON UPDATE NO ACTION
 GO
 
