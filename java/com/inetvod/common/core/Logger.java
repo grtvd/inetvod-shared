@@ -117,7 +117,7 @@ public class Logger
 		logErr(objClass.getClass(), method, e);
 	}
 
-	public static void logFile(InputStream inputStream, String subDir, FileExtension fileExtension)
+	public static String logFile(InputStream inputStream, String subDir, FileExtension fileExtension)
 	{
 		try
 		{
@@ -126,10 +126,13 @@ public class Logger
 				dir.mkdir();
 			File file = File.createTempFile("log", FileExtension.convertToString(fileExtension), dir);
 			StreamUtil.streamToFile(inputStream, file.getPath());
+			return file.getAbsolutePath();
 		}
 		catch(Exception e)
 		{
 		}
+
+		return null;
 	}
 
 	public static void logFile(InputStream inputStream, String subDir, String fileName)
