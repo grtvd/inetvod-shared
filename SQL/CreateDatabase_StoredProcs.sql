@@ -232,6 +232,10 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvid
 drop procedure [dbo].[ShowProvider_GetByProviderConnectionIDProviderShowID]
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByProviderConnectionIDShowAvail]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowProvider_GetByProviderConnectionIDShowAvail]
+GO
+
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_Search]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowProvider_Search]
 GO
@@ -248,8 +252,13 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvid
 drop procedure [dbo].[ShowProvider_GetByRentedShowMemberID]
 GO
 
+--TODO CAN DELETE AFTER NEXT UPDATE
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_MarkUnavailByProviderConnectionID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowProvider_MarkUnavailByProviderConnectionID]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_UpdateShowAvailByProviderConnectionIDShowAvail]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowProvider_UpdateShowAvailByProviderConnectionIDShowAvail]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowCategory_Insert]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -1456,6 +1465,21 @@ GO
 
 --//////////////////////////////////////////////////////////////////////////////
 
+CREATE PROCEDURE dbo.ShowProvider_GetByProviderConnectionIDShowAvail
+	@ProviderConnectionID uniqueidentifier,
+	@ShowAvail varchar(32)
+AS
+	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
+		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+	from ShowProvider
+	where (ProviderConnectionID = @ProviderConnectionID)
+	and (ShowAvail = @ShowAvail)
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
 CREATE PROCEDURE dbo.ShowProvider_Search
 	@PartialName varchar(64)
 AS
@@ -1514,12 +1538,24 @@ GO
 
 --//////////////////////////////////////////////////////////////////////////////
 
-CREATE PROCEDURE dbo.ShowProvider_MarkUnavailByProviderConnectionID
-	@ProviderConnectionID uniqueidentifier
+CREATE PROCEDURE dbo.ShowProvider_UpdateShowAvailByProviderConnectionIDShowAvail
+	@ProviderConnectionID uniqueidentifier,
+	@SearchShowAvail varchar(32),
+	@SetShowAvail varchar(32)
 AS
-	update ShowProvider
-		set ShowAvail = 'Unavailable'
-	where ProviderConnectionID = @ProviderConnectionID
+	if (not @SearchShowAvail is null)
+	begin
+		update ShowProvider
+			set ShowAvail = @SetShowAvail
+		where (ProviderConnectionID = @ProviderConnectionID)
+		and (ShowAvail = @SearchShowAvail)
+	end
+	else
+	begin
+		update ShowProvider
+			set ShowAvail = @SetShowAvail
+		where ProviderConnectionID = @ProviderConnectionID
+	end
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -1809,11 +1845,12 @@ GRANT EXECUTE ON [dbo].[ShowProvider_GetByShowIDProviderID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByShowID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderIDProviderShowID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderConnectionIDProviderShowID] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderConnectionIDShowAvail] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_Search] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByCategoryID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByRentedShowMemberID] TO [inetvod]
-GRANT EXECUTE ON [dbo].[ShowProvider_MarkUnavailByProviderConnectionID] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ShowProvider_UpdateShowAvailByProviderConnectionIDShowAvail] TO [inetvod]
 
 GRANT EXECUTE ON [dbo].[ShowCategory_Insert] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowCategory_Delete] TO [inetvod]

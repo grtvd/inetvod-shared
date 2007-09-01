@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.data;
@@ -10,8 +10,9 @@ public class ShowAvail
 {
 	public static final int MaxLength = 32;
 
+	public static final ShowAvail Unconfirmed = new ShowAvail("Unconfirmed");
 	public static final ShowAvail Available = new ShowAvail("Available");
-	public static final ShowAvail Confirming = new ShowAvail("Confirming");
+	public static final ShowAvail Reconfirming = new ShowAvail("Reconfirming");
 	public static final ShowAvail Unavailable = new ShowAvail("Unavailable");
 	private static HashMap<String, ShowAvail> fAllValues;
 

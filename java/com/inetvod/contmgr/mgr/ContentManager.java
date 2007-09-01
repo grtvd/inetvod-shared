@@ -16,6 +16,7 @@ import com.inetvod.contmgr.data.VideoCodec;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
 
 public class ContentManager
 {
@@ -90,6 +91,41 @@ public class ContentManager
 		catch(Exception e)
 		{
 			Logger.logErr(ContentManager.class, "getStats", e);
+			throw e;
+		}
+	}
+
+	public static boolean checkContent(String sourceURL) throws Exception
+	{
+		try
+		{
+			// Send HTTP request to server
+			HttpClient httpClient = new HttpClient();
+			//TODO httpClient.getParams().setParameter("http.socket.timeout", TimeoutMillis);
+			HeadMethod headMethod = new HeadMethod(sourceURL);
+			headMethod.setFollowRedirects(true);
+
+			try
+			{
+				int rc = httpClient.executeMethod(headMethod);
+				if(rc != HttpStatus.SC_OK)
+				{
+					if(rc != HttpStatus.SC_NOT_FOUND)
+						Logger.logInfo(ContentManager.class, "checkContent", String.format(
+							"Bad result(%d) from url(%s)", rc, sourceURL));
+					return false;
+				}
+
+				return true;
+			}
+			finally
+			{
+				headMethod.releaseConnection();
+			}
+		}
+		catch(Exception e)
+		{
+			Logger.logErr(ContentManager.class, "downloadFile", e);
 			throw e;
 		}
 	}

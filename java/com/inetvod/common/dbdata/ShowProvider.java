@@ -4,9 +4,9 @@
  */
 package com.inetvod.common.dbdata;
 
+import com.inetvod.common.core.DataExists;
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DataWriter;
-import com.inetvod.common.core.DataExists;
 import com.inetvod.common.data.ProviderConnectionID;
 import com.inetvod.common.data.ProviderID;
 import com.inetvod.common.data.ProviderShowID;
@@ -55,6 +55,8 @@ public class ShowProvider extends DatabaseObject
 	public void setShowFormatMime(String showFormatMime) { fShowFormatMime = showFormatMime; }
 
 	public ShowFormat getShowFormat() { return fShowFormat; }
+	public void setShowFormat(ShowFormat showFormat) { fShowFormat = showFormat; }
+
 	public ShowCostList getShowCostList() { return fShowCostList; }
 
 	public ShowAvail getShowAvail() { return fShowAvail; }
@@ -73,6 +75,7 @@ public class ShowProvider extends DatabaseObject
 		fShowFormatMime = showFormatMime;
 		fShowFormat = showFormat;
 		fShowCostList = new ShowCostList();
+		fShowAvail = ShowAvail.Unconfirmed;
 	}
 
 	public ShowProvider(DataReader reader) throws Exception

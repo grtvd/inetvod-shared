@@ -99,6 +99,29 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 		return ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByProviderConnectionIDProviderShowID", params);
 	}
 
+	private static ShowProviderList findByProviderConnectionIDShowAvail(ProviderConnectionID providerConnectionID,
+		ShowAvail showAvail) throws Exception
+	{
+		DatabaseProcParam params[] = new DatabaseProcParam[2];
+
+		params[0] = new DatabaseProcParam(Types.VARCHAR, providerConnectionID.toString());
+		params[1] = new DatabaseProcParam(Types.VARCHAR, showAvail.toString());
+
+		return ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByProviderConnectionIDShowAvail", params);
+	}
+
+	public static ShowProviderList findByProviderConnectionIDReconfirm(ProviderConnectionID providerConnectionID)
+		throws Exception
+	{
+		return findByProviderConnectionIDShowAvail(providerConnectionID, ShowAvail.Reconfirming);
+	}
+
+	public static ShowProviderList findByProviderConnectionIDUnconfirm(ProviderConnectionID providerConnectionID)
+		throws Exception
+	{
+		return findByProviderConnectionIDShowAvail(providerConnectionID, ShowAvail.Unconfirmed);
+	}
+
 	public static ShowProviderList findByCategoryIDList(CategoryIDList categoryIDList) throws Exception
 	{
 		ShowProviderList showProviderList = new ShowProviderList();
@@ -128,13 +151,27 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 		return ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByRentedShowMemberID", params);
 	}
 
-	public static void markUnavailByProviderConnectionID(ProviderConnectionID providerConnectionID) throws Exception
+	private static void updateShowAvailByProviderConnectionIDShowAvail(ProviderConnectionID providerConnectionID,
+		ShowAvail searchShowAvail, ShowAvail setShowAvail) throws Exception
 	{
-		DatabaseProcParam params[] = new DatabaseProcParam[1];
+		DatabaseProcParam params[] = new DatabaseProcParam[3];
 
 		params[0] = new DatabaseProcParam(Types.VARCHAR, providerConnectionID.toString());
+		params[1] = new DatabaseProcParam(Types.VARCHAR, ShowAvail.convertToString(searchShowAvail));
+		params[2] = new DatabaseProcParam(Types.VARCHAR, setShowAvail.toString());
 
-		ShowProvider.getDatabaseAdaptor().executeProc("ShowProvider_MarkUnavailByProviderConnectionID", params);
+		ShowProvider.getDatabaseAdaptor().executeProc("ShowProvider_UpdateShowAvailByProviderConnectionIDShowAvail", params);
+	}
+
+	public static void markUnavailByProviderConnectionID(ProviderConnectionID providerConnectionID) throws Exception
+	{
+		updateShowAvailByProviderConnectionIDShowAvail(providerConnectionID, null, ShowAvail.Unavailable);
+	}
+
+	public static void markReconfirmByProviderConnectionIDAvail(ProviderConnectionID providerConnectionID)
+		throws Exception
+	{
+		updateShowAvailByProviderConnectionIDShowAvail(providerConnectionID, ShowAvail.Available, ShowAvail.Reconfirming);
 	}
 
 	/* Item Methods */

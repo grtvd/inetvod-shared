@@ -8,6 +8,8 @@ import java.util.HashMap;
 
 import com.inetvod.common.core.FileExtension;
 import com.inetvod.common.core.Logger;
+import com.inetvod.common.data.MediaContainer;
+import com.inetvod.common.data.MediaEncoding;
 import com.inetvod.common.data.MediaMIME;
 
 public class MediaMapper
@@ -18,6 +20,9 @@ public class MediaMapper
 
 	private static HashMap<VideoCodec, MediaMIME> fVideoCodecMediaMIMEMap;
 	private static HashMap<AudioCodec, MediaMIME> fAudioCodecMediaMIMEMap;
+
+	private static HashMap<VideoCodec, MediaContainer> fVideoCodecMediaContainerMap;
+	private static HashMap<AudioCodec, MediaContainer> fAudioCodecMediaContainerMap;
 
 	/* Construction */
 	static
@@ -42,6 +47,19 @@ public class MediaMapper
 
 		fAudioCodecMediaMIMEMap = new HashMap<AudioCodec, MediaMIME>();
 		fAudioCodecMediaMIMEMap.put(AudioCodec.MP3, MediaMIME.audio_mpeg);
+
+		fVideoCodecMediaContainerMap = new HashMap<VideoCodec, MediaContainer>();
+		fVideoCodecMediaContainerMap.put(VideoCodec.WMV1, MediaContainer.ASF);
+		fVideoCodecMediaContainerMap.put(VideoCodec.WMV2, MediaContainer.ASF);
+		fVideoCodecMediaContainerMap.put(VideoCodec.WMV3, MediaContainer.ASF);
+		fVideoCodecMediaContainerMap.put(VideoCodec.AVC1, MediaContainer.MOV);
+		fVideoCodecMediaContainerMap.put(VideoCodec.MP4V, MediaContainer.MOV);
+		fVideoCodecMediaContainerMap.put(VideoCodec.SVQ3, MediaContainer.MOV);
+		fVideoCodecMediaContainerMap.put(VideoCodec.DIVX, MediaContainer.AVI);
+
+		fAudioCodecMediaContainerMap = new HashMap<AudioCodec, MediaContainer>();
+		fAudioCodecMediaContainerMap.put(AudioCodec.MP3, MediaContainer.MP3);
+		fAudioCodecMediaContainerMap.put(AudioCodec.WMA2, MediaContainer.ASF);
 	}
 
 	/* Implementation */
@@ -87,5 +105,39 @@ public class MediaMapper
 				AudioCodec.convertToString(audioCodec)));
 
 		return mediaMIME;
+	}
+
+	public static MediaEncoding getMediaEncodingForVideoAudioCodecs(VideoCodec videoCodec, AudioCodec audioCodec)
+	{
+		MediaEncoding mediaEncoding = null;
+
+		if(videoCodec != null)
+			mediaEncoding = MediaEncoding.valueOf(videoCodec.toString());
+		else if(audioCodec != null)
+			mediaEncoding = MediaEncoding.valueOf(audioCodec.toString());
+
+		if(mediaEncoding == null)
+			Logger.logWarn(MediaMapper.class, "getMediaEncodingForVideoAudioCodecs",
+				String.format("No map for VideoCodec(%s)/AudioCodec(%s)", VideoCodec.convertToString(videoCodec),
+				AudioCodec.convertToString(audioCodec)));
+
+		return mediaEncoding;
+	}
+
+	public static MediaContainer getMediaContainerForVideoAudioCodecs(VideoCodec videoCodec, AudioCodec audioCodec)
+	{
+		MediaContainer mediaContainer = null;
+
+		if(videoCodec != null)
+			mediaContainer = fVideoCodecMediaContainerMap.get(videoCodec);
+		else if(audioCodec != null)
+			mediaContainer = fAudioCodecMediaContainerMap.get(audioCodec);
+
+		if(mediaContainer == null)
+			Logger.logWarn(MediaMapper.class, "getMediaContainerForVideoAudioCodecs",
+				String.format("No map for VideoCodec(%s)/AudioCodec(%s)", VideoCodec.convertToString(videoCodec),
+				AudioCodec.convertToString(audioCodec)));
+
+		return mediaContainer;
 	}
 }
