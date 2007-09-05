@@ -112,9 +112,9 @@ public class MediaMapper
 		MediaEncoding mediaEncoding = null;
 
 		if(videoCodec != null)
-			mediaEncoding = MediaEncoding.valueOf(videoCodec.toString());
+			mediaEncoding = MediaEncoding.convertFromString(videoCodec.toString());
 		else if(audioCodec != null)
-			mediaEncoding = MediaEncoding.valueOf(audioCodec.toString());
+			mediaEncoding = MediaEncoding.convertFromString(audioCodec.toString());
 
 		if(mediaEncoding == null)
 			Logger.logWarn(MediaMapper.class, "getMediaEncodingForVideoAudioCodecs",
