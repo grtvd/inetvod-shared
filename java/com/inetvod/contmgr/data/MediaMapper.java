@@ -45,11 +45,12 @@ public class MediaMapper
 		fVideoCodecMediaMIMEMap.put(VideoCodec.WMV2, MediaMIME.video_x_ms_wmv);
 		fVideoCodecMediaMIMEMap.put(VideoCodec.WMV3, MediaMIME.video_x_ms_wmv);
 		fVideoCodecMediaMIMEMap.put(VideoCodec.AVC1, MediaMIME.video_mp4);
-		fVideoCodecMediaMIMEMap.put(VideoCodec.MP4V, MediaMIME.video_m4v);
+		fVideoCodecMediaMIMEMap.put(VideoCodec.MP4V, MediaMIME.video_mp4);
 		fVideoCodecMediaMIMEMap.put(VideoCodec.SVQ3, MediaMIME.video_quicktime);
 
 		fAudioCodecMediaMIMEMap = new HashMap<AudioCodec, MediaMIME>();
 		fAudioCodecMediaMIMEMap.put(AudioCodec.MP3, MediaMIME.audio_mpeg);
+		fAudioCodecMediaMIMEMap.put(AudioCodec.M4A, MediaMIME.audio_mp4);
 
 		fVideoCodecMediaContainerMap = new HashMap<VideoCodec, MediaContainer>();
 		fVideoCodecMediaContainerMap.put(VideoCodec.WMV1, MediaContainer.ASF);
