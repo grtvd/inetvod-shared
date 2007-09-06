@@ -44,6 +44,9 @@ public class MediaMapper
 		fVideoCodecMediaMIMEMap.put(VideoCodec.WMV1, MediaMIME.video_x_ms_wmv);
 		fVideoCodecMediaMIMEMap.put(VideoCodec.WMV2, MediaMIME.video_x_ms_wmv);
 		fVideoCodecMediaMIMEMap.put(VideoCodec.WMV3, MediaMIME.video_x_ms_wmv);
+		fVideoCodecMediaMIMEMap.put(VideoCodec.AVC1, MediaMIME.video_mp4);
+		fVideoCodecMediaMIMEMap.put(VideoCodec.MP4V, MediaMIME.video_m4v);
+		fVideoCodecMediaMIMEMap.put(VideoCodec.SVQ3, MediaMIME.video_quicktime);
 
 		fAudioCodecMediaMIMEMap = new HashMap<AudioCodec, MediaMIME>();
 		fAudioCodecMediaMIMEMap.put(AudioCodec.MP3, MediaMIME.audio_mpeg);
@@ -115,6 +118,8 @@ public class MediaMapper
 			mediaEncoding = MediaEncoding.convertFromString(videoCodec.toString());
 		else if(audioCodec != null)
 			mediaEncoding = MediaEncoding.convertFromString(audioCodec.toString());
+		else
+			return null;
 
 		if(mediaEncoding == null)
 			Logger.logWarn(MediaMapper.class, "getMediaEncodingForVideoAudioCodecs",
@@ -132,6 +137,8 @@ public class MediaMapper
 			mediaContainer = fVideoCodecMediaContainerMap.get(videoCodec);
 		else if(audioCodec != null)
 			mediaContainer = fAudioCodecMediaContainerMap.get(audioCodec);
+		else
+			return null;
 
 		if(mediaContainer == null)
 			Logger.logWarn(MediaMapper.class, "getMediaContainerForVideoAudioCodecs",

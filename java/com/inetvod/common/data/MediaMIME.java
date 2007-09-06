@@ -14,6 +14,7 @@ public enum MediaMIME
 	video_x_msvideo("video/x-msvideo"),
 	video_mp4("video/mp4"),
 	video_x_m4v("video/x-m4v"),
+	video_m4v("video/m4v"),
 	video_mov("video/mov"),
 	video_quicktime("video/quicktime"),
 	video_mpeg("video/mpeg"),
