@@ -22,6 +22,7 @@ import com.inetvod.common.data.ShowAvail;
 import com.inetvod.common.data.ShowCost;
 import com.inetvod.common.data.ShowCostList;
 import com.inetvod.common.data.ShowFormat;
+import com.inetvod.common.data.ShowFormatList;
 import com.inetvod.common.data.ShowID;
 import com.inetvod.common.data.ShowProviderID;
 
@@ -237,14 +238,17 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 		return null;
 	}
 
-	public ShowProvider findFirstByPlayerMimeType(Player player)
+	public ShowProvider findFirstByPlayer(Player player)
 	{
-		for(String mimeType : player.getMimeTypeList())
-			for(ShowProvider showProvider : this)
-			{
-				if(mimeType.equals(showProvider.getShowFormatMime()))
-					return showProvider;
-			}
+		ShowFormatList showFormatList = combineShowFormatList();
+		ShowFormat showFormat = player.supportsFormatFirst(showFormatList);
+		if(showFormat != null)
+			return findByShowFormat(showFormat);
+
+		ArrayList<String> showFormatMimeList = combineShowFormatMime();
+		String showFormatMime = player.supportsMimeFirst(showFormatMimeList);
+		if(StrUtil.hasLen(showFormatMime))
+			return findByShowFormatMime(showFormatMime);
 
 		return null;
 	}
@@ -394,38 +398,16 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 	}
 
 	/**
-	 * Returns a sub-set of items from this list by first available mimeType from Player for each Provider
-	 * @return sub-set of ShowProviderList
-	 */
-	public ShowProviderList findFirstProviderItemsByPlayerMimeType(Player player)
-	{
-		ShowProviderList showProviderList = new ShowProviderList();
-
-		for(ProviderID providerID : findUniqueProviderIDs())
-		{
-			ShowProviderList providerShowProviderList = findItemsByProviderID(providerID);
-			providerShowProviderList.findFirstByPlayerMimeType(player);
-		}
-		for(ShowProvider showProvider : this)
-		{
-			if(player.supportsMimeType(showProvider.getShowFormatMime()))
-				showProviderList.add(showProvider);
-		}
-
-		return showProviderList;
-	}
-
-	/**
 	 * Returns a sub-set of items from this list whose ShowFormatMime is supported by the Player
 	 * @return sub-set of ShowProviderList
 	 */
-	public ShowProviderList findItemsByPlayerMimeType(Player player)
+	public ShowProviderList findItemsByPlayer(Player player)
 	{
 		ShowProviderList showProviderList = new ShowProviderList();
 
 		for(ShowProvider showProvider : this)
 		{
-			if(player.supportsMimeType(showProvider.getShowFormatMime()))
+			if(player.supportsFormat(showProvider.getShowFormat(), showProvider.getShowFormatMime()))
 				showProviderList.add(showProvider);
 		}
 
@@ -492,6 +474,29 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 			if(find(showProvider.getShowProviderID()) == null)
 				add(showProvider);
 		}
+	}
+
+	public ArrayList<String> combineShowFormatMime()
+	{
+		ArrayList<String> showFormatMimeList = new ArrayList<String>();
+
+		for(ShowProvider showProvider : this)
+			if(StrUtil.hasLen(showProvider.getShowFormatMime()))
+				showFormatMimeList.add(showProvider.getShowFormatMime());
+
+		return showFormatMimeList;
+
+	}
+
+	public ShowFormatList combineShowFormatList()
+	{
+		ShowFormatList showFormatList = new ShowFormatList();
+
+		for(ShowProvider showProvider : this)
+			if(showProvider.getShowFormat() != null)
+				showFormatList.add(showProvider.getShowFormat());
+
+		return showFormatList;
 	}
 
 	public ShowCostList combineShowCostList()
