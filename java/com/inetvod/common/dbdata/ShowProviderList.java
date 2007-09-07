@@ -22,9 +22,9 @@ import com.inetvod.common.data.ShowAvail;
 import com.inetvod.common.data.ShowCost;
 import com.inetvod.common.data.ShowCostList;
 import com.inetvod.common.data.ShowFormat;
-import com.inetvod.common.data.ShowFormatList;
 import com.inetvod.common.data.ShowID;
 import com.inetvod.common.data.ShowProviderID;
+import com.inetvod.common.data.ShowFormatList;
 
 public class ShowProviderList extends ArrayList<ShowProvider>
 {
@@ -41,26 +41,24 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 
 	public static ShowProviderList findByShowIDProviderIDAvailable(ShowID showID, ProviderID providerID) throws Exception
 	{
-		//TODO move check for Available into stored procedure
-		return findByShowIDProviderID(showID, providerID).findItemsByAvailable();
+		DatabaseProcParam params[] = new DatabaseProcParam[2];
+
+		params[0] = new DatabaseProcParam(Types.VARCHAR, showID.toString());
+		params[1] = new DatabaseProcParam(Types.VARCHAR, providerID.toString());
+
+		return ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByShowIDProviderIDAvailable", params);
 	}
 
-	public static ShowProviderList findByShowID(ShowID showID) throws Exception
+	public static ShowProviderList findByShowIDAvailable(ShowID showID) throws Exception
 	{
 		DatabaseProcParam params[] = new DatabaseProcParam[1];
 
 		params[0] = new DatabaseProcParam(Types.VARCHAR, showID.toString());
 
-		return ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByShowID", params);
+		return ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByShowIDAvailable", params);
 	}
 
-	public static ShowProviderList findByShowIDAvailable(ShowID showID) throws Exception
-	{
-		//TODO move check for Available into stored procedure
-		return findByShowID(showID).findItemsByAvailable();
-	}
-
-	public static ShowProviderList findByShowName(String partialName) throws Exception
+	public static ShowProviderList findByShowNameAvailable(String partialName) throws Exception
 	{
 		DatabaseProcParam params[] = new DatabaseProcParam[1];
 
@@ -69,7 +67,7 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 		return ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_Search", params);
 	}
 
-	public static ShowProviderList findByProviderIDList(ProviderIDList providerIDList) throws Exception
+	public static ShowProviderList findByProviderIDListAvailable(ProviderIDList providerIDList) throws Exception
 	{
 		ShowProviderList showProviderList = new ShowProviderList();
 		Iterator iter = providerIDList.iterator();
@@ -83,7 +81,7 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 
 			params[0] = new DatabaseProcParam(Types.VARCHAR, providerID.toString());
 
-			showProviderList.merge(ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByProviderID", params));
+			showProviderList.merge(ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByProviderIDAvailable", params));
 		}
 
 		return showProviderList;
@@ -123,7 +121,7 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 		return findByProviderConnectionIDShowAvail(providerConnectionID, ShowAvail.Unconfirmed);
 	}
 
-	public static ShowProviderList findByCategoryIDList(CategoryIDList categoryIDList) throws Exception
+	public static ShowProviderList findByCategoryIDListAvailable(CategoryIDList categoryIDList) throws Exception
 	{
 		ShowProviderList showProviderList = new ShowProviderList();
 		Iterator iter = categoryIDList.iterator();
@@ -137,7 +135,7 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 
 			params[0] = new DatabaseProcParam(Types.VARCHAR, categoryID.toString());
 
-			showProviderList.merge(ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByCategoryID", params));
+			showProviderList.merge(ShowProvider.getDatabaseAdaptor().selectManyByProc("ShowProvider_GetByCategoryIDAvailable", params));
 		}
 
 		return showProviderList;
@@ -346,6 +344,7 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 	 */
 	public ShowProviderList findItemsByProviderIDList(ProviderIDList providerIDList)
 	{
+		//TODO: make use of splitByProviderID()
 		ShowProviderList showProviderList = new ShowProviderList();
 		ShowProvider showProvider;
 		Iterator iter = iterator();
@@ -445,6 +444,24 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 		return providerIDList;
 	}
 
+	public HashMap<ShowID, ShowProviderList> splitByShowID()
+	{
+		HashMap<ShowID, ShowProviderList> showMap = new HashMap<ShowID, ShowProviderList>();
+
+		for(ShowProvider showProvider : this)
+		{
+			ShowProviderList showShowProviderList = showMap.get(showProvider.getShowID());
+			if(showShowProviderList == null)
+			{
+				showShowProviderList = new ShowProviderList();
+				showMap.put(showProvider.getShowID(), showShowProviderList);
+			}
+			showShowProviderList.add(showProvider);
+		}
+
+		return showMap;
+	}
+
 	public HashMap<ProviderID, ShowProviderList> splitByProviderID()
 	{
 		HashMap<ProviderID, ShowProviderList> providerMap = new HashMap<ProviderID, ShowProviderList>();
@@ -465,6 +482,12 @@ public class ShowProviderList extends ArrayList<ShowProvider>
 
 	public void merge(ShowProviderList showProviderList)
 	{
+		if(size() == 0)
+		{
+			addAll(showProviderList);
+			return;
+		}
+
 		Iterator iter = showProviderList.iterator();
 		ShowProvider showProvider;
 

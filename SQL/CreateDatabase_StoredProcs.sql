@@ -220,8 +220,17 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvid
 drop procedure [dbo].[ShowProvider_GetByShowIDProviderID]
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByShowIDProviderIDAvailable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowProvider_GetByShowIDProviderIDAvailable]
+GO
+
+--TODO CAN DELETE AFTER NEXT UPDATE
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByShowID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowProvider_GetByShowID]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByShowIDAvailable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowProvider_GetByShowIDAvailable]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByProviderIDProviderShowID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -240,21 +249,26 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvid
 drop procedure [dbo].[ShowProvider_Search]
 GO
 
+--TODO CAN DELETE AFTER NEXT UPDATE
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByProviderID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowProvider_GetByProviderID]
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByProviderIDAvailable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowProvider_GetByProviderIDAvailable]
+GO
+
+--TODO CAN DELETE AFTER NEXT UPDATE
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByCategoryID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowProvider_GetByCategoryID]
 GO
 
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByRentedShowMemberID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[ShowProvider_GetByRentedShowMemberID]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByCategoryIDAvailable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowProvider_GetByCategoryIDAvailable]
 GO
 
---TODO CAN DELETE AFTER NEXT UPDATE
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_MarkUnavailByProviderConnectionID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[ShowProvider_MarkUnavailByProviderConnectionID]
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByRentedShowMemberID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowProvider_GetByRentedShowMemberID]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_UpdateShowAvailByProviderConnectionIDShowAvail]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -1422,7 +1436,23 @@ GO
 
 --//////////////////////////////////////////////////////////////////////////////
 
-CREATE PROCEDURE dbo.ShowProvider_GetByShowID
+CREATE PROCEDURE dbo.ShowProvider_GetByShowIDProviderIDAvailable
+	@ShowID uniqueidentifier,
+	@ProviderID varchar(64)
+AS
+	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
+		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+	from ShowProvider
+	where (ShowID = @ShowID)
+	and (ProviderID = @ProviderID)
+	and (ShowAvail = 'Available')
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.ShowProvider_GetByShowIDAvailable
 	@ShowID uniqueidentifier
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
@@ -1431,6 +1461,7 @@ AS
 		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider
 	where (ShowID = @ShowID)
+	and (ShowAvail = 'Available')
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -1491,11 +1522,12 @@ AS
 	from ShowProvider sp
 	join Show s on s.ShowID = sp.ShowID
 	where s.Name like '%' + isnull(@PartialName, '') + '%'
+	and (sp.ShowAvail = 'Available')
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
 
-CREATE PROCEDURE dbo.ShowProvider_GetByProviderID
+CREATE PROCEDURE dbo.ShowProvider_GetByProviderIDAvailable
 	@ProviderID varchar(64)
 AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
@@ -1504,11 +1536,12 @@ AS
 		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
 	from ShowProvider
 	where ProviderID = @ProviderID
+	and (ShowAvail = 'Available')
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
 
-CREATE PROCEDURE dbo.ShowProvider_GetByCategoryID
+CREATE PROCEDURE dbo.ShowProvider_GetByCategoryIDAvailable
 	@CategoryID varchar(32)
 AS
 	select sp.ShowProviderID, sp.ShowID, ProviderID, ProviderConnectionID,
@@ -1519,6 +1552,7 @@ AS
 	from ShowProvider sp
 	join ShowCategory sc on sc.ShowID = sp.ShowID
 	where sc.CategoryID = @CategoryID
+	and (sp.ShowAvail = 'Available')
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -1842,13 +1876,14 @@ GRANT EXECUTE ON [dbo].[ShowProvider_Insert] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_Update] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_Delete] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByShowIDProviderID] TO [inetvod]
-GRANT EXECUTE ON [dbo].[ShowProvider_GetByShowID] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ShowProvider_GetByShowIDProviderIDAvailable] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ShowProvider_GetByShowIDAvailable] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderIDProviderShowID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderConnectionIDProviderShowID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderConnectionIDShowAvail] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_Search] TO [inetvod]
-GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderID] TO [inetvod]
-GRANT EXECUTE ON [dbo].[ShowProvider_GetByCategoryID] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ShowProvider_GetByProviderIDAvailable] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ShowProvider_GetByCategoryIDAvailable] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_GetByRentedShowMemberID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowProvider_UpdateShowAvailByProviderConnectionIDShowAvail] TO [inetvod]
 
