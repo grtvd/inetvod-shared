@@ -22,6 +22,7 @@ public enum MediaMIME
 
 	audio_mpeg("audio/mpeg"),
 	audio_mp4("audio/mp4"),
+	audio_x_m4a("audio/x-m4a"),
 
 	application_octet_stream("application/octet-stream"),
 	application_x_shockwave_flash("application/x-shockwave-flash");
