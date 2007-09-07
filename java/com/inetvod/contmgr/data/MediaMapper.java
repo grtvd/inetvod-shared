@@ -63,6 +63,7 @@ public class MediaMapper
 
 		fAudioCodecMediaContainerMap = new HashMap<AudioCodec, MediaContainer>();
 		fAudioCodecMediaContainerMap.put(AudioCodec.MP3, MediaContainer.MP3);
+		fAudioCodecMediaContainerMap.put(AudioCodec.M4A, MediaContainer.MOV);
 		fAudioCodecMediaContainerMap.put(AudioCodec.WMA2, MediaContainer.ASF);
 	}
 
