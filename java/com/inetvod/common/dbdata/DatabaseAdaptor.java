@@ -106,7 +106,7 @@ public class DatabaseAdaptor<T extends DatabaseObject, L extends List<T>>
 
 		if((usePool != null) && usePool)
 		{
-			Logger.logInfo(DatabaseAdaptor.class, "setDBConnectFile", "Using connection pool");
+			//Logger.logInfo(DatabaseAdaptor.class, "setDBConnectFile", "Using connection pool");
 
 			fBasicDataSource = new BasicDataSource();
 			fBasicDataSource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
