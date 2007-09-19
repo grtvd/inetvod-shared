@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -386,8 +385,12 @@ public class XmlDataReader extends DataReader
 
 		for(Node node: nodes)
 		{
-			T item = itemCtorString.newInstance(getNodeText(node));
-			list.add(item);
+			String data = getNodeText(node);
+			if((data != null) && (data.length() > 0))
+			{
+				T item = itemCtorString.newInstance(data);
+				list.add(item);
+			}
 		}
 
 		return list;
