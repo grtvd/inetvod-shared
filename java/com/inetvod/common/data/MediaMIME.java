@@ -24,8 +24,12 @@ public enum MediaMIME
 	audio_mp4("audio/mp4"),
 	audio_x_m4a("audio/x-m4a"),
 
+	binary_octet_stream("binary/octet-stream"),
 	application_octet_stream("application/octet-stream"),
-	application_x_shockwave_flash("application/x-shockwave-flash");
+	application_x_shockwave_flash("application/x-shockwave-flash"),
+
+	image_jpg("image/jpg"),
+	image_jpeg("image/jpeg");
 
 	/* Constants */
 	public static final int MaxLength = 32;
