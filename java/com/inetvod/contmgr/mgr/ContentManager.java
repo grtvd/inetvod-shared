@@ -54,7 +54,7 @@ public class ContentManager
 		return url.toString();
 	}
 
-	public static Info getStats(String sourceURL, VideoCodec needVideoCodec) throws Exception
+	public static Info getStats(String sourceURL, VideoCodec needVideoCodec)
 	{
 		try
 		{
@@ -91,11 +91,12 @@ public class ContentManager
 		catch(Exception e)
 		{
 			Logger.logErr(ContentManager.class, "getStats", e);
-			throw e;
 		}
+
+		return null;
 	}
 
-	public static boolean checkContent(String sourceURL) throws Exception
+	public static boolean checkContent(String sourceURL)
 	{
 		try
 		{
@@ -125,9 +126,10 @@ public class ContentManager
 		}
 		catch(Exception e)
 		{
-			Logger.logErr(ContentManager.class, "downloadFile", e);
-			throw e;
+			Logger.logInfo(ContentManager.class, "checkContent", e);
 		}
+
+		return false;
 	}
 
 	/**
