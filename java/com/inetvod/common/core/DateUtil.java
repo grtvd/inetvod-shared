@@ -19,6 +19,8 @@ public class DateUtil
 
 	public static final String DateFormat = "MM/dd/yyyy";
 	public static final String DayOfWeekShortFormat = "EEE";
+	public static final String DayOfWeekHourShortFormat = "EEE ha";
+	public static final String HourMinuteShortFormat = "h:mma";
 	public static final String MonthDayOnlyFormat = "M/d";
 	public static final String YearOnlyFormat = "yyyy";
 
@@ -105,18 +107,26 @@ public class DateUtil
 		return cal.getTime();
 	}
 
-	public static String formatDate(Date pDate, String pFormat)
+	public static String formatDate(Date pDate, String pFormat, boolean replaceAMPM)
 	{
 		if(pDate == null)
 			return null;
 		if(!StrUtil.hasLen(pFormat))
-			return (new SimpleDateFormat(DateFormat)).format(pDate);
-		return (new SimpleDateFormat(pFormat)).format(pDate);
+			pFormat = DateFormat;
+		String date = (new SimpleDateFormat(pFormat)).format(pDate);
+		if(!replaceAMPM)
+			return date;
+		return date.replaceFirst("PM", "p").replaceFirst("AM", "a");
+	}
+
+	public static String formatDate(Date pDate, String pFormat)
+	{
+		return formatDate(pDate, pFormat, false);
 	}
 
 	public static String formatDate(Date pDate)
 	{
-		return formatDate(pDate, null);
+		return formatDate(pDate, null, false);
 	}
 
 	/**

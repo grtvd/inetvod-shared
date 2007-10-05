@@ -4,10 +4,11 @@
  */
 package com.inetvod.playerClient.rqdata;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
+import java.util.Date;
 
 import com.inetvod.common.core.DataReader;
+import com.inetvod.common.core.DateUtil;
 import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.StrUtil;
 import com.inetvod.common.data.ProviderID;
@@ -63,5 +64,28 @@ public class RentedShowSearch implements Readable
 		fEpisodeName = reader.readString("EpisodeName", ShowDetail.EpisodeNameMaxLength);
 
 		fAvailableUntil = reader.readDateTime("AvailableUntil");
+	}
+
+	public String buildAvailableUtilStr()
+	{
+		String expires = "n/a";
+
+		if(fAvailableUntil != null)
+		{
+			double totalDays = DateUtil.daysDiff(DateUtil.today(), fAvailableUntil);
+
+			if(totalDays < 0.0)
+				expires = "Expired";
+			else if(totalDays <= 1.0)
+				expires = DateUtil.formatDate(fAvailableUntil, DateUtil.HourMinuteShortFormat, true);
+			else if(totalDays <= 7)
+			{
+				expires = DateUtil.formatDate(fAvailableUntil, DateUtil.DayOfWeekHourShortFormat, true);
+			}
+			else
+				expires = DateUtil.formatDate(fAvailableUntil, DateUtil.MonthDayOnlyFormat);
+		}
+
+		return expires;
 	}
 }
