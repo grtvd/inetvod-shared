@@ -17,7 +17,107 @@ public class DateUtil
 	private static final String RFC2822DateFormat = "EEE, d MMM yyyy HH:mm:ss Z";
 	private static final String RFC2822AltDateFormat = "EEE, ddMMMyyyy HH:mm:ss Z";
 
+	public static final String DateFormat = "MM/dd/yyyy";
+	public static final String DayOfWeekShortFormat = "EEE";
+	public static final String MonthDayOnlyFormat = "M/d";
+	public static final String YearOnlyFormat = "yyyy";
+
+	public static final int DaysPerWeek = 7;
+	public static final int DaysPerYear = 365;
+	private static final long MillisPerDay = 86400000;
+
 	/* Implementation */
+	public static Date today()
+	{
+		return dateOnly(new Date());
+	}
+
+	public static Date now()
+	{
+		return new Date();
+	}
+
+	public static Date dateOnly(Date pDate)
+	{
+		if(pDate == null)
+			return null;
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(pDate);
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH);
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+
+		cal.clear();
+		cal.set(year, month, day);
+
+		return cal.getTime();
+	}
+
+	public static Date timeOnly(Date pDate)
+	{
+		if(pDate == null)
+			return null;
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(pDate);
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int minute = cal.get(Calendar.MINUTE);
+		int second = cal.get(Calendar.SECOND);
+
+		cal.clear();
+		cal.set(Calendar.HOUR, hour);
+		cal.set(Calendar.MINUTE, minute);
+		cal.set(Calendar.SECOND, second);
+
+		return cal.getTime();
+	}
+
+	public static Date combineDateTime(Date pDate, Date pTime)
+	{
+		if((pDate == null) && (pTime == null))
+			return null;
+		if(pDate == null)
+			return pTime;
+		if(pTime == null)
+			return pDate;
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(pDate);
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH);
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+
+		cal.clear();
+		cal.setTime(pTime);
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int minute = cal.get(Calendar.MINUTE);
+		int second = cal.get(Calendar.SECOND);
+
+		cal.clear();
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.DAY_OF_MONTH, day);
+		cal.set(Calendar.HOUR, hour);
+		cal.set(Calendar.MINUTE, minute);
+		cal.set(Calendar.SECOND, second);
+
+		return cal.getTime();
+	}
+
+	public static String formatDate(Date pDate, String pFormat)
+	{
+		if(pDate == null)
+			return null;
+		if(!StrUtil.hasLen(pFormat))
+			return (new SimpleDateFormat(DateFormat)).format(pDate);
+		return (new SimpleDateFormat(pFormat)).format(pDate);
+	}
+
+	public static String formatDate(Date pDate)
+	{
+		return formatDate(pDate, null);
+	}
 
 	/**
 	 * Drops the time component from date, using default time zone, returning SQL date
@@ -93,5 +193,10 @@ public class DateUtil
 			try { date = (new SimpleDateFormat(RFC2822AltDateFormat)).parse(dateStr); } catch(Exception e) {}
 
 		return date;
+	}
+
+	public static double daysDiff(Date pFrom, Date pTo)
+	{
+		return (pTo.getTime() - pFrom.getTime()) / (double)MillisPerDay;
 	}
 }

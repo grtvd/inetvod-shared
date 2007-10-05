@@ -8,6 +8,7 @@ import java.lang.reflect.Constructor;
 import java.util.Date;
 
 import com.inetvod.common.core.DataReader;
+import com.inetvod.common.core.DateUtil;
 import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.StrUtil;
 import com.inetvod.common.data.ShowID;
@@ -47,6 +48,7 @@ public class ShowSearch implements Readable
 		readFrom(reader);
 	}
 
+	/* Implementation */
 	public void readFrom(DataReader reader) throws Exception
 	{
 		fShowID = reader.readDataID("ShowID", ShowID.MaxLength, ShowID.CtorString);
@@ -55,5 +57,37 @@ public class ShowSearch implements Readable
 		fReleasedOn = reader.readDate("ReleasedOn");
 		fReleasedYear = reader.readShort("ReleasedYear");
 		fShowProviderList = reader.readList("ShowProvider", ShowProviderList.Ctor, ShowProvider.CtorDataReader);
+	}
+
+	public String buildReleasedStr()
+	{
+		String date = "";
+
+		if(fReleasedOn != null)
+		{
+			double totalDays = DateUtil.daysDiff(fReleasedOn, DateUtil.today());
+
+			if(totalDays < 1.0)
+				date = "Today";
+			else if(totalDays <= DateUtil.DaysPerWeek)
+				date = DateUtil.formatDate(fReleasedOn, DateUtil.DayOfWeekShortFormat);
+			else if(totalDays <= DateUtil.DaysPerYear)
+				date = DateUtil.formatDate(fReleasedOn, DateUtil.MonthDayOnlyFormat);
+			else
+				date = DateUtil.formatDate(fReleasedOn, DateUtil.YearOnlyFormat);
+		}
+		else if(fReleasedYear != null)
+			date = fReleasedYear.toString();
+
+		return date;
+	}
+
+	public String buildCostStr()
+	{
+		ShowProvider showProvider = fShowProviderList.get(0);
+		String cost = showProvider.getShowCostList().get(0).getCostDisplay();
+		if((fShowProviderList.size() > 1) || (showProvider.getShowCostList().size() > 1))
+			return "*" + cost;
+		return cost;
 	}
 }
