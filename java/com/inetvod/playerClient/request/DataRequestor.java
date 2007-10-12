@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.playerClient.request;
@@ -9,15 +9,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.UUID;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
-
 import com.inetvod.common.core.Logger;
 import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.Writeable;
 import com.inetvod.common.core.XmlDataReader;
 import com.inetvod.common.core.XmlDataWriter;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 
 public class DataRequestor
 {
@@ -152,5 +151,10 @@ public class DataRequestor
 	public RentedShowListResp rentedShowListRequest(RentedShowListRqst rentedShowListRqst)
 	{
 		return (RentedShowListResp)sendRequest(rentedShowListRqst, fRequestTimeoutMillis);
+	}
+
+	public RentedShowResp rentedShowRequest(RentedShowRqst rentedShowRqst)
+	{
+		return (RentedShowResp)sendRequest(rentedShowRqst, fRequestTimeoutMillis);
 	}
 }

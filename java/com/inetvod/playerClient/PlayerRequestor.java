@@ -1,33 +1,36 @@
 /**
- * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.playerClient;
 
 import com.inetvod.common.core.StrUtil;
-import com.inetvod.common.data.ManufacturerID;
 import com.inetvod.common.data.CategoryID;
-import com.inetvod.common.data.ShowID;
+import com.inetvod.common.data.ManufacturerID;
 import com.inetvod.common.data.ProviderID;
+import com.inetvod.common.data.RentedShowID;
 import com.inetvod.common.data.ShowCost;
-import com.inetvod.playerClient.request.StatusCode;
-import com.inetvod.playerClient.rqdata.Player;
-import com.inetvod.playerClient.rqdata.ShowSearchList;
-import com.inetvod.playerClient.rqdata.ShowDetail;
-import com.inetvod.playerClient.rqdata.RentedShowSearchList;
-import com.inetvod.playerClient.request.DataRequestor;
-import com.inetvod.playerClient.request.SignonRqst;
-import com.inetvod.playerClient.request.SignonResp;
-import com.inetvod.playerClient.request.ShowSearchRqst;
-import com.inetvod.playerClient.request.ShowSearchResp;
-import com.inetvod.playerClient.request.RentShowRqst;
-import com.inetvod.playerClient.request.RentShowResp;
+import com.inetvod.common.data.ShowID;
 import com.inetvod.playerClient.request.CheckShowAvailResp;
 import com.inetvod.playerClient.request.CheckShowAvailRqst;
-import com.inetvod.playerClient.request.ShowDetailRqst;
-import com.inetvod.playerClient.request.ShowDetailResp;
-import com.inetvod.playerClient.request.RentedShowListRqst;
+import com.inetvod.playerClient.request.DataRequestor;
+import com.inetvod.playerClient.request.RentShowResp;
+import com.inetvod.playerClient.request.RentShowRqst;
 import com.inetvod.playerClient.request.RentedShowListResp;
+import com.inetvod.playerClient.request.RentedShowListRqst;
+import com.inetvod.playerClient.request.RentedShowResp;
+import com.inetvod.playerClient.request.RentedShowRqst;
+import com.inetvod.playerClient.request.ShowDetailResp;
+import com.inetvod.playerClient.request.ShowDetailRqst;
+import com.inetvod.playerClient.request.ShowSearchResp;
+import com.inetvod.playerClient.request.ShowSearchRqst;
+import com.inetvod.playerClient.request.SignonResp;
+import com.inetvod.playerClient.request.SignonRqst;
+import com.inetvod.playerClient.request.StatusCode;
+import com.inetvod.playerClient.rqdata.Player;
+import com.inetvod.playerClient.rqdata.RentedShowSearchList;
+import com.inetvod.playerClient.rqdata.ShowDetail;
+import com.inetvod.playerClient.rqdata.ShowSearchList;
 
 public class PlayerRequestor
 {
@@ -176,6 +179,20 @@ public class PlayerRequestor
 
 		if(StatusCode.sc_Success.equals(fStatusCode))
 			return rentedShowListResp.getRentedShowSearchList();
+		return null;
+	}
+
+	public RentedShowResp rentedShow(RentedShowID rentedShowID)
+	{
+		RentedShowRqst rentedShowRqst = new RentedShowRqst();
+		rentedShowRqst.setRentedShowID(rentedShowID);
+
+		DataRequestor dataRequestor = newDataRequestor();
+		RentedShowResp rentedShowResp = dataRequestor.rentedShowRequest(rentedShowRqst);
+		getDataRequestorStatus(dataRequestor);
+
+		if(StatusCode.sc_Success.equals(fStatusCode))
+			return rentedShowResp;
 		return null;
 	}
 }
