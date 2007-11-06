@@ -6,7 +6,6 @@ package com.inetvod.playerClient;
 
 import com.inetvod.common.core.StrUtil;
 import com.inetvod.common.data.CategoryID;
-import com.inetvod.common.data.ManufacturerID;
 import com.inetvod.common.data.ProviderID;
 import com.inetvod.common.data.RentedShowID;
 import com.inetvod.common.data.ShowCost;
@@ -92,13 +91,11 @@ public class PlayerRequestor
 		return StatusCode.sc_Success.equals(fStatusCode);
 	}
 
-	public SignonResp signon(String userID, String password)
+	public SignonResp signon(String userID, String password, Player player)
 	{
 		SignonRqst signonRqst = SignonRqst.newInstance();
 		signonRqst.setUserID(userID);
 		signonRqst.setPassword(password);
-
-		Player player = Player.newInstance(new ManufacturerID("inetvod"), "winwid", "1", "1.0.0000");
 		signonRqst.setPlayer(player);
 
 		DataRequestor dataRequestor = newDataRequestor();
