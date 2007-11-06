@@ -1,10 +1,11 @@
 /**
- * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.core;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -131,7 +132,6 @@ public class DateUtil
 
 	/**
 	 * Drops the time component from date, using default time zone, returning SQL date
-	 * @param date
 	 * @return SQL date w/o time
 	 */
 	public static java.sql.Date convertToDBDate(Date date)
@@ -152,7 +152,6 @@ public class DateUtil
 
 	/**
 	 * For storing all date/times in DB as if GMT.
-	 * @param date
 	 * @return converted Timestamp as if GMT
 	 */
 	public static Timestamp convertToDBTimestamp(Date date)
@@ -172,7 +171,6 @@ public class DateUtil
 
 	/**
 	 * For storing all date/times in DB as if GMT.
-	 * @param date
 	 * @return converted Timestamp as if GMT
 	 */
 	public static Date convertFromDBTimestamp(Timestamp date)
@@ -203,6 +201,22 @@ public class DateUtil
 			try { date = (new SimpleDateFormat(RFC2822AltDateFormat)).parse(dateStr); } catch(Exception e) {}
 
 		return date;
+	}
+
+	public static String convertToISO8601(Date date)
+	{
+		if(date == null)
+			return null;
+
+		return (new ISO8601DateTimeFormat().format(date));
+	}
+
+	public static Date convertFromISO8601(String dateStr) throws ParseException
+	{
+		if(!StrUtil.hasLen(dateStr))
+			return null;
+
+		return (new ISO8601DateTimeFormat().parse(dateStr));
 	}
 
 	public static double daysDiff(Date pFrom, Date pTo)

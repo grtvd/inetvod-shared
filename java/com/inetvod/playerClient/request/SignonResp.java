@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2007 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.playerClient.request;
@@ -15,12 +15,13 @@ public class SignonResp implements Readable
 	private static final int SessionDataMaxLength = Short.MAX_VALUE;
 
 	/* Fields */
-	protected String fSessionData;
-	protected Date fSessionExpires;
-	//protected MemberState fMemberState;
+	private String fSessionData;
+	private Date fSessionExpires;
+	//private MemberState fMemberState;
 
 	/* Getters and Setters */
 	public String getSessionData() { return fSessionData; }
+	public Date getSessionExpires() { return fSessionExpires; }
 
 	/* Contruction */
 	public SignonResp(DataReader reader) throws Exception
