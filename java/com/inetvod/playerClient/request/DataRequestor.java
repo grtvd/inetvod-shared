@@ -128,6 +128,11 @@ public class DataRequestor
 		return (SignonResp)sendRequest(signonRqst, fRequestTimeoutMillis);
 	}
 
+	public SystemDataResp systemDataRequest()
+	{
+		return (SystemDataResp)sendRequest(SystemDataRqst.newInstance(), fRequestTimeoutMillis);
+	}
+
 	public ShowSearchResp showSearchRequest(ShowSearchRqst showSearchRqst)
 	{
 		return (ShowSearchResp)sendRequest(showSearchRqst, fRequestTimeoutMillis);

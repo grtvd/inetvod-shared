@@ -26,6 +26,7 @@ import com.inetvod.playerClient.request.ShowSearchRqst;
 import com.inetvod.playerClient.request.SignonResp;
 import com.inetvod.playerClient.request.SignonRqst;
 import com.inetvod.playerClient.request.StatusCode;
+import com.inetvod.playerClient.request.SystemDataResp;
 import com.inetvod.playerClient.rqdata.Player;
 import com.inetvod.playerClient.rqdata.RentedShowSearchList;
 import com.inetvod.playerClient.rqdata.ShowDetail;
@@ -104,6 +105,15 @@ public class PlayerRequestor
 		getDataRequestorStatus(dataRequestor);
 		return signonResp;
 
+	}
+
+	public SystemDataResp systemData()
+	{
+		DataRequestor dataRequestor = newDataRequestor();
+		SystemDataResp systemDataResp = dataRequestor.systemDataRequest();
+
+		getDataRequestorStatus(dataRequestor);
+		return systemDataResp;
 	}
 
 	public ShowSearchList showSearch(CategoryID categoryID)
