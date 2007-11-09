@@ -7,6 +7,7 @@ package com.inetvod.playerClient;
 import com.inetvod.common.core.StrUtil;
 import com.inetvod.common.data.CategoryID;
 import com.inetvod.common.data.ProviderID;
+import com.inetvod.common.data.RatingID;
 import com.inetvod.common.data.RentedShowID;
 import com.inetvod.common.data.ShowCost;
 import com.inetvod.common.data.ShowID;
@@ -116,10 +117,17 @@ public class PlayerRequestor
 		return systemDataResp;
 	}
 
-	public ShowSearchList showSearch(CategoryID categoryID)
+	public ShowSearchList showSearch(String search, ProviderID providerID, CategoryID categoryID, RatingID ratingID)
 	{
 		ShowSearchRqst showSearchRqst = new ShowSearchRqst();
-		showSearchRqst.getCategoryIDList().add(categoryID);
+		if(StrUtil.hasLen(search))
+			showSearchRqst.setSearch(search);
+		if(providerID != null)
+			showSearchRqst.getProviderIDList().add(providerID);
+		if(categoryID != null)
+			showSearchRqst.getCategoryIDList().add(categoryID);
+		if(ratingID != null)
+			showSearchRqst.getRatingIDList().add(ratingID);
 		showSearchRqst.setMaxResults(Short.MAX_VALUE);
 
 		DataRequestor dataRequestor = newDataRequestor();
