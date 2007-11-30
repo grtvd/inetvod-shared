@@ -13,6 +13,7 @@ public enum MediaMIME
 	video_x_ms_wmv("video/x-ms-wmv"),
 	video_x_msvideo("video/x-msvideo"),
 	video_mp4("video/mp4"),
+	video_x_mp4("video/x-mp4"),
 	video_x_m4v("video/x-m4v"),
 	video_m4v("video/m4v"),
 	video_mov("video/mov"),
@@ -29,7 +30,8 @@ public enum MediaMIME
 	application_x_shockwave_flash("application/x-shockwave-flash"),
 
 	image_jpg("image/jpg"),
-	image_jpeg("image/jpeg");
+	image_jpeg("image/jpeg"),
+	text_html("text/html");
 
 	/* Constants */
 	public static final int MaxLength = 32;
