@@ -31,7 +31,8 @@ public enum MediaMIME
 
 	image_jpg("image/jpg"),
 	image_jpeg("image/jpeg"),
-	text_html("text/html");
+	text_html("text/html"),
+	text_plain("text/plain");
 
 	/* Constants */
 	public static final int MaxLength = 32;
