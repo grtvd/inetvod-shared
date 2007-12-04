@@ -11,7 +11,8 @@ public enum AudioCodec
 	/* Constants */
 	MP3("mpga"),
 	M4A("mp4a"),
-	WMA2("WMA2");
+	WMA2("WMA2"),
+	AC3("AC3");
 
 	public static final int MaxLength = 8;
 
