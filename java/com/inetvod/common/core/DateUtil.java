@@ -40,13 +40,13 @@ public class DateUtil
 		return new Date();
 	}
 
-	public static Date dateOnly(Date pDate)
+	public static Date dateOnly(Date date)
 	{
-		if(pDate == null)
+		if(date == null)
 			return null;
 
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(pDate);
+		cal.setTime(date);
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH);
 		int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -57,13 +57,13 @@ public class DateUtil
 		return cal.getTime();
 	}
 
-	public static Date timeOnly(Date pDate)
+	public static Date timeOnly(Date date)
 	{
-		if(pDate == null)
+		if(date == null)
 			return null;
 
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(pDate);
+		cal.setTime(date);
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		int minute = cal.get(Calendar.MINUTE);
 		int second = cal.get(Calendar.SECOND);
@@ -76,23 +76,23 @@ public class DateUtil
 		return cal.getTime();
 	}
 
-	public static Date combineDateTime(Date pDate, Date pTime)
+	public static Date combineDateTime(Date date, Date time)
 	{
-		if((pDate == null) && (pTime == null))
+		if((date == null) && (time == null))
 			return null;
-		if(pDate == null)
-			return pTime;
-		if(pTime == null)
-			return pDate;
+		if(date == null)
+			return time;
+		if(time == null)
+			return date;
 
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(pDate);
+		cal.setTime(date);
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH);
 		int day = cal.get(Calendar.DAY_OF_MONTH);
 
 		cal.clear();
-		cal.setTime(pTime);
+		cal.setTime(time);
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		int minute = cal.get(Calendar.MINUTE);
 		int second = cal.get(Calendar.SECOND);
@@ -108,26 +108,37 @@ public class DateUtil
 		return cal.getTime();
 	}
 
-	public static String formatDate(Date pDate, String pFormat, boolean replaceAMPM)
+	public static String formatDate(Date date, String format, boolean replaceAMPM)
 	{
-		if(pDate == null)
+		if(date == null)
 			return null;
-		if(!StrUtil.hasLen(pFormat))
-			pFormat = DateFormat;
-		String date = (new SimpleDateFormat(pFormat)).format(pDate);
+		if(!StrUtil.hasLen(format))
+			format = DateFormat;
+		String dateStr = (new SimpleDateFormat(format)).format(date);
 		if(!replaceAMPM)
-			return date;
-		return date.replaceFirst("PM", "p").replaceFirst("AM", "a");
+			return dateStr;
+		return dateStr.replaceFirst("PM", "p").replaceFirst("AM", "a");
 	}
 
-	public static String formatDate(Date pDate, String pFormat)
+	public static String formatDate(Date date, String format)
 	{
-		return formatDate(pDate, pFormat, false);
+		return formatDate(date, format, false);
 	}
 
-	public static String formatDate(Date pDate)
+	public static String formatDate(Date date)
 	{
-		return formatDate(pDate, null, false);
+		return formatDate(date, null, false);
+	}
+
+	public static Date parseDate(String dateStr, String format)
+	{
+		if(!StrUtil.hasLen(dateStr))
+			return null;
+
+		Date date = null;
+		try { date = (new SimpleDateFormat(format)).parse(dateStr); } catch(Exception e) {}
+
+		return date;
 	}
 
 	/**
@@ -219,8 +230,8 @@ public class DateUtil
 		return (new ISO8601DateTimeFormat().parse(dateStr));
 	}
 
-	public static double daysDiff(Date pFrom, Date pTo)
+	public static double daysDiff(Date from, Date to)
 	{
-		return (pTo.getTime() - pFrom.getTime()) / (double)MillisPerDay;
+		return (to.getTime() - from.getTime()) / (double)MillisPerDay;
 	}
 }
