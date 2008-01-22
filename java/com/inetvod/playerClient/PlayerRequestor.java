@@ -35,6 +35,9 @@ import com.inetvod.playerClient.rqdata.ShowSearchList;
 
 public class PlayerRequestor
 {
+	/* Constants */
+	private static final short SHOWSEARCHRQST_MAXRESULTS = 150;
+
 	/* Fields */
 	private String fRequestURL;
 	private String fSessionData;
@@ -128,7 +131,7 @@ public class PlayerRequestor
 			showSearchRqst.getCategoryIDList().add(categoryID);
 		if(ratingID != null)
 			showSearchRqst.getRatingIDList().add(ratingID);
-		showSearchRqst.setMaxResults(Short.MAX_VALUE);
+		showSearchRqst.setMaxResults(SHOWSEARCHRQST_MAXRESULTS);
 
 		DataRequestor dataRequestor = newDataRequestor();
 		ShowSearchResp showSearchResp = dataRequestor.showSearchRequest(showSearchRqst);
