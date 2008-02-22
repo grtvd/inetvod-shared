@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.playerClient.rqdata;
@@ -24,6 +24,7 @@ public class ShowSearch implements Readable
 	protected String fEpisodeName;
 	protected Date fReleasedOn;
 	protected Short fReleasedYear;
+	protected String fPictureURL;
 	protected ShowProviderList fShowProviderList = new ShowProviderList();
 
 	/* Getters and Setters */
@@ -40,6 +41,7 @@ public class ShowSearch implements Readable
 
 	public String getEpisodeName() { return fEpisodeName; }
 	public Short getReleasedYear() { return fReleasedYear; }
+	public String getPictureURL() { return fPictureURL; }
 	public ShowProviderList getShowProviderList() { return fShowProviderList; }
 
 	/* Constuction */
@@ -56,6 +58,7 @@ public class ShowSearch implements Readable
 		fEpisodeName = reader.readString("EpisodeName", ShowDetail.EpisodeNameMaxLength);
 		fReleasedOn = reader.readDate("ReleasedOn");
 		fReleasedYear = reader.readShort("ReleasedYear");
+		fPictureURL = reader.readString("PictureURL", ShowDetail.PictureURLMaxLength);
 		fShowProviderList = reader.readList("ShowProvider", ShowProviderList.Ctor, ShowProvider.CtorDataReader);
 	}
 
