@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.playerClient.rqdata;
@@ -27,6 +27,7 @@ public class RentedShowSearch implements Readable
 	protected ProviderID fProviderID;
 	protected String fName;
 	protected String fEpisodeName;
+	private String fPictureURL;
 
 	public Date fAvailableUntil;
 
@@ -46,6 +47,7 @@ public class RentedShowSearch implements Readable
 	}
 
 	public String getEpisodeName() { return fEpisodeName; }
+	public String getPictureURL() { return fPictureURL; }
 	public Date getAvailableUntil() { return fAvailableUntil; }
 
 	/* Constuction */
@@ -62,6 +64,7 @@ public class RentedShowSearch implements Readable
 		fProviderID = reader.readDataID("ProviderID", ProviderID.MaxLength, ProviderID.CtorString);
 		fName = reader.readString("Name", ShowDetail.NameMaxLength);
 		fEpisodeName = reader.readString("EpisodeName", ShowDetail.EpisodeNameMaxLength);
+		fPictureURL = reader.readString("PictureURL", ShowDetail.PictureURLMaxLength);
 
 		fAvailableUntil = reader.readDateTime("AvailableUntil");
 	}
