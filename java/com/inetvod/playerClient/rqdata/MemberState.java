@@ -32,6 +32,6 @@ public class MemberState implements Readable
 	public void readFrom(DataReader reader) throws Exception
 	{
 		fMemberPrefs = reader.readObject("MemberPrefs", MemberPrefs.CtorDataReader);
-		fMemberProviderList = reader.readList("MemberPrefs", MemberProviderList.Ctor,  MemberProvider.CtorDataReader);
+		fMemberProviderList = reader.readList("MemberProvider", MemberProviderList.Ctor,  MemberProvider.CtorDataReader);
 	}
 }
