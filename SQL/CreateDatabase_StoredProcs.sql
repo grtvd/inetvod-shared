@@ -1,5 +1,5 @@
 --//////////////////////////////////////////////////////////////////////////////
--- Copyright © 2005-2007 iNetVOD, Inc. All Rights Reserved.
+-- Copyright © 2005-2008 iNetVOD, Inc. All Rights Reserved.
 -- iNetVOD Confidential and Proprietary.  See LEGAL.txt.
 --//////////////////////////////////////////////////////////////////////////////
 
@@ -14,6 +14,10 @@ GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Provider_GetAll]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[Provider_GetAll]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Provider_GetByNoAdult]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[Provider_GetByNoAdult]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ProviderConnection_Get]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -46,6 +50,10 @@ GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Category_GetAll]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[Category_GetAll]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Category_GetByNoAdult]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[Category_GetByNoAdult]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Rating_Get]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -331,7 +339,7 @@ GO
 CREATE PROCEDURE dbo.Provider_Get
 	@ProviderID varchar(64)
 AS
-	select ProviderID, Name
+	select ProviderID, Name, IsAdult
 	from Provider
 	where ProviderID = @ProviderID
 GO
@@ -340,8 +348,18 @@ GO
 
 CREATE PROCEDURE dbo.Provider_GetAll
 AS
-	select ProviderID, Name
+	select ProviderID, Name, IsAdult
 	from Provider
+	order by Name
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.Provider_GetByNoAdult
+AS
+	select ProviderID, Name, IsAdult
+	from Provider
+	where IsAdult = 0
 	order by Name
 GO
 
@@ -457,7 +475,7 @@ GO
 CREATE PROCEDURE dbo.Category_Get
 	@CategoryID varchar(32)
 AS
-	select CategoryID, Name
+	select CategoryID, Name, IsAdult
 	from Category
 	where CategoryID = @CategoryID
 GO
@@ -466,8 +484,18 @@ GO
 
 CREATE PROCEDURE dbo.Category_GetAll
 AS
-	select CategoryID, Name
+	select CategoryID, Name, IsAdult
 	from Category
+	order by Name
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.Category_GetByNoAdult
+AS
+	select CategoryID, Name, IsAdult
+	from Category
+	where IsAdult = 0
 	order by Name
 GO
 
@@ -1814,6 +1842,7 @@ GO
 
 GRANT EXECUTE ON [dbo].[Provider_Get] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Provider_GetAll] TO [inetvod]
+GRANT EXECUTE ON [dbo].[Provider_GetByNoAdult] TO [inetvod]
 
 GRANT EXECUTE ON [dbo].[ProviderConnection_Get] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ProviderConnection_Insert] TO [inetvod]
@@ -1824,6 +1853,7 @@ GRANT EXECUTE ON [dbo].[ProviderConnection_GetByProviderIDConnectionType] TO [in
 
 GRANT EXECUTE ON [dbo].[Category_Get] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Category_GetAll] TO [inetvod]
+GRANT EXECUTE ON [dbo].[Category_GetByNoAdult] TO [inetvod]
 
 GRANT EXECUTE ON [dbo].[Rating_Get] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Rating_GetAll] TO [inetvod]

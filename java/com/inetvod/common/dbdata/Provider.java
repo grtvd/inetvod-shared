@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -17,6 +17,7 @@ public class Provider extends DatabaseObject
 	/* Fields */
 	private ProviderID fProviderID;
 	private String fName;
+	private boolean fIsAdult;
 
 	private static DatabaseAdaptor<Provider, ProviderList> fDatabaseAdaptor =
 		new DatabaseAdaptor<Provider, ProviderList>(Provider.class, ProviderList.class);
@@ -48,11 +49,13 @@ public class Provider extends DatabaseObject
 	{
 		fProviderID = reader.readDataID("ProviderID", ProviderID.MaxLength, ProviderID.CtorString);
 		fName = reader.readString("Name", NameMaxLength);
+		fIsAdult = reader.readBoolean("IsAdult");
 	}
 
 	public void writeTo(DataWriter writer) throws Exception
 	{
 		writer.writeDataID("ProviderID", fProviderID, ProviderID.MaxLength);
 		writer.writeString("Name", fName, NameMaxLength);
+		writer.writeBoolean("IsAdult", fIsAdult);
 	}
 }

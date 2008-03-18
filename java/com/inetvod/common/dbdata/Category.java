@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -12,11 +12,12 @@ import com.inetvod.common.data.CategoryID;
 public class Category extends DatabaseObject
 {
 	/* Constants */
-	private static final int NameMaxLength = 64;
+	public static final int NameMaxLength = 64;
 
 	/* Fields */
 	private CategoryID fCategoryID;
 	private String fName;
+	private boolean fIsAdult;
 
 	private static DatabaseAdaptor<Category, CategoryList> fDatabaseAdaptor
 		= new DatabaseAdaptor<Category, CategoryList>(Category.class, CategoryList.class);
@@ -24,6 +25,7 @@ public class Category extends DatabaseObject
 
 	/* Getters & Setters */
 	public CategoryID getCategoryID() { return fCategoryID; }
+	public String getName() { return fName; }
 
 	/* Construction */
 	public Category(DataReader reader) throws Exception
@@ -46,11 +48,13 @@ public class Category extends DatabaseObject
 	{
 		fCategoryID = reader.readDataID("CategoryID", CategoryID.MaxLength, CategoryID.CtorString);
 		fName = reader.readString("Name", NameMaxLength);
+		fIsAdult = reader.readBoolean("IsAdult");
 	}
 
 	public void writeTo(DataWriter writer) throws Exception
 	{
 		writer.writeDataID("CategoryID", fCategoryID, CategoryID.MaxLength);
 		writer.writeString("Name", fName, NameMaxLength);
+		writer.writeBoolean("IsAdult", fIsAdult);
 	}
 }

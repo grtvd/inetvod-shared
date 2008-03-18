@@ -1,5 +1,5 @@
 --//////////////////////////////////////////////////////////////////////////////
--- Copyright © 2005-2007 iNetVOD, Inc. All Rights Reserved.
+-- Copyright © 2005-2008 iNetVOD, Inc. All Rights Reserved.
 -- iNetVOD Confidential and Proprietary.  See LEGAL.txt.
 --//////////////////////////////////////////////////////////////////////////////
 
@@ -144,6 +144,7 @@ GO
 CREATE TABLE [dbo].[Provider] (
 	[ProviderID] [varchar] (64) NOT NULL ,
 	[Name] [varchar] (64) NOT NULL ,
+	[IsAdult] [bit] NOT NULL
 ) ON [PRIMARY]
 GO
 
@@ -192,7 +193,8 @@ GO
 
 CREATE TABLE [dbo].[Category] (
 	[CategoryID] [varchar] (32) NOT NULL ,
-	[Name] [varchar] (32) NOT NULL
+	[Name] [varchar] (32) NOT NULL ,
+	[IsAdult] [bit] NOT NULL
 ) ON [PRIMARY]
 GO
 

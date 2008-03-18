@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -12,5 +12,10 @@ public class ProviderList extends ArrayList<Provider>
 	public static ProviderList find() throws Exception
 	{
 		return Provider.getDatabaseAdaptor().selectManyByProc("Provider_GetAll", null);
+	}
+
+	public static ProviderList findByNoAdult() throws Exception
+	{
+		return Provider.getDatabaseAdaptor().selectManyByProc("Provider_GetByNoAdult", null);
 	}
 }

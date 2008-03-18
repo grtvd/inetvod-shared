@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -14,6 +14,11 @@ public class CategoryList extends ArrayList<Category>
 	public static CategoryList find() throws Exception
 	{
 		return Category.getDatabaseAdaptor().selectManyByProc("Category_GetAll", null);
+	}
+
+	public static CategoryList findByNoAdult() throws Exception
+	{
+		return Category.getDatabaseAdaptor().selectManyByProc("Category_GetByNoAdult", null);
 	}
 
 	/* Implementation */
