@@ -31,6 +31,10 @@ ALTER TABLE dbo.Category ADD
 	IsAdult bit NOT NULL CONSTRAINT DF_Category_IsAdult DEFAULT 0
 GO
 
+ALTER TABLE dbo.MemberSession ADD
+	IncludeRatingIDList varchar(128) NULL
+GO
+
 COMMIT
 
 --//////////////////////////////////////////////////////////////////////////////

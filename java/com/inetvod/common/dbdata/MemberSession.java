@@ -1,5 +1,5 @@
 /**
- * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2005-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -13,6 +13,8 @@ import com.inetvod.common.core.SystemConfiguation;
 import com.inetvod.common.data.MemberID;
 import com.inetvod.common.data.MemberSessionID;
 import com.inetvod.common.data.PlayerID;
+import com.inetvod.common.data.RatingID;
+import com.inetvod.common.data.RatingIDList;
 
 public class MemberSession extends DatabaseObject
 {
@@ -23,6 +25,7 @@ public class MemberSession extends DatabaseObject
 	private Date fStartedOn;
 	private Date fExpiresAt;
 	private boolean fShowAdult;
+	private RatingIDList fIncludeRatingIDList;
 
 	private static DatabaseAdaptor<MemberSession, MemberSessionList> fDatabaseAdaptor =
 		new DatabaseAdaptor<MemberSession, MemberSessionList>(MemberSession.class, MemberSessionList.class);
@@ -40,8 +43,10 @@ public class MemberSession extends DatabaseObject
 	public boolean getShowAdult() { return fShowAdult; }
 	public void setShowAdult(boolean showAdult) { fShowAdult = showAdult; }
 
+	public RatingIDList getIncludeRatingIDList() { return fIncludeRatingIDList; }
+
 	/* Construction */
-	protected MemberSession(MemberID memberID, PlayerID playerID)
+	protected MemberSession(MemberID memberID, PlayerID playerID, RatingIDList includeRatingIDList)
 	{
 		super(true);
 		fMemberSessionID = MemberSessionID.newInstance();
@@ -50,6 +55,7 @@ public class MemberSession extends DatabaseObject
 		fStartedOn = new Date();
 		fExpiresAt = new Date(fStartedOn.getTime() + SystemConfiguation.getThe().getSessionTimeoutMillis());
 		fShowAdult = false;
+		fIncludeRatingIDList = includeRatingIDList;
 	}
 
 	public MemberSession(DataReader reader) throws Exception
@@ -58,9 +64,9 @@ public class MemberSession extends DatabaseObject
 		readFrom(reader);
 	}
 
-	public static MemberSession newInstance(MemberID memberID, PlayerID providerID)
+	public static MemberSession newInstance(MemberID memberID, PlayerID providerID, RatingIDList includeRatingIDList)
 	{
-		return new MemberSession(memberID, providerID);
+		return new MemberSession(memberID, providerID, includeRatingIDList);
 	}
 
 	protected static MemberSession load(MemberSessionID memberSessionID, DataExists exists) throws Exception
@@ -82,6 +88,7 @@ public class MemberSession extends DatabaseObject
 		fStartedOn = reader.readDateTime("StartedOn");
 		fExpiresAt = reader.readDateTime("ExpiresAt");
 		fShowAdult = reader.readBooleanValue("ShowAdult");
+		fIncludeRatingIDList = reader.readStringList("IncludeRatingIDList", RatingID.MaxLength, RatingIDList.Ctor, RatingID.CtorString);
 	}
 
 	public void writeTo(DataWriter writer) throws Exception
@@ -92,6 +99,7 @@ public class MemberSession extends DatabaseObject
 		writer.writeDateTime("StartedOn", fStartedOn);
 		writer.writeDateTime("ExpiresAt", fExpiresAt);
 		writer.writeBooleanValue("ShowAdult", fShowAdult);
+		writer.writeStringList("IncludeRatingIDList", fIncludeRatingIDList, MemberPrefs.IncludeRatingIDListMaxLength);
 	}
 
 	public void update() throws Exception

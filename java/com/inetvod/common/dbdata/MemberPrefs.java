@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -7,17 +7,17 @@ package com.inetvod.common.dbdata;
 import com.inetvod.common.core.DataExists;
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DataWriter;
+import com.inetvod.common.data.ConnectionSpeed;
 import com.inetvod.common.data.IncludeAdult;
 import com.inetvod.common.data.MemberID;
-import com.inetvod.common.data.RatingIDList;
-import com.inetvod.common.data.ConnectionSpeed;
 import com.inetvod.common.data.RatingID;
+import com.inetvod.common.data.RatingIDList;
 
 public class MemberPrefs extends DatabaseObject
 {
 	/* Constants */
 	private static final int AdultPINMaxLength = 32;
-	private static final int IncludeRatingIDListMaxLength = 126;
+	public static final int IncludeRatingIDListMaxLength = 128;
 
 	/* Fields */
 	private MemberID fMemberID;

@@ -1016,7 +1016,8 @@ AS
 		PlayerID,
 		StartedOn,
 		ExpiresAt,
-		ShowAdult
+		ShowAdult,
+		IncludeRatingIDList
 	from MemberSession
 	where MemberSessionID = @MemberSessionID
 GO
@@ -1029,7 +1030,8 @@ CREATE PROCEDURE dbo.MemberSession_Insert
 	@PlayerID uniqueidentifier,
 	@StartedOn datetime,
 	@ExpiresAt datetime,
-	@ShowAdult bit
+	@ShowAdult bit,
+	@IncludeRatingIDList varchar(128)
 AS
 	insert into MemberSession
 	(
@@ -1038,7 +1040,8 @@ AS
 		PlayerID,
 		StartedOn,
 		ExpiresAt,
-		ShowAdult
+		ShowAdult,
+		IncludeRatingIDList
 	)
 	values
 	(
@@ -1047,7 +1050,8 @@ AS
 		@PlayerID,
 		@StartedOn,
 		@ExpiresAt,
-		@ShowAdult
+		@ShowAdult,
+		@IncludeRatingIDList
 	)
 GO
 
@@ -1059,14 +1063,16 @@ CREATE PROCEDURE dbo.MemberSession_Update
 	@PlayerID uniqueidentifier,
 	@StartedOn datetime,
 	@ExpiresAt datetime,
-	@ShowAdult bit
+	@ShowAdult bit,
+	@IncludeRatingIDList varchar(128)
 AS
 	update MemberSession set
 		MemberID = @MemberID,
 		PlayerID = @PlayerID,
 		StartedOn = @StartedOn,
 		ExpiresAt = @ExpiresAt,
-		ShowAdult = @ShowAdult
+		ShowAdult = @ShowAdult,
+		IncludeRatingIDList = @IncludeRatingIDList
 	where MemberSessionID = @MemberSessionID
 GO
 

@@ -363,7 +363,8 @@ CREATE TABLE [dbo].[MemberSession] (
 	[PlayerID] uniqueidentifier NOT NULL ,
 	[StartedOn] [datetime] NOT NULL ,
 	[ExpiresAt] [datetime] NOT NULL ,
-	[ShowAdult] [bit] NOT NULL
+	[ShowAdult] [bit] NOT NULL ,
+	[IncludeRatingIDList] [varchar] (128) NULL
 ) ON [PRIMARY]
 GO
 
