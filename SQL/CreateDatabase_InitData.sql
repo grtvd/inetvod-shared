@@ -1,5 +1,5 @@
 --//////////////////////////////////////////////////////////////////////////////
--- Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+-- Copyright © 2005-2008 iNetVOD, Inc. All Rights Reserved.
 -- iNetVOD Confidential and Proprietary.  See LEGAL.txt.
 --//////////////////////////////////////////////////////////////////////////////
 
@@ -151,36 +151,41 @@ go
 
 --//////////////////////////////////////////////////////////////////////////////
 
-insert into Rating (RatingID, Name)
-values ('g', 'G')
-insert into Rating (RatingID, Name)
-values ('pg', 'PG')
-insert into Rating (RatingID, Name)
-values ('pg13', 'PG-13')
-insert into Rating (RatingID, Name)
-values ('r', 'R')
-insert into Rating (RatingID, Name)
-values ('nc17', 'NC-17')
-insert into Rating (RatingID, Name)
-values ('tvy', 'TV-Y')
-insert into Rating (RatingID, Name)
-values ('tvy7', 'TV-Y7')
-insert into Rating (RatingID, Name)
-values ('tvy7fv', 'TV-Y7-FV')
-insert into Rating (RatingID, Name)
-values ('tvg', 'TV-G')
-insert into Rating (RatingID, Name)
-values ('tvpg', 'TV-PG')
-insert into Rating (RatingID, Name)
-values ('tv14', 'TV-14')
-insert into Rating (RatingID, Name)
-values ('tvma', 'TV-MA')
+insert into Rating (RatingID, Name, SortOrder)
+values ('g', 'G', 2)
+insert into Rating (RatingID, Name, SortOrder)
+values ('pg', 'PG', 7)
+insert into Rating (RatingID, Name, SortOrder)
+values ('pg13', 'PG-13', 9)
+insert into Rating (RatingID, Name, SortOrder)
+values ('r', 'R', 11)
+insert into Rating (RatingID, Name, SortOrder)
+values ('nc17', 'NC-17', 14)
+insert into Rating (RatingID, Name, SortOrder)
+values ('tvy', 'TV-Y', 3)
+insert into Rating (RatingID, Name, SortOrder)
+values ('tvy7', 'TV-Y7', 4)
+insert into Rating (RatingID, Name, SortOrder)
+values ('tvy7fv', 'TV-Y7-FV', 5)
+insert into Rating (RatingID, Name, SortOrder)
+values ('tvg', 'TV-G', 6)
+insert into Rating (RatingID, Name, SortOrder)
+values ('tvpg', 'TV-PG', 8)
+insert into Rating (RatingID, Name, SortOrder)
+values ('tv14', 'TV-14', 10)
+insert into Rating (RatingID, Name, SortOrder)
+values ('tvma', 'TV-MA', 12)
+
+insert into Rating (RatingID, Name, SortOrder)
+values ('clean', 'Clean', 1)
+insert into Rating (RatingID, Name, SortOrder)
+values ('explicit', 'Explicit', 13)
 go
 
 --//////////////////////////////////////////////////////////////////////////////
 
 insert Member (MemberID, FirstName, LastName)
-values ('f2c3e739-85c9-4b61-b906-230986c656c5', 'Robert', 'Davidson')
+values ('3d5ef800-ac2c-4271-813e-6fc1cbd18857', 'Guest', 'Account')
 go
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -188,7 +193,7 @@ go
 SET IDENTITY_INSERT MemberLogon ON
 
 insert into MemberLogon (MemberID, EmailKey, Email, Password, LogonID, PIN, SecretQuestion, SecretAnswer, TermsAcceptedOn, TermsAcceptedVersion)
-values ('f2c3e739-85c9-4b61-b906-230986c656c5', '100000000@INETVOD.ORG', '100000000@inetvod.org', '123456', 100000000, '123456', 'What''s your favoriate color?', 'red', '1999-12-31T23:59:59', '0.0.0.0')
+values ('3d5ef800-ac2c-4271-813e-6fc1cbd18857', 'GUEST', 'guest', 'aNVXb4tZEDEi+QzHM8qO5cBSLrk=', 1, 'Fz13RHCV1W3YudkDX1CnTcUThQY=', 'MiTcDA4MBwfFfWyCuSzc2Kx0cV2yS1XwJFo7myghL2zJrGv4SOSE2Q==', 'Ko1rL/anv8A=', '2007-11-01 00:00:00.000', '1.0.0')
 go
 
 SET IDENTITY_INSERT MemberLogon OFF
@@ -196,7 +201,7 @@ SET IDENTITY_INSERT MemberLogon OFF
 --//////////////////////////////////////////////////////////////////////////////
 
 insert MemberPrefs (MemberID, IncludeAdult, AdultPIN, IncludeRatingIDList, IncludeDownload, IncludeStreaming, ConnectionSpeed)
-values ('f2c3e739-85c9-4b61-b906-230986c656c5', 'PromptPassword', '123456', 'g,pg,pg13,r,tv7,tvy7,tvy7fv', 1, 1, '1500K')
+values ('3d5ef800-ac2c-4271-813e-6fc1cbd18857', 'Never', null, 'notrated,g,r,tvy,tvpg,pg,tvy7,tv14,pg13,tvy7fv,tvma,tvg,clean,explicit', 1, 1, '1500K')
 go
 
 --//////////////////////////////////////////////////////////////////////////////

@@ -504,7 +504,7 @@ GO
 CREATE PROCEDURE dbo.Rating_Get
 	@RatingID varchar(32)
 AS
-	select RatingID, Name
+	select RatingID, Name, SortOrder
 	from Rating
 	where RatingID = @RatingID
 GO
@@ -513,9 +513,9 @@ GO
 
 CREATE PROCEDURE dbo.Rating_GetAll
 AS
-	select RatingID, Name
+	select RatingID, Name, SortOrder
 	from Rating
-	order by Name
+	order by SortOrder
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
