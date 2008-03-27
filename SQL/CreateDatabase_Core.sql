@@ -193,7 +193,7 @@ GO
 
 CREATE TABLE [dbo].[Category] (
 	[CategoryID] [varchar] (32) NOT NULL ,
-	[Name] [varchar] (32) NOT NULL ,
+	[Name] [varchar] (64) NOT NULL ,
 	[IsAdult] [bit] NOT NULL
 ) ON [PRIMARY]
 GO
