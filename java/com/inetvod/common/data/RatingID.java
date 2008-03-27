@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.data;
@@ -13,6 +13,8 @@ public class RatingID extends StringID
 {
 	public static final Constructor<RatingID> CtorString = CtorUtil.getCtorString(RatingID.class);
 	public static final RatingID NotRated = new RatingID("notrated");
+	public static final RatingID ITunesExplicit = new RatingID("explicit");
+	public static final RatingID ITunesClean = new RatingID("clean");
 	public static final int MaxLength = 32;
 
 	public RatingID(String value)
