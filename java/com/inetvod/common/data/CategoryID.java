@@ -13,6 +13,7 @@ public class CategoryID extends StringID
 {
 	public static final Constructor<CategoryID> CtorString = CtorUtil.getCtorString(CategoryID.class);
 	public static final CategoryID Featured = new CategoryID("featured");
+	public static final CategoryID Ignore = new CategoryID("ignore");
 	public static final int MaxLength = 32;
 
 	public CategoryID(String value)
