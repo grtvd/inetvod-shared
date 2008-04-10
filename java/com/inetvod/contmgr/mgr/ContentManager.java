@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2007-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.contmgr.mgr;
@@ -23,6 +23,8 @@ public class ContentManager
 	/* Constants*/
 	private static final String GET_CONTENT_FUNC = "gc";
 	private static final String GET_CONTENT_STATS_FUNC = "gcs";
+	private static final int ConnectionTimeoutMillis = 30000;	//TODO: config?
+	private static final int SocketTimeoutMillis = 30000;	//TODO: config?
 
 	/* Fields */
 	private static String fBaseServiceURL;
@@ -62,13 +64,17 @@ public class ContentManager
 
 			// Send HTTP request to server
 			HttpClient httpClient = new HttpClient();
-			//TODO httpClient.getParams().setParameter("http.socket.timeout", TimeoutMillis);
+			httpClient.getParams().setParameter("http.connection.timeout", ConnectionTimeoutMillis);	//http.connection.timeout
+			httpClient.getParams().setParameter("http.socket.timeout", SocketTimeoutMillis);	//http.socket.timeout
 			GetMethod getMethod = new GetMethod(url);
 			getMethod.setFollowRedirects(true);
 
 			try
 			{
+				Logger.logInfo(ContentManager.class, "getStats", String.format("Requesting from url(%s)", url));
 				int rc = httpClient.executeMethod(getMethod);
+				Logger.logInfo(ContentManager.class, "getStats", String.format("Response(%d) from url(%s)", rc, url));
+
 				if(rc != HttpStatus.SC_OK)
 				{
 					if(rc != HttpStatus.SC_NOT_FOUND)
@@ -102,13 +108,16 @@ public class ContentManager
 		{
 			// Send HTTP request to server
 			HttpClient httpClient = new HttpClient();
-			//TODO httpClient.getParams().setParameter("http.socket.timeout", TimeoutMillis);
+			httpClient.getParams().setParameter("http.connection.timeout", ConnectionTimeoutMillis);	//http.connection.timeout
+			httpClient.getParams().setParameter("http.socket.timeout", SocketTimeoutMillis);	//http.socket.timeout
 			HeadMethod headMethod = new HeadMethod(sourceURL);
 			headMethod.setFollowRedirects(true);
 
 			try
 			{
+				Logger.logInfo(ContentManager.class, "checkContent", String.format("Requesting from url(%s)", sourceURL));
 				int rc = httpClient.executeMethod(headMethod);
+				Logger.logInfo(ContentManager.class, "checkContent", String.format("Response(%d) from url(%s)", rc, sourceURL));
 				if(rc != HttpStatus.SC_OK)
 				{
 					if(rc != HttpStatus.SC_NOT_FOUND)
