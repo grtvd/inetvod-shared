@@ -1,0 +1,30 @@
+--//////////////////////////////////////////////////////////////////////////////
+-- Copyright © 2008 iNetVOD, Inc. All Rights Reserved.
+-- iNetVOD Confidential and Proprietary.  See LEGAL.txt.
+--//////////////////////////////////////////////////////////////////////////////
+
+use [iNetVOD]
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+update MemberLogon set
+	Password = 'W6ph5Mm5Pz8GgiULbPgzG37mj9g=', -- password
+	PIN = 'fEqNCco3Yq9h5ZUglD3CZJT4lBs=', -- 123456
+	SecretQuestion = '/H0RSCFU/99jY3FEVORunLQyYuaFHV36iKqygM87PYjK7qtJkWYM9g==', -- What is your fathers middle name?
+	SecretAnswer = '7aGC9Dsx7Qw=' -- Carol
+
+update MemberAccount set
+	CreditCard_NameOnCC = '0NTNt8OaPazFCPLWkwRbTA==', -- John Doe
+	CreditCard_CCNumber = 'j5SwPoULtp5hP6wIroz99e/QWbaORbco', -- 1234567890123456
+	CreditCard_CCSIC = 'doqjv+pTttA=', -- 1234
+	CreditCard_ExpireDate = 'x2Mmpwzf8Dk=' -- 01/2020
+	where (CreditCard_NameOnCC is not null) or (CreditCard_CCNumber is not null)
+	or (CreditCard_CCSIC is not null) or (CreditCard_ExpireDate is not null)
+
+update MemberPrefs set
+	AdultPIN = 'fEqNCco3Yq9h5ZUglD3CZJT4lBs=' -- 123456
+	where AdultPIN is not null
+
+--//////////////////////////////////////////////////////////////////////////////
+--//////////////////////////////////////////////////////////////////////////////
