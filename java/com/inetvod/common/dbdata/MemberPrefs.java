@@ -66,7 +66,7 @@ public class MemberPrefs extends DatabaseObject
 		readFrom(reader);
 	}
 
-	public static MemberPrefs newInstance(MemberID memberID)
+	public static MemberPrefs newInstance(MemberID memberID) throws Exception
 	{
 		//TODO: move default MemberPrefs to config file
 		MemberPrefs memberPrefs = new MemberPrefs(memberID);
@@ -74,15 +74,8 @@ public class MemberPrefs extends DatabaseObject
 
 		RatingIDList ratingIDList = memberPrefs.getIncludeRatingIDList();
 		ratingIDList.clear();
+		ratingIDList.copy(RatingList.find().getIDList());
 		ratingIDList.add(RatingID.NotRated);
-		ratingIDList.add(new RatingID("g"));
-		ratingIDList.add(new RatingID("pg"));
-		ratingIDList.add(new RatingID("pg13"));
-		ratingIDList.add(new RatingID("tvy"));
-		ratingIDList.add(new RatingID("tvy7"));
-		ratingIDList.add(new RatingID("tvy7fv"));
-		ratingIDList.add(new RatingID("tvpg"));
-		ratingIDList.add(new RatingID("tv14"));
 
 		memberPrefs.setIncludeDownload(true);
 		memberPrefs.setIncludeStreaming(true);
