@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -17,9 +17,6 @@ import com.inetvod.common.data.ShowID;
 public class ShowCategoryList extends ArrayList<ShowCategory>
 {
 	/* Construction */
-	public ShowCategoryList()
-	{
-	}
 
 	public static ShowCategoryList findByShowName(String partialName) throws Exception
 	{
@@ -68,12 +65,19 @@ public class ShowCategoryList extends ArrayList<ShowCategory>
 		return ShowCategory.getDatabaseAdaptor().selectManyByProc("ShowCategory_GetByRentedShowMemberID", params);
 	}
 
+	public static void resetFeatured() throws Exception
+	{
+		DatabaseProcParam params[] = new DatabaseProcParam[1];
+
+		params[0] = new DatabaseProcParam(Types.VARCHAR, CategoryID.Featured.toString());
+
+		ShowCategory.getDatabaseAdaptor().executeProc("ShowCategory_ResetFeatured", params);
+	}
+
 	/* Group Methods */
 
 	/**
 	 * Returns a sub-set of items from this list that have the specified ShowID
-	 * @param showID
-	 * @return ShowCategoryList
 	 */
 	public ShowCategoryList findItemsByShowID(ShowID showID)
 	{
@@ -93,8 +97,6 @@ public class ShowCategoryList extends ArrayList<ShowCategory>
 
 	/**
 	 * Returns a sub-set of items from this list that have the specified CategoryID
-	 * @param categoryIDList
-	 * @return ShowCategoryList
 	 */
 	public ShowCategoryList findItemsByCategoryIDList(CategoryIDList categoryIDList)
 	{
@@ -114,7 +116,6 @@ public class ShowCategoryList extends ArrayList<ShowCategory>
 
 	/**
 	 * Returns a list of CategoryID from the items in this list.
-	 * @return ShowCategoryList
 	 */
 	public CategoryIDList getCategoryIDList()
 	{

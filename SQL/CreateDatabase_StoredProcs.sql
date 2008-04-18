@@ -232,11 +232,6 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvid
 drop procedure [dbo].[ShowProvider_GetByShowIDProviderIDAvailable]
 GO
 
---TODO CAN DELETE AFTER NEXT UPDATE
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByShowID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[ShowProvider_GetByShowID]
-GO
-
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByShowIDAvailable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowProvider_GetByShowIDAvailable]
 GO
@@ -257,18 +252,8 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvid
 drop procedure [dbo].[ShowProvider_Search]
 GO
 
---TODO CAN DELETE AFTER NEXT UPDATE
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByProviderID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[ShowProvider_GetByProviderID]
-GO
-
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByProviderIDAvailable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowProvider_GetByProviderIDAvailable]
-GO
-
---TODO CAN DELETE AFTER NEXT UPDATE
-if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByCategoryID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-drop procedure [dbo].[ShowProvider_GetByCategoryID]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowProvider_GetByCategoryIDAvailable]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -305,6 +290,10 @@ GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowCategory_GetByRentedShowMemberID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ShowCategory_GetByRentedShowMemberID]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ShowCategory_ResetFeatured]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ShowCategory_ResetFeatured]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[RentedShow_Get]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -1700,6 +1689,19 @@ GO
 
 --//////////////////////////////////////////////////////////////////////////////
 
+CREATE PROCEDURE dbo.ShowCategory_ResetFeatured
+	@CategoryID varchar(32)
+AS
+	delete from ShowCategory where CategoryID = @CategoryID
+
+	insert into ShowCategory (ShowCategoryID, ShowID, CategoryID)
+		select top 500 newID(), ShowID, @CategoryID
+		from Show
+		order by ReleasedOn desc, ReleasedYear desc, Name
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
 CREATE PROCEDURE dbo.RentedShow_Get
 	@RentedShowID uniqueidentifier
 AS
@@ -1929,6 +1931,7 @@ GRANT EXECUTE ON [dbo].[ShowCategory_Search] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowCategory_GetByShowID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowCategory_GetByCategoryID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ShowCategory_GetByRentedShowMemberID] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ShowCategory_ResetFeatured] TO [inetvod]
 
 GRANT EXECUTE ON [dbo].[RentedShow_Get] TO [inetvod]
 GRANT EXECUTE ON [dbo].[RentedShow_Insert] TO [inetvod]
