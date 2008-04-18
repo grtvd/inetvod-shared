@@ -11,7 +11,7 @@ GO
 update MemberLogon set
 	Password = 'W6ph5Mm5Pz8GgiULbPgzG37mj9g=', -- password
 	PIN = 'fEqNCco3Yq9h5ZUglD3CZJT4lBs=', -- 123456
-	SecretQuestion = '/H0RSCFU/99jY3FEVORunLQyYuaFHV36iKqygM87PYjK7qtJkWYM9g==', -- What is your fathers middle name?
+	SecretQuestion = '/H0RSCFU/99jY3FEVORunL2m4UKKAZhogOJ/lTsKdP5GzOdiYJPXqg==', -- What is your father's middle name?
 	SecretAnswer = '7aGC9Dsx7Qw=' -- Carol
 
 update MemberAccount set
