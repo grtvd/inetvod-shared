@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.data;
@@ -16,6 +16,7 @@ public class ProviderConnectionType extends StringID
 	public static final int MaxLength = 16;
 
 	public static final ProviderConnectionType ProviderAPI = new ProviderConnectionType("ProviderAPI");
+	public static final ProviderConnectionType Rss2 = new ProviderConnectionType("Rss2");
 
 	/* Construction */
 	public ProviderConnectionType(String value)

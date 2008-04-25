@@ -44,6 +44,10 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ProviderCo
 drop procedure [dbo].[ProviderConnection_GetByProviderIDConnectionType]
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ProviderConnection_GetByConnectionURL]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ProviderConnection_GetByConnectionURL]
+GO
+
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Category_Get]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[Category_Get]
 GO
@@ -457,6 +461,17 @@ AS
 	from ProviderConnection
 	where (ProviderID = @ProviderID)
 	and (ProviderConnectionType = @ProviderConnectionType)
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.ProviderConnection_GetByConnectionURL
+	@ConnectionURL varchar(4096)
+AS
+	select ProviderConnectionID, ProviderID, ProviderConnectionType, Disabled,
+		ConnectionURL, AdminUserID, AdminPassword, UseFieldForName, UseFieldForEpisodeName
+	from ProviderConnection
+	where (ConnectionURL = @ConnectionURL)
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -1858,6 +1873,7 @@ GRANT EXECUTE ON [dbo].[ProviderConnection_Update] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ProviderConnection_Delete] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ProviderConnection_GetByProviderID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ProviderConnection_GetByProviderIDConnectionType] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ProviderConnection_GetByConnectionURL] TO [inetvod]
 
 GRANT EXECUTE ON [dbo].[Category_Get] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Category_GetAll] TO [inetvod]

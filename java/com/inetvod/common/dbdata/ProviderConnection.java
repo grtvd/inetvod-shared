@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -61,6 +61,7 @@ public class ProviderConnection extends DatabaseObject
 	public boolean isEnabled() { return !fDisabled; }
 
 	public String getConnectionURL() { return fConnectionURL; }
+	public void setConnectionURL(String connectionURL) { fConnectionURL = connectionURL; }
 
 	public String getAdminUserID() throws Exception
 	{
@@ -114,6 +115,19 @@ public class ProviderConnection extends DatabaseObject
 	{
 		ProviderConnectionList providerConnectionList = ProviderConnectionList.findByProviderIDConnectionType(
 			providerID, providerConnectionType);
+
+		if(providerConnectionList.size() == 1)
+			return providerConnectionList.get(0);
+
+		if(providerConnectionList.size() == 0)
+			return null;
+
+		throw new SearchException("Too Many Records Found");
+	}
+
+	public static ProviderConnection findByConnectionURL(String connectionURL) throws Exception
+	{
+		ProviderConnectionList providerConnectionList = ProviderConnectionList.findByConnectionURL(connectionURL);
 
 		if(providerConnectionList.size() == 1)
 			return providerConnectionList.get(0);
