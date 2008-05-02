@@ -12,12 +12,32 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Provider_G
 drop procedure [dbo].[Provider_Get]
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Provider_Insert]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[Provider_Insert]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Provider_Update]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[Provider_Update]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Provider_Delete]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[Provider_Delete]
+GO
+
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Provider_GetAll]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[Provider_GetAll]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Provider_GetByNoAdult]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[Provider_GetByNoAdult]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Provider_Report]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[Provider_Report]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Provider_Purge]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[Provider_Purge]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ProviderConnection_Get]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -46,6 +66,10 @@ GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ProviderConnection_GetByConnectionURL]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 drop procedure [dbo].[ProviderConnection_GetByConnectionURL]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[ProviderConnection_MoveNewProviderID]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[ProviderConnection_MoveNewProviderID]
 GO
 
 if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[Category_Get]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
@@ -339,6 +363,48 @@ GO
 
 --//////////////////////////////////////////////////////////////////////////////
 
+CREATE PROCEDURE dbo.Provider_Insert
+	@ProviderID varchar(64),
+	@Name varchar(64),
+	@IsAdult bit
+AS
+	insert into Provider
+	(
+		ProviderID,
+		Name,
+		IsAdult
+	)
+	values
+	(
+		@ProviderID,
+		@Name,
+		@IsAdult
+	)
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.Provider_Update
+	@ProviderID varchar(64),
+	@Name varchar(64),
+	@IsAdult bit
+AS
+	update Provider set
+		Name = @Name,
+		IsAdult = @IsAdult
+	where ProviderID = @ProviderID
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.Provider_Delete
+	@ProviderID varchar(64)
+AS
+	delete from Provider where ProviderID = @ProviderID
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
 CREATE PROCEDURE dbo.Provider_GetAll
 AS
 	select ProviderID, Name, IsAdult
@@ -354,6 +420,30 @@ AS
 	from Provider
 	where IsAdult = 0
 	order by Name
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.Provider_Report
+	@ProviderID varchar(64)
+AS
+	select * from Provider where ProviderID = @ProviderID;
+	select * from ProviderConnection where ProviderID = @ProviderID;
+	select * from ShowProvider where ProviderID = @ProviderID;
+	select * from MemberProvider where ProviderID = @ProviderID;
+	select * from RentedShow where ProviderID = @ProviderID;
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.Provider_Purge
+	@ProviderID varchar(64)
+AS
+	delete from RentedShow where ProviderID = @ProviderID;
+	delete from MemberProvider where ProviderID = @ProviderID;
+	delete from ShowProvider where ProviderID = @ProviderID;
+	delete from ProviderConnection where ProviderID = @ProviderID;
+	delete from Provider where ProviderID = @ProviderID;
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -472,6 +562,23 @@ AS
 		ConnectionURL, AdminUserID, AdminPassword, UseFieldForName, UseFieldForEpisodeName
 	from ProviderConnection
 	where (ConnectionURL = @ConnectionURL)
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.ProviderConnection_MoveNewProviderID
+	@ProviderConnectionID uniqueidentifier,
+	@NewProviderID varchar(64)
+AS
+	update ProviderConnection set ProviderID = @NewProviderID
+		where ProviderConnectionID = @ProviderConnectionID;
+
+	update ShowProvider set ProviderID = @NewProviderID
+		where ProviderConnectionID = @ProviderConnectionID;
+
+	update RentedShow set ProviderID = @NewProviderID
+		where ShowProviderID in
+		(select distinct ShowProviderID from ShowProvider where ProviderConnectionID = @ProviderConnectionID);
 GO
 
 --//////////////////////////////////////////////////////////////////////////////
@@ -1864,8 +1971,13 @@ GO
 --//////////////////////////////////////////////////////////////////////////////
 
 GRANT EXECUTE ON [dbo].[Provider_Get] TO [inetvod]
+GRANT EXECUTE ON [dbo].[Provider_Insert] TO [inetvod]
+GRANT EXECUTE ON [dbo].[Provider_Update] TO [inetvod]
+GRANT EXECUTE ON [dbo].[Provider_Delete] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Provider_GetAll] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Provider_GetByNoAdult] TO [inetvod]
+GRANT EXECUTE ON [dbo].[Provider_Report] TO [inetvod]
+--DO NOT GRANT Provider_Purge - sa only
 
 GRANT EXECUTE ON [dbo].[ProviderConnection_Get] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ProviderConnection_Insert] TO [inetvod]
@@ -1874,6 +1986,7 @@ GRANT EXECUTE ON [dbo].[ProviderConnection_Delete] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ProviderConnection_GetByProviderID] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ProviderConnection_GetByProviderIDConnectionType] TO [inetvod]
 GRANT EXECUTE ON [dbo].[ProviderConnection_GetByConnectionURL] TO [inetvod]
+GRANT EXECUTE ON [dbo].[ProviderConnection_MoveNewProviderID] TO [inetvod]
 
 GRANT EXECUTE ON [dbo].[Category_Get] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Category_GetAll] TO [inetvod]
