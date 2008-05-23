@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006-2007 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.data;
@@ -23,6 +23,7 @@ public enum MediaMIME
 
 	audio_mpeg("audio/mpeg"),
 	audio_mp4("audio/mp4"),
+	audio_x_mpeg("audio/x-mpeg"),
 	audio_x_m4a("audio/x-m4a"),
 
 	binary_octet_stream("binary/octet-stream"),
@@ -49,6 +50,7 @@ public enum MediaMIME
 	}
 
 	/* Getters and Setters */
+	@Override
 	public String toString() { return fValue; }
 
 	/* Construction */
