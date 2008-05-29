@@ -3,6 +3,8 @@
 -- iNetVOD Confidential and Proprietary.  See LEGAL.txt.
 --//////////////////////////////////////////////////////////////////////////////
 
+--exec sp_renamedb 'iNetVOD', 'iNetVOD_Old_1'
+
 use [iNetVOD]
 GO
 
@@ -25,6 +27,13 @@ update MemberAccount set
 update MemberPrefs set
 	AdultPIN = 'fEqNCco3Yq9h5ZUglD3CZJT4lBs=' -- 123456
 	where AdultPIN is not null
+
+update ProviderConnection set
+	AdminUserID = 'kQF6yJ5+Wtw=',
+	AdminPassword = 'v0AMGg2jsJlmVT793y6vlQ=='
+	where ProviderConnectionType = 'ProviderAPI' and (ProviderID = 'moviesmovies' 
+	or ProviderID = 'internetvideos' or ProviderID = 'abbywinters')
+
 
 --//////////////////////////////////////////////////////////////////////////////
 --//////////////////////////////////////////////////////////////////////////////
