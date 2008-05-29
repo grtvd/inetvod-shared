@@ -11,9 +11,11 @@ import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DateUtil;
 import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.StrUtil;
+import com.inetvod.common.core.Writeable;
+import com.inetvod.common.core.DataWriter;
 import com.inetvod.common.data.ShowID;
 
-public class ShowSearch implements Readable
+public class ShowSearch implements Readable, Writeable
 {
 	/* Constants */
 	public static Constructor<ShowSearch> CtorDataReader = DataReader.getCtor(ShowSearch.class);
@@ -60,6 +62,17 @@ public class ShowSearch implements Readable
 		fReleasedYear = reader.readShort("ReleasedYear");
 		fPictureURL = reader.readString("PictureURL", ShowDetail.PictureURLMaxLength);
 		fShowProviderList = reader.readList("ShowProvider", ShowProviderList.Ctor, ShowProvider.CtorDataReader);
+	}
+
+	public void writeTo(DataWriter writer) throws Exception
+	{
+		writer.writeDataID("ShowID", fShowID, ShowID.MaxLength);
+		writer.writeString("Name", fName, ShowDetail.NameMaxLength);
+		writer.writeString("EpisodeName", fEpisodeName, ShowDetail.EpisodeNameMaxLength);
+		writer.writeDate("ReleasedOn", fReleasedOn);
+		writer.writeShort("ReleasedYear", fReleasedYear);
+		writer.writeString("PictureURL", fPictureURL, ShowDetail.PictureURLMaxLength);
+		writer.writeList("ShowProvider", fShowProviderList);
 	}
 
 	public String buildReleasedStr()
