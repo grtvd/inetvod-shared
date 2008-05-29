@@ -11,11 +11,13 @@ import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DateUtil;
 import com.inetvod.common.core.Readable;
 import com.inetvod.common.core.StrUtil;
+import com.inetvod.common.core.Writeable;
+import com.inetvod.common.core.DataWriter;
 import com.inetvod.common.data.ProviderID;
 import com.inetvod.common.data.RentedShowID;
 import com.inetvod.common.data.ShowID;
 
-public class RentedShowSearch implements Readable
+public class RentedShowSearch implements Readable, Writeable
 {
 	/* Constants */
 	public static Constructor<RentedShowSearch> CtorDataReader = DataReader.getCtor(RentedShowSearch.class);
@@ -67,6 +69,19 @@ public class RentedShowSearch implements Readable
 		fPictureURL = reader.readString("PictureURL", ShowDetail.PictureURLMaxLength);
 
 		fAvailableUntil = reader.readDateTime("AvailableUntil");
+	}
+
+	public void writeTo(DataWriter writer) throws Exception
+	{
+		writer.writeDataID("RentedShowID", fRentedShowID, RentedShowID.MaxLength);
+
+		writer.writeDataID("ShowID", fShowID, ShowID.MaxLength);
+		writer.writeDataID("ProviderID", fProviderID, ProviderID.MaxLength);
+		writer.writeString("Name", fName, ShowDetail.NameMaxLength);
+		writer.writeString("EpisodeName", fEpisodeName, ShowDetail.EpisodeNameMaxLength);
+		writer.writeString("PictureURL", fPictureURL, ShowDetail.PictureURLMaxLength);
+
+		writer.writeDateTime("AvailableUntil", fAvailableUntil);
 	}
 
 	public String buildAvailableUtilStr()

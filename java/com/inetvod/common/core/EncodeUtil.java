@@ -6,16 +6,13 @@ package com.inetvod.common.core;
 
 public class EncodeUtil
 {
-	/* Fields */
-
-	/* Getters and Setters */
-
-	/* Construction */
-
 	/* Implementation */
 
 	public static String encodeJSLiteral(String data)
 	{
+		if (data == null)
+			return null;
+
 		String newVal = data;
 
 		if((data.indexOf("'") >= 0) || (data.indexOf("\"") >= 0))
