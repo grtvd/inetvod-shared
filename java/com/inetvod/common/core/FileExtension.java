@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006-2007 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.core;
@@ -27,6 +27,7 @@ public class FileExtension
 	public static final FileExtension flv = new FileExtension(".flv");
 	public static final FileExtension swf = new FileExtension(".swf");
 	public static final FileExtension jpg = new FileExtension(".jpg");
+	public static final FileExtension mpg = new FileExtension(".mpg");
 
 	/* Fields */
 	private static HashMap<String, FileExtension> fAllValues;
@@ -34,6 +35,7 @@ public class FileExtension
 	private final String fValue;
 
 	/* Getters and Setters */
+	@Override
 	public String toString() { return fValue; }
 
 	/* Construction */
