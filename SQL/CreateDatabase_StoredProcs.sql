@@ -344,6 +344,22 @@ if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[RentedShow
 drop procedure [dbo].[RentedShow_GetByMemberID]
 GO
 
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[RentedShowHistory_Get]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[RentedShowHistory_Get]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[RentedShowHistory_Insert]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[RentedShowHistory_Insert]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[RentedShowHistory_Update]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[RentedShowHistory_Update]
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].[RentedShowHistory_Delete]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure [dbo].[RentedShowHistory_Delete]
+GO
+
 --//////////////////////////////////////////////////////////////////////////////
 
 SET QUOTED_IDENTIFIER ON
@@ -1970,6 +1986,204 @@ GO
 
 --//////////////////////////////////////////////////////////////////////////////
 
+CREATE PROCEDURE dbo.RentedShowHistory_Get
+	@RentedShowHistoryID uniqueidentifier
+AS
+	select
+		RentedShowHistoryID,
+		MemberID,
+		ShowID,
+		ProviderID,
+		ShowProviderID,
+		RentedShowID,
+
+		Name,
+		EpisodeName,
+		EpisodeNumber,
+		ReleasedOn,
+		ReleasedYear,
+		RunningMins,
+		RatingID,
+		IsAdult,
+
+		ProviderConnectionID,
+		ProviderShowID,
+		ShowURL,
+		ShowFormatMime,
+		ShowFormat_ShowFormatID,
+		ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer,
+		ShowFormat_HorzResolution,
+		ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond,
+		ShowFormat_BitRate,
+
+		ShowCost_ShowCostType,
+		ShowCost_Cost_CurrencyID,
+		ShowCost_Cost_Amount,
+		ShowCost_CostDisplay,
+		ShowCost_RentalWindowDays,
+		ShowCost_RentalPeriodHours,
+		RentedOn,
+		AvailableUntil,
+
+		ManufacturerID,
+		ModelNo,
+		SerialNo,
+		Version,
+		PlayerIPAddress
+	from RentedShowHistory
+	where RentedShowHistoryID = @RentedShowHistoryID
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.RentedShowHistory_Insert
+	@RentedShowHistoryID uniqueidentifier,
+	@MemberID uniqueidentifier,
+	@ShowID uniqueidentifier,
+	@ProviderID varchar(64),
+	@ShowProviderID uniqueidentifier,
+	@RentedShowID uniqueidentifier,
+
+	@Name varchar(64),
+	@EpisodeName varchar(64),
+	@EpisodeNumber varchar(32),
+	@ReleasedOn datetime,
+	@ReleasedYear smallint,
+	@RunningMins smallint,
+	@RatingID varchar(32),
+	@IsAdult bit,
+
+	@ProviderConnectionID uniqueidentifier,
+	@ProviderShowID varchar(128),
+	@ShowURL varchar(4096),
+	@ShowFormatMime varchar(32),
+	@ShowFormat_ShowFormatID varchar(256),
+	@ShowFormat_MediaEncoding varchar(32),
+	@ShowFormat_MediaContainer varchar(32),
+	@ShowFormat_HorzResolution smallint,
+	@ShowFormat_VertResolution smallint,
+	@ShowFormat_FramesPerSecond smallint,
+	@ShowFormat_BitRate smallint,
+
+	@ShowCost_ShowCostType varchar(32),
+	@ShowCost_Cost_CurrencyID varchar(3),
+	@ShowCost_Cost_Amount decimal(17,2),
+	@ShowCost_CostDisplay varchar(32),
+	@ShowCost_RentalWindowDays smallint,
+	@ShowCost_RentalPeriodHours smallint,
+	@RentedOn datetime,
+	@AvailableUntil datetime,
+
+	@ManufacturerID varchar(32),
+	@ModelNo varchar(32),
+	@SerialNo varchar(64),
+	@Version varchar(16),
+	@PlayerIPAddress varchar(16)
+AS
+	insert into RentedShowHistory
+	(
+		RentedShowHistoryID,
+		MemberID,
+		ShowID,
+		ProviderID,
+		ShowProviderID,
+		RentedShowID,
+
+		Name,
+		EpisodeName,
+		EpisodeNumber,
+		ReleasedOn,
+		ReleasedYear,
+		RunningMins,
+		RatingID,
+		IsAdult,
+
+		ProviderConnectionID,
+		ProviderShowID,
+		ShowURL,
+		ShowFormatMime,
+		ShowFormat_ShowFormatID,
+		ShowFormat_MediaEncoding,
+		ShowFormat_MediaContainer,
+		ShowFormat_HorzResolution,
+		ShowFormat_VertResolution,
+		ShowFormat_FramesPerSecond,
+		ShowFormat_BitRate,
+
+		ShowCost_ShowCostType,
+		ShowCost_Cost_CurrencyID,
+		ShowCost_Cost_Amount,
+		ShowCost_CostDisplay,
+		ShowCost_RentalWindowDays,
+		ShowCost_RentalPeriodHours,
+		RentedOn,
+		AvailableUntil,
+
+		ManufacturerID,
+		ModelNo,
+		SerialNo,
+		Version,
+		PlayerIPAddress
+	)
+	values
+	(
+		@RentedShowHistoryID,
+		@MemberID,
+		@ShowID,
+		@ProviderID,
+		@ShowProviderID,
+		@RentedShowID,
+
+		@Name,
+		@EpisodeName,
+		@EpisodeNumber,
+		@ReleasedOn,
+		@ReleasedYear,
+		@RunningMins,
+		@RatingID,
+		@IsAdult,
+
+		@ProviderConnectionID,
+		@ProviderShowID,
+		@ShowURL,
+		@ShowFormatMime,
+		@ShowFormat_ShowFormatID,
+		@ShowFormat_MediaEncoding,
+		@ShowFormat_MediaContainer,
+		@ShowFormat_HorzResolution,
+		@ShowFormat_VertResolution,
+		@ShowFormat_FramesPerSecond,
+		@ShowFormat_BitRate,
+
+		@ShowCost_ShowCostType,
+		@ShowCost_Cost_CurrencyID,
+		@ShowCost_Cost_Amount,
+		@ShowCost_CostDisplay,
+		@ShowCost_RentalWindowDays,
+		@ShowCost_RentalPeriodHours,
+		@RentedOn,
+		@AvailableUntil,
+
+		@ManufacturerID,
+		@ModelNo,
+		@SerialNo,
+		@Version,
+		@PlayerIPAddress
+	)
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
+CREATE PROCEDURE dbo.RentedShowHistory_Delete
+	@RentedShowHistoryID uniqueidentifier
+AS
+	delete from RentedShowHistory where RentedShowHistoryID = @RentedShowHistoryID
+GO
+
+--//////////////////////////////////////////////////////////////////////////////
+
 GRANT EXECUTE ON [dbo].[Provider_Get] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Provider_Insert] TO [inetvod]
 GRANT EXECUTE ON [dbo].[Provider_Update] TO [inetvod]
@@ -2067,6 +2281,11 @@ GRANT EXECUTE ON [dbo].[RentedShow_Insert] TO [inetvod]
 GRANT EXECUTE ON [dbo].[RentedShow_Update] TO [inetvod]
 GRANT EXECUTE ON [dbo].[RentedShow_Delete] TO [inetvod]
 GRANT EXECUTE ON [dbo].[RentedShow_GetByMemberID] TO [inetvod]
+
+GRANT EXECUTE ON [dbo].[RentedShowHistory_Get] TO [inetvod]
+GRANT EXECUTE ON [dbo].[RentedShowHistory_Insert] TO [inetvod]
+--GRANT EXECUTE ON [dbo].[RentedShowHistory_Update] TO [inetvod]
+GRANT EXECUTE ON [dbo].[RentedShowHistory_Delete] TO [inetvod]
 
 --//////////////////////////////////////////////////////////////////////////////
 
