@@ -22,6 +22,8 @@ public class MemberSession extends DatabaseObject
 	private MemberSessionID fMemberSessionID;
 	private MemberID fMemberID;
 	private PlayerID fPlayerID;
+	private String fPlayerSerialNo;
+	private String fPlayerVersion;
 	private Date fStartedOn;
 	private Date fExpiresAt;
 	private boolean fShowAdult;
@@ -36,6 +38,8 @@ public class MemberSession extends DatabaseObject
 
 	public MemberID getMemberID() { return fMemberID; }
 	public PlayerID getPlayerID() { return fPlayerID; }
+	public String getPlayerSerialNo() { return fPlayerSerialNo; }
+	public String getPlayerVersion() { return fPlayerVersion; }
 
 	public Date getStartedOn() { return fStartedOn; }
 	public Date getExpiresAt() { return fExpiresAt; }
@@ -46,27 +50,31 @@ public class MemberSession extends DatabaseObject
 	public RatingIDList getIncludeRatingIDList() { return fIncludeRatingIDList; }
 
 	/* Construction */
-	protected MemberSession(MemberID memberID, PlayerID playerID, RatingIDList includeRatingIDList)
+	protected MemberSession(MemberID memberID, PlayerID playerID, String playerSerialNo, String playerVersion,
+		RatingIDList includeRatingIDList)
 	{
 		super(true);
 		fMemberSessionID = MemberSessionID.newInstance();
 		fMemberID = memberID;
 		fPlayerID = playerID;
+		fPlayerSerialNo = playerSerialNo;
+		fPlayerVersion = playerVersion;
 		fStartedOn = new Date();
 		fExpiresAt = new Date(fStartedOn.getTime() + SystemConfiguation.getThe().getSessionTimeoutMillis());
 		fShowAdult = false;
 		fIncludeRatingIDList = includeRatingIDList;
 	}
-
+	
 	public MemberSession(DataReader reader) throws Exception
 	{
 		super(reader);
 		readFrom(reader);
 	}
 
-	public static MemberSession newInstance(MemberID memberID, PlayerID providerID, RatingIDList includeRatingIDList)
+	public static MemberSession newInstance(MemberID memberID, PlayerID providerID, String playerSerialNo,
+		String playerVersion, RatingIDList includeRatingIDList)
 	{
-		return new MemberSession(memberID, providerID, includeRatingIDList);
+		return new MemberSession(memberID, providerID, playerSerialNo, playerVersion, includeRatingIDList);
 	}
 
 	protected static MemberSession load(MemberSessionID memberSessionID, DataExists exists) throws Exception
@@ -85,6 +93,8 @@ public class MemberSession extends DatabaseObject
 		fMemberSessionID = reader.readDataID("MemberSessionID", MemberSessionID.MaxLength, MemberSessionID.CtorString);
 		fMemberID = reader.readDataID("MemberID", MemberID.MaxLength, MemberID.CtorString);
 		fPlayerID = reader.readDataID("PlayerID", PlayerID.MaxLength, PlayerID.CtorString);
+		fPlayerSerialNo = reader.readString("PlayerSerialNo", Player.SerialNoMaxLength);
+		fPlayerVersion = reader.readString("PlayerVersion", Player.VersionMaxLength);
 		fStartedOn = reader.readDateTime("StartedOn");
 		fExpiresAt = reader.readDateTime("ExpiresAt");
 		fShowAdult = reader.readBooleanValue("ShowAdult");
@@ -96,6 +106,8 @@ public class MemberSession extends DatabaseObject
 		writer.writeDataID("MemberSessionID", fMemberSessionID, MemberSessionID.MaxLength);
 		writer.writeDataID("MemberID", fMemberID, MemberID.MaxLength);
 		writer.writeDataID("PlayerID", fPlayerID, PlayerID.MaxLength);
+		writer.writeString("PlayerSerialNo", fPlayerSerialNo, Player.SerialNoMaxLength);
+		writer.writeString("PlayerVersion", fPlayerVersion, Player.VersionMaxLength);
 		writer.writeDateTime("StartedOn", fStartedOn);
 		writer.writeDateTime("ExpiresAt", fExpiresAt);
 		writer.writeBooleanValue("ShowAdult", fShowAdult);

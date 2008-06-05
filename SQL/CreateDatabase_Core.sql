@@ -365,6 +365,8 @@ CREATE TABLE [dbo].[MemberSession] (
 	[MemberSessionID] uniqueidentifier NOT NULL ROWGUIDCOL ,
 	[MemberID] uniqueidentifier NOT NULL ,
 	[PlayerID] uniqueidentifier NOT NULL ,
+	[PlayerSerialNo] varchar(64) NOT NULL ,
+	[PlayerVersion] varchar(16) NOT NULL ,
 	[StartedOn] [datetime] NOT NULL ,
 	[ExpiresAt] [datetime] NOT NULL ,
 	[ShowAdult] [bit] NOT NULL ,

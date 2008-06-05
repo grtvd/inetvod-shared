@@ -83,3 +83,63 @@ COMMIT
 
 --//////////////////////////////////////////////////////////////////////////////
 --//////////////////////////////////////////////////////////////////////////////
+
+DELETE FROM MemberSession
+GO
+
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.MemberSession
+	DROP CONSTRAINT FK_MemberSession_Member
+GO
+COMMIT
+BEGIN TRANSACTION
+GO
+CREATE TABLE dbo.Tmp_MemberSession
+	(
+	MemberSessionID uniqueidentifier NOT NULL ROWGUIDCOL,
+	MemberID uniqueidentifier NOT NULL,
+	PlayerID uniqueidentifier NOT NULL,
+	PlayerSerialNo varchar(64) NOT NULL,
+	PlayerVersion varchar(16) NOT NULL,
+	StartedOn datetime NOT NULL,
+	ExpiresAt datetime NOT NULL,
+	ShowAdult bit NOT NULL,
+	IncludeRatingIDList varchar(128) NULL
+	)  ON [PRIMARY]
+GO
+IF EXISTS(SELECT * FROM dbo.MemberSession)
+	 EXEC('INSERT INTO dbo.Tmp_MemberSession (MemberSessionID, MemberID, PlayerID, StartedOn, ExpiresAt, ShowAdult, IncludeRatingIDList)
+		SELECT MemberSessionID, MemberID, PlayerID, StartedOn, ExpiresAt, ShowAdult, IncludeRatingIDList FROM dbo.MemberSession WITH (HOLDLOCK TABLOCKX)')
+GO
+DROP TABLE dbo.MemberSession
+GO
+EXECUTE sp_rename N'dbo.Tmp_MemberSession', N'MemberSession', 'OBJECT'
+GO
+ALTER TABLE dbo.MemberSession ADD CONSTRAINT
+	PK_MemberSession PRIMARY KEY CLUSTERED
+	(
+	MemberSessionID
+	) ON [PRIMARY]
+
+GO
+CREATE NONCLUSTERED INDEX IX_MemberSession_MemberID ON dbo.MemberSession
+	(
+	MemberID
+	) ON [PRIMARY]
+GO
+ALTER TABLE dbo.MemberSession WITH NOCHECK ADD CONSTRAINT
+	FK_MemberSession_Member FOREIGN KEY
+	(
+	MemberID
+	) REFERENCES dbo.Member
+	(
+	MemberID
+	) ON UPDATE CASCADE
+	 ON DELETE CASCADE
+
+GO
+COMMIT
+
+--//////////////////////////////////////////////////////////////////////////////
+--//////////////////////////////////////////////////////////////////////////////

@@ -100,7 +100,7 @@ public class RentedShowHistory extends DatabaseObject
 
 	/* Construction */
 	public RentedShowHistory(Member member, Show show, ShowProvider showProvider, RentedShow rentedShow, Player player,
-		String playerIPAddress)
+		String playerSerialNo, String playerVersion, String playerIPAddress)
 	{
 		super(true);
 		fRentedShowHistoryID = RentedShowHistoryID.newInstance();
@@ -131,8 +131,8 @@ public class RentedShowHistory extends DatabaseObject
 
 		fManufacturerID = player.getManufacturerID();
 		fModelNo = player.getModelNo();
-		fSerialNo = "unknown";	//TODO
-		fVersion = " unknown";	//TODO
+		fSerialNo = playerSerialNo;
+		fVersion = playerVersion;
 		fPlayerIPAddress = playerIPAddress;
 	}
 
@@ -143,9 +143,10 @@ public class RentedShowHistory extends DatabaseObject
 	}
 
 	public static RentedShowHistory newInstance(Member member, Show show, ShowProvider showProvider,
-		RentedShow rentedShow, Player player, String playerIPAddress)
+		RentedShow rentedShow, Player player, String playerSerialNo, String playerVersion, String playerIPAddress)
 	{
-		return new RentedShowHistory(member, show, showProvider, rentedShow, player, playerIPAddress);
+		return new RentedShowHistory(member, show, showProvider, rentedShow, player, playerSerialNo, playerVersion,
+			playerIPAddress);
 	}
 
 	protected static RentedShowHistory load(RentedShowHistoryID rentedShowHistoryID, DataExists exists) throws Exception
