@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2007-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.contmgr.data;
@@ -12,7 +12,8 @@ public enum AudioCodec
 	MP3("mpga"),
 	M4A("mp4a"),
 	WMA2("WMA2"),
-	AC3("AC3");
+	AC3("AC3"),
+	TWOS("twos");
 
 	public static final int MaxLength = 8;
 
@@ -22,6 +23,7 @@ public enum AudioCodec
 	private static HashMap<String, AudioCodec> fAllValues = new HashMap<String, AudioCodec>();
 
 	/* Getters and Setters */
+	@Override
 	public String toString() { return fValue; }
 
 	/* Construction */
