@@ -23,15 +23,19 @@ public class RentedShowSearch implements Readable, Writeable
 	public static Constructor<RentedShowSearch> CtorDataReader = DataReader.getCtor(RentedShowSearch.class);
 
 	/* Fields */
-	protected RentedShowID fRentedShowID;
+	private RentedShowID fRentedShowID;
 
-	protected ShowID fShowID;
-	protected ProviderID fProviderID;
-	protected String fName;
-	protected String fEpisodeName;
+	private ShowID fShowID;
+	private ProviderID fProviderID;
+	private String fName;
+	private String fEpisodeName;
+
+	private Date fReleasedOn;
+	private Short fReleasedYear;
 	private String fPictureURL;
 
-	public Date fAvailableUntil;
+	private Date fRentedOn;
+	private Date fAvailableUntil;
 
 	/* Getters and Setters */
 	public RentedShowID getRentedShowID() { return fRentedShowID; }
@@ -66,8 +70,12 @@ public class RentedShowSearch implements Readable, Writeable
 		fProviderID = reader.readDataID("ProviderID", ProviderID.MaxLength, ProviderID.CtorString);
 		fName = reader.readString("Name", ShowDetail.NameMaxLength);
 		fEpisodeName = reader.readString("EpisodeName", ShowDetail.EpisodeNameMaxLength);
+
+		fReleasedOn = reader.readDate("ReleasedOn");
+		fReleasedYear = reader.readShort("ReleasedYear");
 		fPictureURL = reader.readString("PictureURL", ShowDetail.PictureURLMaxLength);
 
+		fRentedOn = reader.readDateTime("RentedOn");
 		fAvailableUntil = reader.readDateTime("AvailableUntil");
 	}
 
@@ -79,8 +87,12 @@ public class RentedShowSearch implements Readable, Writeable
 		writer.writeDataID("ProviderID", fProviderID, ProviderID.MaxLength);
 		writer.writeString("Name", fName, ShowDetail.NameMaxLength);
 		writer.writeString("EpisodeName", fEpisodeName, ShowDetail.EpisodeNameMaxLength);
+
+		writer.writeDate("ReleasedOn", fReleasedOn);
+		writer.writeShort("ReleasedYear", fReleasedYear);
 		writer.writeString("PictureURL", fPictureURL, ShowDetail.PictureURLMaxLength);
 
+		writer.writeDateTime("RentedOn", fRentedOn);
 		writer.writeDateTime("AvailableUntil", fAvailableUntil);
 	}
 
