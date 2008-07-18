@@ -1,5 +1,5 @@
 /**
- * Copyright © 2007 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2007-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.playerClient.rqdata;
@@ -91,7 +91,7 @@ public class RentedShow implements com.inetvod.common.core.Readable
 		fEpisodeName = reader.readString("EpisodeName", ShowDetail.EpisodeNameMaxLength);
 		fEpisodeNumber = reader.readString("EpisodeNumber", ShowDetail.EpisodeNumberMaxLength);
 
-		fReleasedOn = reader.readDate("ReleasedOn");
+		fReleasedOn = reader.readDateTime("ReleasedOn");
 		fReleasedYear = reader.readShort("ReleasedYear");
 		fDescription = reader.readString("Description", ShowDetail.DescriptionMaxLength);
 		fRunningMins = reader.readShort("RunningMins");

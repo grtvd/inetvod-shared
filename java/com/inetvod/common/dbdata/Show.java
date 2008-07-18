@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
@@ -109,7 +109,7 @@ public class Show extends DatabaseObject
 		fName = reader.readString("Name", NameMaxLength);
 		fEpisodeName = reader.readString("EpisodeName", EpisodeNameMaxLength);
 		fEpisodeNumber = reader.readString("EpisodeNumber", EpisodeNumberMaxLength);
-		fReleasedOn = reader.readDate("ReleasedOn");
+		fReleasedOn = reader.readDateTime("ReleasedOn");
 		fReleasedYear = reader.readShort("ReleasedYear");
 		fDescription = reader.readString("Description", DescriptionMaxLength);
 		fRunningMins = reader.readShort("RunningMins");
@@ -124,7 +124,7 @@ public class Show extends DatabaseObject
 		writer.writeString("Name", fName, NameMaxLength);
 		writer.writeString("EpisodeName", fEpisodeName, EpisodeNameMaxLength);
 		writer.writeString("EpisodeNumber", fEpisodeNumber, EpisodeNumberMaxLength);
-		writer.writeDate("ReleasedOn", fReleasedOn);
+		writer.writeDateTime("ReleasedOn", fReleasedOn);
 		writer.writeShort("ReleasedYear", fReleasedYear);
 		writer.writeString("Description", fDescription, DescriptionMaxLength);
 		writer.writeShort("RunningMins", fRunningMins);

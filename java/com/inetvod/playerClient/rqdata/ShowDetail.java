@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.playerClient.rqdata;
@@ -83,7 +83,7 @@ public class ShowDetail implements Readable
 		fEpisodeName = reader.readString("EpisodeName", EpisodeNameMaxLength);
 		fEpisodeNumber = reader.readString("EpisodeNumber", EpisodeNumberMaxLength);
 
-		fReleasedOn = reader.readDate("ReleasedOn");
+		fReleasedOn = reader.readDateTime("ReleasedOn");
 		fReleasedYear = reader.readShort("ReleasedYear");
 		fDescription = reader.readString("Description", DescriptionMaxLength);
 		fRunningMins = reader.readShort("RunningMins");

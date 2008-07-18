@@ -58,7 +58,7 @@ public class ShowSearch implements Readable, Writeable
 		fShowID = reader.readDataID("ShowID", ShowID.MaxLength, ShowID.CtorString);
 		fName = reader.readString("Name", ShowDetail.NameMaxLength);
 		fEpisodeName = reader.readString("EpisodeName", ShowDetail.EpisodeNameMaxLength);
-		fReleasedOn = reader.readDate("ReleasedOn");
+		fReleasedOn = reader.readDateTime("ReleasedOn");
 		fReleasedYear = reader.readShort("ReleasedYear");
 		fPictureURL = reader.readString("PictureURL", ShowDetail.PictureURLMaxLength);
 		fShowProviderList = reader.readList("ShowProvider", ShowProviderList.Ctor, ShowProvider.CtorDataReader);
@@ -69,7 +69,7 @@ public class ShowSearch implements Readable, Writeable
 		writer.writeDataID("ShowID", fShowID, ShowID.MaxLength);
 		writer.writeString("Name", fName, ShowDetail.NameMaxLength);
 		writer.writeString("EpisodeName", fEpisodeName, ShowDetail.EpisodeNameMaxLength);
-		writer.writeDate("ReleasedOn", fReleasedOn);
+		writer.writeDateTime("ReleasedOn", fReleasedOn);
 		writer.writeShort("ReleasedYear", fReleasedYear);
 		writer.writeString("PictureURL", fPictureURL, ShowDetail.PictureURLMaxLength);
 		writer.writeList("ShowProvider", fShowProviderList);
@@ -81,11 +81,11 @@ public class ShowSearch implements Readable, Writeable
 
 		if(fReleasedOn != null)
 		{
-			double totalDays = DateUtil.daysDiff(fReleasedOn, DateUtil.today());
+			double totalDays = DateUtil.daysDiff(fReleasedOn, DateUtil.today());	//compare to today at midmight
 
-			if(totalDays < 1.0)
+			if(totalDays <= 0.0)	//release after midnight
 				date = "Today";
-			else if(totalDays <= DateUtil.DaysPerWeek)
+			else if(totalDays <= DateUtil.DaysPerWeek - 1)
 				date = DateUtil.formatDate(fReleasedOn, DateUtil.DayOfWeekShortFormat);
 			else if(totalDays <= DateUtil.DaysPerYear)
 				date = DateUtil.formatDate(fReleasedOn, DateUtil.MonthDayOnlyFormat);

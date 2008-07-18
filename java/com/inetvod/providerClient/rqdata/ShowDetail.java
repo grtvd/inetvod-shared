@@ -1,5 +1,5 @@
 /**
- * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2005-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.providerClient.rqdata;
@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.LanguageID;
 import com.inetvod.common.core.Readable;
+import com.inetvod.common.core.DateUtil;
 import com.inetvod.common.data.CategoryID;
 import com.inetvod.common.data.CategoryIDList;
 import com.inetvod.common.data.ProviderShowID;
@@ -89,7 +90,13 @@ public class ShowDetail implements Readable
 		fEpisodeName = reader.readString("EpisodeName", Show.EpisodeNameMaxLength);
 		fEpisodeNumber = reader.readString("EpisodeNumber", Show.EpisodeNumberMaxLength);
 
-		fReleasedOn = reader.readDate("ReleasedOn");
+		fReleasedOn = reader.readDateTime("ReleasedOn");
+		if (fReleasedOn == null)	//missing or no Time component
+		{
+			fReleasedOn = reader.readDate("ReleasedOn");
+			if (fReleasedOn != null)
+				fReleasedOn.setTime(fReleasedOn.getTime() + (DateUtil.MillisPerDay / 2)); //add 12 hours for TZ differences
+		}
 		fReleasedYear = reader.readShort("ReleasedYear");
 		fDescription = reader.readString("Description", Show.DescriptionMaxLength);
 

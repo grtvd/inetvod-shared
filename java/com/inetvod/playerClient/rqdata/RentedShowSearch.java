@@ -71,7 +71,7 @@ public class RentedShowSearch implements Readable, Writeable
 		fName = reader.readString("Name", ShowDetail.NameMaxLength);
 		fEpisodeName = reader.readString("EpisodeName", ShowDetail.EpisodeNameMaxLength);
 
-		fReleasedOn = reader.readDate("ReleasedOn");
+		fReleasedOn = reader.readDateTime("ReleasedOn");
 		fReleasedYear = reader.readShort("ReleasedYear");
 		fPictureURL = reader.readString("PictureURL", ShowDetail.PictureURLMaxLength);
 
@@ -88,7 +88,7 @@ public class RentedShowSearch implements Readable, Writeable
 		writer.writeString("Name", fName, ShowDetail.NameMaxLength);
 		writer.writeString("EpisodeName", fEpisodeName, ShowDetail.EpisodeNameMaxLength);
 
-		writer.writeDate("ReleasedOn", fReleasedOn);
+		writer.writeDateTime("ReleasedOn", fReleasedOn);
 		writer.writeShort("ReleasedYear", fReleasedYear);
 		writer.writeString("PictureURL", fPictureURL, ShowDetail.PictureURLMaxLength);
 

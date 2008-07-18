@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006-2007 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.core;
@@ -27,7 +27,7 @@ public class DateUtil
 
 	public static final int DaysPerWeek = 7;
 	public static final int DaysPerYear = 365;
-	private static final long MillisPerDay = 86400000;
+	public static final long MillisPerDay = 86400000;
 
 	/* Implementation */
 	public static Date today()
@@ -136,7 +136,7 @@ public class DateUtil
 			return null;
 
 		Date date = null;
-		try { date = (new SimpleDateFormat(format)).parse(dateStr); } catch(Exception e) {}
+		try { date = (new SimpleDateFormat(format)).parse(dateStr); } catch(Exception ignore) {}
 
 		return date;
 	}
@@ -206,10 +206,10 @@ public class DateUtil
 
 		Date date = null;
 
-		try { date = (new SimpleDateFormat(RFC2822DateFormat)).parse(dateStr); } catch(Exception e) {}
+		try { date = (new SimpleDateFormat(RFC2822DateFormat)).parse(dateStr); } catch(Exception ignore) {}
 
 		if(date == null)
-			try { date = (new SimpleDateFormat(RFC2822AltDateFormat)).parse(dateStr); } catch(Exception e) {}
+			try { date = (new SimpleDateFormat(RFC2822AltDateFormat)).parse(dateStr); } catch(Exception ignore) {}
 
 		return date;
 	}
