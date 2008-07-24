@@ -24,7 +24,7 @@ public class ProviderConnection extends DatabaseObject
 	private static final int AdminPasswordMaxLength = 32;	//16 if not encrypted
 	private static final int UseFieldForNameMaxLength = 32;
 	private static final int UseFieldForEpisodeNameMaxLength = 32;
-	private static final short MaxDaysSinceAvailDefault = 356;
+	private static final short MaxDaysSinceAvailDefault = 7;
 
 	/* Fields */
 	private CryptoCipher fCryptoCipher;		// don't access directory, use getCryptoCipher()
@@ -43,7 +43,7 @@ public class ProviderConnection extends DatabaseObject
 
 	private String fUseFieldForName;
 	private String fUseFieldForEpisodeName;
-	private Short fMaxDaysSinceAvail;
+	private short fMaxDaysSinceAvail;
 
 	private static DatabaseAdaptor<ProviderConnection, ProviderConnectionList> fDatabaseAdaptor =
 		new DatabaseAdaptor<ProviderConnection, ProviderConnectionList>(ProviderConnection.class, ProviderConnectionList.class);
@@ -81,7 +81,7 @@ public class ProviderConnection extends DatabaseObject
 
 	public String getUseFieldForName() { return fUseFieldForName; }
 	public String getUseFieldForEpisodeName() { return fUseFieldForEpisodeName; }
-	public Short getMaxDaysSinceAvail() { return fMaxDaysSinceAvail; }
+	public short getMaxDaysSinceAvail() { return fMaxDaysSinceAvail; }
 
 	/* Construction */
 	public ProviderConnection(ProviderID providerID, ProviderConnectionType providerConnectionType)
@@ -156,7 +156,7 @@ public class ProviderConnection extends DatabaseObject
 		fAdminPasswordEncrypted = reader.readString("AdminPassword", AdminPasswordMaxLength);
 		fUseFieldForName = reader.readString("UseFieldForName", UseFieldForNameMaxLength);
 		fUseFieldForEpisodeName = reader.readString("UseFieldForEpisodeName", UseFieldForEpisodeNameMaxLength);
-		fMaxDaysSinceAvail = reader.readShort("MaxDaysSinceAvail");
+		fMaxDaysSinceAvail = reader.readShortValue("MaxDaysSinceAvail");
 	}
 
 	public void writeTo(DataWriter writer) throws Exception
@@ -171,7 +171,7 @@ public class ProviderConnection extends DatabaseObject
 		writer.writeString("AdminPassword", fAdminPasswordEncrypted, AdminPasswordMaxLength);
 		writer.writeString("UseFieldForName", fUseFieldForName, UseFieldForNameMaxLength);
 		writer.writeString("UseFieldForEpisodeName", fUseFieldForEpisodeName, UseFieldForEpisodeNameMaxLength);
-		writer.writeShort("MaxDaysSinceAvail", fMaxDaysSinceAvail);
+		writer.writeShortValue("MaxDaysSinceAvail", fMaxDaysSinceAvail);
 	}
 
 	public void update() throws Exception
