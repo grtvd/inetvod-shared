@@ -468,7 +468,8 @@ CREATE PROCEDURE dbo.ProviderConnection_Get
 	@ProviderConnectionID uniqueidentifier
 AS
 	select ProviderConnectionID, ProviderID, ProviderConnectionType, Disabled,
-		ConnectionURL, AdminUserID, AdminPassword, UseFieldForName, UseFieldForEpisodeName
+		ConnectionURL, AdminUserID, AdminPassword, UseFieldForName, UseFieldForEpisodeName,
+		MaxDaysSinceAvail
 	from ProviderConnection
 	where (ProviderConnectionID = @ProviderConnectionID)
 GO
@@ -484,7 +485,8 @@ CREATE PROCEDURE dbo.ProviderConnection_Insert
 	@AdminUserID varchar(128),
 	@AdminPassword varchar(32),
 	@UseFieldForName varchar(32),
-	@UseFieldForEpisodeName varchar(32)
+	@UseFieldForEpisodeName varchar(32),
+	@MaxDaysSinceAvail smallint
 AS
 	insert into ProviderConnection
 	(
@@ -496,7 +498,8 @@ AS
 		AdminUserID,
 		AdminPassword,
 		UseFieldForName,
-		UseFieldForEpisodeName
+		UseFieldForEpisodeName,
+		MaxDaysSinceAvail
 	)
 	values
 	(
@@ -508,7 +511,8 @@ AS
 		@AdminUserID,
 		@AdminPassword,
 		@UseFieldForName,
-		@UseFieldForEpisodeName
+		@UseFieldForEpisodeName,
+		@MaxDaysSinceAvail
 	)
 GO
 
@@ -523,7 +527,8 @@ CREATE PROCEDURE dbo.ProviderConnection_Update
 	@AdminUserID varchar(128),
 	@AdminPassword varchar(32),
 	@UseFieldForName varchar(32),
-	@UseFieldForEpisodeName varchar(32)
+	@UseFieldForEpisodeName varchar(32),
+	@MaxDaysSinceAvail smallint
 AS
 	update ProviderConnection set
 		ProviderID = @ProviderID,
@@ -533,7 +538,8 @@ AS
 		AdminUserID = @AdminUserID,
 		AdminPassword = @AdminPassword,
 		UseFieldForName = @UseFieldForName,
-		UseFieldForEpisodeName = @UseFieldForEpisodeName
+		UseFieldForEpisodeName = @UseFieldForEpisodeName,
+		MaxDaysSinceAvail = @MaxDaysSinceAvail
 	where ProviderConnectionID = @ProviderConnectionID
 GO
 
@@ -551,7 +557,8 @@ CREATE PROCEDURE dbo.ProviderConnection_GetByProviderID
 	@ProviderID varchar(64)
 AS
 	select ProviderConnectionID, ProviderID, ProviderConnectionType, Disabled,
-		ConnectionURL, AdminUserID, AdminPassword, UseFieldForName, UseFieldForEpisodeName
+		ConnectionURL, AdminUserID, AdminPassword, UseFieldForName, UseFieldForEpisodeName,
+		MaxDaysSinceAvail
 	from ProviderConnection
 	where (ProviderID = @ProviderID)
 GO
@@ -563,7 +570,8 @@ CREATE PROCEDURE dbo.ProviderConnection_GetByProviderIDConnectionType
 	@ProviderConnectionType varchar(16)
 AS
 	select ProviderConnectionID, ProviderID, ProviderConnectionType, Disabled,
-		ConnectionURL, AdminUserID, AdminPassword, UseFieldForName, UseFieldForEpisodeName
+		ConnectionURL, AdminUserID, AdminPassword, UseFieldForName, UseFieldForEpisodeName,
+		MaxDaysSinceAvail
 	from ProviderConnection
 	where (ProviderID = @ProviderID)
 	and (ProviderConnectionType = @ProviderConnectionType)
@@ -575,7 +583,8 @@ CREATE PROCEDURE dbo.ProviderConnection_GetByConnectionURL
 	@ConnectionURL varchar(4096)
 AS
 	select ProviderConnectionID, ProviderID, ProviderConnectionType, Disabled,
-		ConnectionURL, AdminUserID, AdminPassword, UseFieldForName, UseFieldForEpisodeName
+		ConnectionURL, AdminUserID, AdminPassword, UseFieldForName, UseFieldForEpisodeName,
+		MaxDaysSinceAvail
 	from ProviderConnection
 	where (ConnectionURL = @ConnectionURL)
 GO
@@ -1478,7 +1487,8 @@ AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
 		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
 		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider
 	where ShowProviderID = @ShowProviderID
 GO
@@ -1501,7 +1511,8 @@ CREATE PROCEDURE dbo.ShowProvider_Insert
 	@ShowFormat_FramesPerSecond smallint,
 	@ShowFormat_BitRate smallint,
 	@ShowCostList varchar(2048),
-	@ShowAvail varchar(32)
+	@ShowAvail varchar(32),
+	@LastAvailableAt datetime
 AS
 	insert into ShowProvider
 	(
@@ -1520,7 +1531,8 @@ AS
 		ShowFormat_FramesPerSecond,
 		ShowFormat_BitRate,
 		ShowCostList,
-		ShowAvail
+		ShowAvail,
+		LastAvailableAt
 	)
 	values
 	(
@@ -1539,7 +1551,8 @@ AS
 		@ShowFormat_FramesPerSecond,
 		@ShowFormat_BitRate,
 		@ShowCostList,
-		@ShowAvail
+		@ShowAvail,
+		@LastAvailableAt
 	)
 GO
 
@@ -1561,7 +1574,8 @@ CREATE PROCEDURE dbo.ShowProvider_Update
 	@ShowFormat_FramesPerSecond smallint,
 	@ShowFormat_BitRate smallint,
 	@ShowCostList varchar(2048),
-	@ShowAvail varchar(32)
+	@ShowAvail varchar(32),
+	@LastAvailableAt datetime
 AS
 	update ShowProvider set
 		--ShowProviderID = @ShowProviderID,
@@ -1579,7 +1593,8 @@ AS
 		ShowFormat_FramesPerSecond = @ShowFormat_FramesPerSecond,
 		ShowFormat_BitRate = @ShowFormat_BitRate,
 		ShowCostList = @ShowCostList,
-		ShowAvail = @ShowAvail
+		ShowAvail = @ShowAvail,
+		LastAvailableAt = @LastAvailableAt
 	where ShowProviderID = @ShowProviderID
 GO
 
@@ -1601,7 +1616,8 @@ AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
 		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
 		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider
 	where (ShowID = @ShowID)
 	and (ProviderID = @ProviderID)
@@ -1616,7 +1632,8 @@ AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
 		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
 		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider
 	where (ShowID = @ShowID)
 	and (ProviderID = @ProviderID)
@@ -1631,7 +1648,8 @@ AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
 		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
 		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider
 	where (ShowID = @ShowID)
 	and (ShowAvail = 'Available')
@@ -1646,7 +1664,8 @@ AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
 		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
 		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider
 	where (ProviderID = @ProviderID)
 	and (ProviderShowID = @ProviderShowID)
@@ -1661,7 +1680,8 @@ AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
 		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
 		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider
 	where (ProviderConnectionID = @ProviderConnectionID)
 	and (ProviderShowID = @ProviderShowID)
@@ -1676,7 +1696,8 @@ AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
 		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
 		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider
 	where (ProviderConnectionID = @ProviderConnectionID)
 	and (ShowAvail = @ShowAvail)
@@ -1691,7 +1712,8 @@ AS
 		ProviderShowID, ShowURL, ShowFormatMime, ShowFormat_ShowFormatID,
 		ShowFormat_MediaEncoding, ShowFormat_MediaContainer,
 		ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider sp
 	join Show s on s.ShowID = sp.ShowID
 	where s.Name like '%' + isnull(@PartialName, '') + '%'
@@ -1706,7 +1728,8 @@ AS
 	select ShowProviderID, ShowID, ProviderID, ProviderConnectionID, ProviderShowID,
 		ShowURL, ShowFormatMime, ShowFormat_ShowFormatID, ShowFormat_MediaEncoding,
 		ShowFormat_MediaContainer, ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider
 	where ProviderID = @ProviderID
 	and (ShowAvail = 'Available')
@@ -1721,7 +1744,8 @@ AS
 		ProviderShowID, ShowURL, ShowFormatMime, ShowFormat_ShowFormatID,
 		ShowFormat_MediaEncoding, ShowFormat_MediaContainer,
 		ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider sp
 	join ShowCategory sc on sc.ShowID = sp.ShowID
 	where sc.CategoryID = @CategoryID
@@ -1737,7 +1761,8 @@ AS
 		ProviderShowID, sp.ShowURL, ShowFormatMime, ShowFormat_ShowFormatID,
 		ShowFormat_MediaEncoding, ShowFormat_MediaContainer,
 		ShowFormat_HorzResolution, ShowFormat_VertResolution,
-		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail
+		ShowFormat_FramesPerSecond, ShowFormat_BitRate, ShowCostList, ShowAvail,
+		LastAvailableAt
 	from ShowProvider sp
 	join RentedShow rs on (rs.ShowProviderID = sp.ShowProviderID)
 	where rs.MemberID = @MemberID

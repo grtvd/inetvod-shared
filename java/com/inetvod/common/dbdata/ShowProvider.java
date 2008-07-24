@@ -1,12 +1,15 @@
 /**
- * Copyright © 2004-2007 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.dbdata;
 
+import java.util.Date;
+
 import com.inetvod.common.core.DataExists;
 import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.DataWriter;
+import com.inetvod.common.core.DateUtil;
 import com.inetvod.common.data.ProviderConnectionID;
 import com.inetvod.common.data.ProviderID;
 import com.inetvod.common.data.ProviderShowID;
@@ -35,6 +38,7 @@ public class ShowProvider extends DatabaseObject
 	private ShowCostList fShowCostList;
 
 	private ShowAvail fShowAvail;
+	private Date fLastAvailableAt;
 
 	private static DatabaseAdaptor<ShowProvider, ShowProviderList> fDatabaseAdaptor =
 		new DatabaseAdaptor<ShowProvider, ShowProviderList>(ShowProvider.class, ShowProviderList.class);
@@ -60,7 +64,15 @@ public class ShowProvider extends DatabaseObject
 	public ShowCostList getShowCostList() { return fShowCostList; }
 
 	public ShowAvail getShowAvail() { return fShowAvail; }
-	public void setShowAvail(ShowAvail showAvail) { fShowAvail = showAvail; }
+	public void setShowAvail(ShowAvail showAvail)
+	{
+		fShowAvail = showAvail;
+
+		if (ShowAvail.Available.equals(showAvail))
+			fLastAvailableAt = DateUtil.now();
+	}
+
+	public Date getLastAvailableAt() { return fLastAvailableAt; }
 
 	/* Construction */
 	private ShowProvider(ShowID showID, ProviderID providerID, ProviderConnectionID providerConnectionID,
@@ -117,6 +129,7 @@ public class ShowProvider extends DatabaseObject
 		fShowCostList = ShowCostList.newInstanceFromXmlString(reader.readString("ShowCostList", ShowCostListMaxLength));
 
 		fShowAvail = ShowAvail.convertFromString(reader.readString("ShowAvail", ShowAvail.MaxLength));
+		fLastAvailableAt = reader.readDateTime("LastAvailableAt");
 	}
 
 	public void writeTo(DataWriter writer) throws Exception
@@ -133,6 +146,7 @@ public class ShowProvider extends DatabaseObject
 		writer.writeString("ShowCostList", ShowCostList.toXmlString(fShowCostList), ShowCostListMaxLength);
 
 		writer.writeString("ShowAvail", ShowAvail.convertToString(fShowAvail), ShowAvail.MaxLength);
+		writer.writeDateTime("LastAvailableAt", fLastAvailableAt);
 	}
 
 	public void update() throws Exception

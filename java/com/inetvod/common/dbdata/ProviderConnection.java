@@ -24,6 +24,7 @@ public class ProviderConnection extends DatabaseObject
 	private static final int AdminPasswordMaxLength = 32;	//16 if not encrypted
 	private static final int UseFieldForNameMaxLength = 32;
 	private static final int UseFieldForEpisodeNameMaxLength = 32;
+	private static final short MaxDaysSinceAvailDefault = 356;
 
 	/* Fields */
 	private CryptoCipher fCryptoCipher;		// don't access directory, use getCryptoCipher()
@@ -42,6 +43,7 @@ public class ProviderConnection extends DatabaseObject
 
 	private String fUseFieldForName;
 	private String fUseFieldForEpisodeName;
+	private Short fMaxDaysSinceAvail;
 
 	private static DatabaseAdaptor<ProviderConnection, ProviderConnectionList> fDatabaseAdaptor =
 		new DatabaseAdaptor<ProviderConnection, ProviderConnectionList>(ProviderConnection.class, ProviderConnectionList.class);
@@ -79,6 +81,7 @@ public class ProviderConnection extends DatabaseObject
 
 	public String getUseFieldForName() { return fUseFieldForName; }
 	public String getUseFieldForEpisodeName() { return fUseFieldForEpisodeName; }
+	public Short getMaxDaysSinceAvail() { return fMaxDaysSinceAvail; }
 
 	/* Construction */
 	public ProviderConnection(ProviderID providerID, ProviderConnectionType providerConnectionType)
@@ -87,6 +90,7 @@ public class ProviderConnection extends DatabaseObject
 		fProviderConnectionID = ProviderConnectionID.newInstance();
 		fProviderID = providerID;
 		fProviderConnectionType = providerConnectionType;
+		fMaxDaysSinceAvail = MaxDaysSinceAvailDefault;
 	}
 
 	public ProviderConnection(DataReader reader) throws Exception
@@ -152,6 +156,7 @@ public class ProviderConnection extends DatabaseObject
 		fAdminPasswordEncrypted = reader.readString("AdminPassword", AdminPasswordMaxLength);
 		fUseFieldForName = reader.readString("UseFieldForName", UseFieldForNameMaxLength);
 		fUseFieldForEpisodeName = reader.readString("UseFieldForEpisodeName", UseFieldForEpisodeNameMaxLength);
+		fMaxDaysSinceAvail = reader.readShort("MaxDaysSinceAvail");
 	}
 
 	public void writeTo(DataWriter writer) throws Exception
@@ -166,6 +171,7 @@ public class ProviderConnection extends DatabaseObject
 		writer.writeString("AdminPassword", fAdminPasswordEncrypted, AdminPasswordMaxLength);
 		writer.writeString("UseFieldForName", fUseFieldForName, UseFieldForNameMaxLength);
 		writer.writeString("UseFieldForEpisodeName", fUseFieldForEpisodeName, UseFieldForEpisodeNameMaxLength);
+		writer.writeShort("MaxDaysSinceAvail", fMaxDaysSinceAvail);
 	}
 
 	public void update() throws Exception

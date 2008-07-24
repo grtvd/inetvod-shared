@@ -170,7 +170,8 @@ CREATE TABLE [dbo].[ProviderConnection] (
 	[AdminUserID] [varchar] (128) NULL ,
 	[AdminPassword] [varchar] (32) NULL ,
 	[UseFieldForName] [varchar] (32) NULL ,
-	[UseFieldForEpisodeName] [varchar] (32) NULL
+	[UseFieldForEpisodeName] [varchar] (32) NULL ,
+	[MaxDaysSinceAvail] [smallint] DEFAULT(356) NOT NULL
 ) ON [PRIMARY]
 GO
 
@@ -481,7 +482,8 @@ CREATE TABLE [dbo].[ShowProvider] (
 	[ShowFormat_FramesPerSecond] [smallint] NULL ,
 	[ShowFormat_BitRate] [smallint] NULL ,
 	[ShowCostList] [varchar] (2048) NULL ,
-	[ShowAvail] [varchar] (32) NOT NULL
+	[ShowAvail] [varchar] (32) NOT NULL ,
+	[LastAvailableAt] [datetime] NULL
 ) ON [PRIMARY]
 
 GO

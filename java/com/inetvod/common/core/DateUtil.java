@@ -232,6 +232,21 @@ public class DateUtil
 
 	public static double daysDiff(Date from, Date to)
 	{
+		if((from == null) || (to == null))
+			return 0;
 		return (to.getTime() - from.getTime()) / (double)MillisPerDay;
+	}
+
+	public static Date addDays(Date from, int numDays)
+	{
+		if(from == null)
+			return null;
+		if(numDays == 0)
+			return from;
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(from);
+		cal.add(Calendar.DAY_OF_MONTH, numDays);
+		return new Date(cal.getTime().getTime());
 	}
 }
