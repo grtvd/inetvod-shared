@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.core;
@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 
 public class StreamUtil
 {
@@ -23,7 +24,14 @@ public class StreamUtil
 		return new ByteArrayInputStream(output.toByteArray());
 	}
 
-	public static void streamCopy (InputStream input, OutputStream output, boolean keepPosition) throws Exception
+	public static InputStream streamCopyToMemory(RandomAccessFile input) throws Exception
+	{
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		streamCopy(input, output, false);
+		return new ByteArrayInputStream(output.toByteArray());
+	}
+
+	public static void streamCopy(InputStream input, OutputStream output, boolean keepPosition) throws Exception
 	{
 		byte[] bytes = new byte[BufferSize];
 		int numBytes;
@@ -38,7 +46,35 @@ public class StreamUtil
 			input.reset();
 	}
 
-	public static void streamToFile (InputStream stream, String file) throws Exception
+	public static void streamCopy(RandomAccessFile input, OutputStream output, boolean keepPosition) throws Exception
+	{
+		byte[] bytes = new byte[BufferSize];
+		int numBytes;
+		long oldPosition = input.getFilePointer();
+
+		while((numBytes = input.read(bytes, 0, BufferSize)) > 0)
+			output.write(bytes, 0, numBytes);
+
+		if (keepPosition)
+			input.seek(oldPosition);
+	}
+
+	public static void streamCopy(InputStream input, RandomAccessFile output, boolean keepPosition) throws Exception
+	{
+		byte[] bytes = new byte[BufferSize];
+		int numBytes;
+
+		if (keepPosition)
+			input.mark(Integer.MAX_VALUE);
+
+		while((numBytes = input.read(bytes, 0, BufferSize)) > 0)
+			output.write(bytes, 0, numBytes);
+
+		if (keepPosition)
+			input.reset();
+	}
+
+	public static void streamToFile(InputStream stream, File file) throws Exception
 	{
 		FileOutputStream fileStream = new FileOutputStream(file);
 		try
@@ -49,6 +85,11 @@ public class StreamUtil
 		{
 			fileStream.close();
 		}
+	}
+
+	public static void streamToFile(InputStream stream, String file) throws Exception
+	{
+		streamToFile(stream, new File(file));
 	}
 
 	public static void streamFile(File file, OutputStream stream) throws Exception

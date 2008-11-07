@@ -76,6 +76,20 @@ public abstract class DataReader
 	public abstract Long readLong(String fieldName) throws Exception;
 
 	/**
+	 * Read a Long.
+	 * @return will throw exception on null value
+	 */
+	public long readLongValue(String fieldName) throws Exception
+	{
+		Long value = readLong(fieldName);
+
+		if(value == null)
+			throw new Exception("value is null");
+
+		return value;
+	}
+
+	/**
 	 * Read a Float.
 	 * @return may return null
 	 */
@@ -121,6 +135,20 @@ public abstract class DataReader
 
 		if(value == null)
 			throw new Exception("value is null");
+
+		return value;
+	}
+
+	/**
+	 * Read a boolean value.
+	 * @return will return defaultValue on on null value
+	 */
+	public boolean readBooleanValue(String fieldName, boolean defaultValue) throws Exception
+	{
+		Boolean value = readBoolean(fieldName);
+
+		if(value == null)
+			return defaultValue;
 
 		return value;
 	}

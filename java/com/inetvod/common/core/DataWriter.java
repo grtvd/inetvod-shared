@@ -30,8 +30,11 @@ public abstract class DataWriter
 	/**
 	 * Write a short value
 	 */
-	public void writeShortValue(String fieldName, short data) throws Exception
+	public void writeShortValue(String fieldName, Short data) throws Exception
 	{
+		if(data == null)
+			throw new Exception("data is null");
+
 		writeShort(fieldName, data);
 	}
 
@@ -43,8 +46,11 @@ public abstract class DataWriter
 	/**
 	 * Write an int value
 	 */
-	public void writeIntValue(String fieldName, int data) throws Exception
+	public void writeIntValue(String fieldName, Integer data) throws Exception
 	{
+		if(data == null)
+			throw new Exception("data is null");
+
 		writeInt(fieldName, data);
 	}
 
@@ -52,6 +58,17 @@ public abstract class DataWriter
 	 * Write a Long
 	 */
 	public abstract void writeLong(String fieldName, Long data) throws Exception;
+
+	/**
+	 * Write a long
+	 */
+	public void writeLongValue(String fieldName, Long data) throws Exception
+	{
+		if(data == null)
+			throw new Exception("data is null");
+
+		writeLong(fieldName, data);
+	}
 
 	/**
 	 * Write a Float
@@ -86,8 +103,11 @@ public abstract class DataWriter
 	/**
 	 * Write a boolean value
 	 */
-	public void writeBooleanValue(String fieldName, boolean data) throws Exception
+	public void writeBooleanValue(String fieldName, Boolean data) throws Exception
 	{
+		if(data == null)
+			throw new Exception("data is null");
+
 		writeBoolean(fieldName, data);
 	}
 

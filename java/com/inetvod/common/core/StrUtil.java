@@ -5,8 +5,6 @@
 package com.inetvod.common.core;
 
 import java.lang.reflect.Constructor;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 
 public class StrUtil
 {
@@ -56,19 +54,5 @@ public class StrUtil
 			return false;
 
 		return str.matches("\\d*");
-	}
-
-	public static boolean isEmail(String str)
-	{
-		try
-		{
-			InternetAddress internetAddress = new InternetAddress(str);
-			internetAddress.validate();
-			return true;
-		}
-		catch(AddressException ignore)
-		{
-		}
-		return false;
 	}
 }
