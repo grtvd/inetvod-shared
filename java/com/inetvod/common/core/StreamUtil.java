@@ -1,5 +1,5 @@
 /**
- * Copyright © 2004-2008 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2004-2009 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.common.core;
@@ -90,6 +90,24 @@ public class StreamUtil
 	public static void streamToFile(InputStream stream, String file) throws Exception
 	{
 		streamToFile(stream, new File(file));
+	}
+
+	public static String streamToString(InputStream stream) throws Exception
+	{
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		streamCopy(stream, byteArrayOutputStream, true);
+		return byteArrayOutputStream.toString("UTF-8");
+	}
+
+	public static void stringToFile(String string, File file) throws Exception
+	{
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(string.getBytes("UTF-8"));
+		streamToFile(byteArrayInputStream, file);
+	}
+
+	public static void stringToFile(String string, String file) throws Exception
+	{
+		stringToFile(string, new File(file));
 	}
 
 	public static void streamFile(File file, OutputStream stream) throws Exception
