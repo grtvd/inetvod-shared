@@ -1,5 +1,5 @@
 /**
- * Copyright © 2006-2007 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2006-2009 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.playerClient.request;
@@ -7,7 +7,6 @@ package com.inetvod.playerClient.request;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.UUID;
 
 import com.inetvod.common.core.Logger;
 import com.inetvod.common.core.Readable;
@@ -48,9 +47,9 @@ public class DataRequestor
 	}
 
 	/* Implementation */
-	private INetVODPlayerRqst createHeader(Writeable payload)
+	private PlayerRqst createHeader(Writeable payload)
 	{
-		INetVODPlayerRqst request = INetVODPlayerRqst.newInstance(Version, UUID.randomUUID().toString(), fSessionData);
+		PlayerRqst request = PlayerRqst.newInstance(Version, fSessionData);
 
 		RequestData requestData = RequestData.newInstance(payload);
 		request.setRequestData(requestData);
@@ -60,21 +59,21 @@ public class DataRequestor
 
 	private Readable sendRequest(Writeable payload, int timeoutMillis)
 	{
-		INetVODPlayerRqst iNetVODPlayerRqst;
-		INetVODPlayerResp iNetVODPlayerResp;
-		String requestName = "INetVODPlayerRqst";
-		String responseName = "INetVODPlayerResp";
+		PlayerRqst playerRqst;
+		PlayerResp playerResp;
+		String requestName = "PlayerRqst";
+		String responseName = "PlayerResp";
 
 		try
 		{
 			// create request envelop
-			iNetVODPlayerRqst = createHeader(payload);
+			playerRqst = createHeader(payload);
 
 			// Convert 'writeable' to XML
 			StringWriter stringWriter = new StringWriter();
 			PrintWriter printWriter = new PrintWriter(stringWriter);
 			XmlDataWriter dataWriter = new XmlDataWriter(printWriter, "UTF-8");
-			dataWriter.writeObject(requestName, iNetVODPlayerRqst);
+			dataWriter.writeObject(requestName, playerRqst);
 			String requestXml = stringWriter.toString();
 			//System.out.println(requestXml);
 
@@ -93,12 +92,12 @@ public class DataRequestor
 
 				// Convert response XML to FieldReadable
 				XmlDataReader dataReader = new XmlDataReader(responseStream);
-				iNetVODPlayerResp = dataReader.readObject(responseName, INetVODPlayerResp.CtorDataReader);
-				fStatusCode = iNetVODPlayerResp.getStatusCode();
-				fStatusMessage = iNetVODPlayerResp.getStatusMessage();
+				playerResp = dataReader.readObject(responseName, PlayerResp.CtorDataReader);
+				fStatusCode = playerResp.getStatusCode();
+				fStatusMessage = playerResp.getStatusMessage();
 
-				if(iNetVODPlayerResp.getResponseData() != null)
-					return iNetVODPlayerResp.getResponseData().getResponse();
+				if(playerResp.getResponseData() != null)
+					return playerResp.getResponseData().getResponse();
 			}
 			finally
 			{
