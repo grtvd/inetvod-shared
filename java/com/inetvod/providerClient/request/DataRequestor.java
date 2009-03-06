@@ -1,5 +1,5 @@
 /**
- * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2005-2009 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.providerClient.request;
@@ -7,7 +7,6 @@ package com.inetvod.providerClient.request;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.UUID;
 
 import com.inetvod.common.core.Logger;
 import com.inetvod.common.core.Readable;
@@ -56,9 +55,9 @@ public class DataRequestor
 	}
 
 	/* Implementation */
-	private INetVODProviderRqst createHeader(Writeable payload)
+	private ProviderRqst createHeader(Writeable payload)
 	{
-		INetVODProviderRqst request = INetVODProviderRqst.newInstance(Version, UUID.randomUUID().toString());
+		ProviderRqst request = ProviderRqst.newInstance(Version);
 
 		Authenticate authenticate = Authenticate.newInstance(fAdminUserID, fAdminPassword, fMemberUserID, fMemberPassword);
 		request.setAuthenticate(authenticate);
@@ -71,21 +70,21 @@ public class DataRequestor
 
 	private Readable sendRequest(Writeable payload, int timeoutMillis)
 	{
-		INetVODProviderRqst iNetVODProviderRqst;
-		INetVODProviderResp iNetVODProviderResp;
-		String requestName = "INetVODProviderRqst";
-		String responseName = "INetVODProviderResp";
+		ProviderRqst providerRqst;
+		ProviderResp providerResp;
+		String requestName = "ProviderRqst";
+		String responseName = "ProviderResp";
 
 		try
 		{
 			// create request envelop
-			iNetVODProviderRqst = createHeader(payload);
+			providerRqst = createHeader(payload);
 
 			// Convert 'writeable' to XML
 			StringWriter stringWriter = new StringWriter();
 			PrintWriter printWriter = new PrintWriter(stringWriter);
 			XmlDataWriter dataWriter = new XmlDataWriter(printWriter, "UTF-8");
-			dataWriter.writeObject(requestName, iNetVODProviderRqst);
+			dataWriter.writeObject(requestName, providerRqst);
 			String requestXml = stringWriter.toString();
 			//System.out.println(requestXml);
 
@@ -104,11 +103,11 @@ public class DataRequestor
 
 				// Convert response XML to FieldReadable
 				XmlDataReader dataReader = new XmlDataReader(responseStream);
-				iNetVODProviderResp = dataReader.readObject(responseName, INetVODProviderResp.CtorDataReader);
-				fStatusCode = iNetVODProviderResp.getStatusCode();
+				providerResp = dataReader.readObject(responseName, ProviderResp.CtorDataReader);
+				fStatusCode = providerResp.getStatusCode();
 
-				if(iNetVODProviderResp.getResponseData() != null)
-					return iNetVODProviderResp.getResponseData().getResponse();
+				if(providerResp.getResponseData() != null)
+					return providerResp.getResponseData().getResponse();
 			}
 			finally
 			{

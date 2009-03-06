@@ -1,5 +1,5 @@
 /**
- * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2005-2009 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.providerClient.request;
@@ -10,13 +10,12 @@ import com.inetvod.common.core.DataReader;
 import com.inetvod.common.core.Readable;
 import com.inetvod.providerClient.rqdata.ProviderStatusCode;
 
-public class INetVODProviderResp implements Readable
+public class ProviderResp implements Readable
 {
 	/* Constants */
-	public static final Constructor<INetVODProviderResp> CtorDataReader = DataReader.getCtor(INetVODProviderResp.class);
+	public static final Constructor<ProviderResp> CtorDataReader = DataReader.getCtor(ProviderResp.class);
 
 	/* Fields */
-	private String fRequestID;
 	private ProviderStatusCode fStatusCode;
 	private ResponseData fResponseData;
 
@@ -25,7 +24,7 @@ public class INetVODProviderResp implements Readable
 	public ResponseData getResponseData() { return fResponseData; }
 
 	/* Construction */
-	public INetVODProviderResp(DataReader reader) throws Exception
+	public ProviderResp(DataReader reader) throws Exception
 	{
 		readFrom(reader);
 	}
@@ -33,7 +32,6 @@ public class INetVODProviderResp implements Readable
 	/* Implementation */
 	public void readFrom(DataReader reader) throws Exception
 	{
-		fRequestID = reader.readString("RequestID", INetVODProviderRqst.RequestIDMaxLength);
 		fStatusCode = ProviderStatusCode.convertFromInt(reader.readInt("StatusCode"));
 		fResponseData = reader.readObject("ResponseData", ResponseData.CtorDataReader);
 	}

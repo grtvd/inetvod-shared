@@ -1,5 +1,5 @@
 /**
- * Copyright © 2005-2006 iNetVOD, Inc. All Rights Reserved.
+ * Copyright © 2005-2009 iNetVOD, Inc. All Rights Reserved.
  * iNetVOD Confidential and Proprietary.  See LEGAL.txt.
  */
 package com.inetvod.providerClient.request;
@@ -9,40 +9,35 @@ import com.inetvod.common.core.DataWriter;
 import com.inetvod.common.core.Writeable;
 import com.inetvod.providerClient.rqdata.Authenticate;
 
-public class INetVODProviderRqst implements Writeable
+public class ProviderRqst implements Writeable
 {
 	/* Constants */
 	private static final int VersionMaxLength = 16;
-	public static final int RequestIDMaxLength = 64;
 
 	/* Fields */
 	private String fVersion;
-	private String fRequestID;
 	private Authenticate fAuthenticate;
 	private RequestData fRequestData;
 
 	/* Getters and Setters */
 	public void setVersion(String version) { fVersion = version; }
-	public void setRequestID(String requestID) { fRequestID = requestID; }
 	public void setAuthenticate(Authenticate authenticate) { fAuthenticate = authenticate; }
 	public void setRequestData(RequestData requestData) { fRequestData = requestData; }
 
 	/* Construction */
-	private INetVODProviderRqst(String version, String requestID)
+	private ProviderRqst(String version)
 	{
 		fVersion = version;
-		fRequestID = requestID;
 	}
 
-	public static INetVODProviderRqst newInstance(String version, String requestID)
+	public static ProviderRqst newInstance(String version)
 	{
-		return new INetVODProviderRqst(version, requestID);
+		return new ProviderRqst(version);
 	}
 
 	public void writeTo(DataWriter writer) throws Exception
 	{
 		writer.writeString("Version", fVersion, VersionMaxLength);
-		writer.writeString("RequestID", fRequestID, RequestIDMaxLength);
 		writer.writeObject("Authenticate", fAuthenticate);
 		writer.writeObject("RequestData", fRequestData);
 	}
