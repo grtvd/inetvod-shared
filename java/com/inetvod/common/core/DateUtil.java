@@ -249,4 +249,17 @@ public class DateUtil
 		cal.add(Calendar.DAY_OF_MONTH, numDays);
 		return new Date(cal.getTime().getTime());
 	}
+
+	public static Date addMinutes(Date from, int numMins)
+	{
+		if(from == null)
+			return null;
+		if(numMins == 0)
+			return from;
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(from);
+		cal.add(Calendar.MINUTE, numMins);
+		return new Date(cal.getTime().getTime());
+	}
 }
